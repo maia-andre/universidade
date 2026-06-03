@@ -1,0 +1,549 @@
+{
+  "id": 1,
+  "titulo": "Curso de Supervisores",
+  "descricao": "Curso essencial de capacitação para supervisores da Prefeitura Municipal de São José dos Campos.",
+  "modulos": [
+    {
+      "id": 100,
+      "titulo": "O Servidor Público e a Constituição Federal",
+      "descricao": "Base constitucional da administração pública e das responsabilidades dos servidores.",
+      "aulas": [
+        {
+          "id": 101,
+          "titulo": "Deveres e Obrigações",
+          "conteudo": "Como servidor público municipal, o cumprimento de deveres é essencial para o funcionamento do município. A Constituição Federal estabelece que os cargos públicos são acessíveis aos brasileiros que preencham os requisitos legais. Os principais deveres incluem:\n\n* **Assiduidade e Pontualidade:** Cumprimento da jornada de trabalho.\n* **Lealdade às instituições:** Zelar pelos bens e imagem da administração pública.\n* **Urbanidade:** Tratar com respeito cidadãos e colegas.\n* **Observância das normas:** Cumprimento estrito de leis e ordens superiores, exceto se manifestamente ilegais.\n\nA responsabilidade profissional garante a lisura de todos os processos da Prefeitura de São José dos Campos.",
+          "quiz": [
+            {
+              "pergunta": "Qual dos itens abaixo representa um dever fundamental do servidor?",
+              "opcoes": [
+                "Recusar fé aos documentos públicos.",
+                "Tratar com urbanidade os cidadãos.",
+                "Cumprir ordens superiores mesmo que manifestamente ilegais.",
+                "Delegar atribuições particulares a terceiros sem autorização."
+              ],
+              "respostaCorretaIndex": 1
+            },
+            {
+              "pergunta": "O que o servidor deve fazer ao receber uma ordem de seu superior que seja visivelmente ilegal?",
+              "opcoes": [
+                "Cumprir e silenciar.",
+                "Transferir a tarefa para outro colega.",
+                "Não cumprir e comunicar o fato formalmente.",
+                "Modificar a ordem por conta própria para torná-la legal."
+              ],
+              "respostaCorretaIndex": 2
+            }
+          ]
+        },
+        {
+          "id": 102,
+          "titulo": "Direitos do Servidor",
+          "conteudo": "Os direitos dos servidores públicos estão garantidos no Artigo 39 da Constituição Federal e incluem:\n\n* **Estabilidade:** Adquirida após 3 anos de efetivo serviço e aprovação em avaliação de desempenho.\n* **Remuneração:** Vencimentos compatíveis com o cargo, respeitado o teto constitucional.\n* **Férias Anuais Remuneradas:** Com acréscimo de pelo menos 1/3 do salário normal.\n* **Licenças e Afastamentos:** Licença-maternidade, licença-paternidade, licença para tratamento de saúde, entre outras regulamentadas pelo estatuto municipal.",
+          "quiz": [
+            {
+              "pergunta": "Qual o período de efetivo exercício necessário para a aquisição da estabilidade?",
+              "opcoes": [
+                "1 ano.",
+                "2 anos.",
+                "3 anos.",
+                "5 anos."
+              ],
+              "respostaCorretaIndex": 2
+            },
+            {
+              "pergunta": "Qual das opções NÃO representa um direito constitucional comum a todos os servidores públicos?",
+              "opcoes": [
+                "Férias remuneradas com adicional de 1/3.",
+                "Licença-maternidade remunerada.",
+                "FGTS proporcional ao tempo de serviço.",
+                "Décimo terceiro salário."
+              ],
+              "respostaCorretaIndex": 2
+            }
+          ]
+        },
+        {
+          "id": 103,
+          "titulo": "Papel do Servidor na Sociedade",
+          "conteudo": "O servidor público é o elo direto entre o Estado e o cidadão. Sua principal função social é garantir a prestação de serviços essenciais como saúde, educação, infraestrutura e segurança com qualidade e humanidade. Em São José dos Campos, a inovação no serviço público visa desburocratizar processos para aproximar a prefeitura do morador, garantindo um atendimento focado na dignidade e na eficiência.",
+          "quiz": [
+            {
+              "pergunta": "Qual é a principal missão social do servidor público?",
+              "opcoes": [
+                "Garantir a lucratividade dos serviços públicos.",
+                "Prestar serviços essenciais à sociedade com qualidade e humanidade.",
+                "Fiscalizar unicamente as finanças da administração pública.",
+                "Substituir o papel da iniciativa privada no mercado."
+              ],
+              "respostaCorretaIndex": 1
+            },
+            {
+              "pergunta": "Qual princípio social está associado ao foco do servidor no bem comum?",
+              "opcoes": [
+                "Princípio da Supremacia do Interesse Público.",
+                "Princípio da Autotutela.",
+                "Princípio da Supremacia Individual.",
+                "Princípio da Delegação Exclusiva."
+              ],
+              "respostaCorretaIndex": 0
+            }
+          ]
+        },
+        {
+          "id": 104,
+          "titulo": "Sanções e Penalidades",
+          "conteudo": "O descumprimento dos deveres e proibições sujeita o servidor a sanções disciplinares, aplicadas após processo administrativo garantindo o contraditório e a ampla defesa. As sanções previstas no estatuto geral são:\n\n1. **Advertência:** Por escrito, em infrações leves.\n2. **Suspensão:** Afastamento temporário de até 90 dias, com perda de remuneração.\n3. **Demissão:** Aplicação severa por faltas graves, como improbidade administrativa, abandono de cargo ou corrupção.\n4. **Destituição de cargo em comissão:** Aplicada para funções gratificadas.",
+          "quiz": [
+            {
+              "pergunta": "Qual penalidade é geralmente aplicada por escrito para infrações disciplinares leves?",
+              "opcoes": [
+                "Demissão.",
+                "Suspensão.",
+                "Advertência.",
+                "Destituição."
+              ],
+              "respostaCorretaIndex": 2
+            },
+            {
+              "pergunta": "A demissão é aplicada em qual dos seguintes cenários?",
+              "opcoes": [
+                "Atraso injustificado de 15 minutos em um único dia.",
+                "Falta de cortesia com um colega de trabalho.",
+                "Prática de improbidade administrativa.",
+                "Uso incorreto do crachá de identificação."
+              ],
+              "respostaCorretaIndex": 2
+            }
+          ]
+        },
+        {
+          "id": 105,
+          "titulo": "Princípios Constitucionais (LIMPE)",
+          "conteudo": "A administração pública direta e indireta deve seguir rigorosamente o princípio do **LIMPE**, detalhado no Artigo 37 da Constituição Federal:\n\n* **Legalidade:** Agir apenas conforme autorizado por lei.\n* **Impessoalidade:** Tratar a todos sem favoritismos ou perseguições.\n* **Moralidade:** Pautar a conduta pela ética e honestidade administrativa.\n* **Publicidade:** Dar transparência aos atos oficiais.\n* **Eficiência:** Obter os melhores resultados com a otimização dos recursos públicos.",
+          "quiz": [
+            {
+              "pergunta": "Qual princípio exige que o servidor aja estritamente nos termos da lei?",
+              "opcoes": [
+                "Impessoalidade.",
+                "Eficiência.",
+                "Publicidade.",
+                "Legalidade."
+              ],
+              "respostaCorretaIndex": 3
+            },
+            {
+              "pergunta": "Tratar os cidadãos de forma igualitária, sem discriminação ou privilégios, atende a qual princípio?",
+              "opcoes": [
+                "Impessoalidade.",
+                "Eficiência.",
+                "Moralidade.",
+                "Publicidade."
+              ],
+              "respostaCorretaIndex": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 200,
+      "titulo": "Estatuto dos Servidores",
+      "descricao": "Regime Jurídico Único dos servidores públicos civis do município.",
+      "aulas": [
+        {
+          "id": 201,
+          "titulo": "Estatuto dos Servidores de São José dos Campos",
+          "conteudo": "O estatuto dos servidores regula os direitos, deveres, formas de provimento (como concurso público, nomeação, reintegração) e planos de carreira dentro do âmbito municipal de São José dos Campos. \n\n* **Provimento:** Ato pelo qual se preenche um cargo público. O concurso público é a regra geral para provimento efetivo.\n* **Vacância:** Desocupação do cargo, que ocorre por exoneração, demissão, promoção, aposentadoria ou falecimento.\n* **Vantagens Pecuniárias:** Adicionais por tempo de serviço (anuênio/quinquênio), gratificações por função de chefia, e adicionais de insalubridade ou periculosidade quando aplicável.",
+          "quiz": [
+            {
+              "pergunta": "Qual das opções representa uma forma de vacância de cargo público?",
+              "opcoes": [
+                "Reintegração.",
+                "Nomeação.",
+                "Aposentadoria.",
+                "Aproveitamento."
+              ],
+              "respostaCorretaIndex": 2
+            },
+            {
+              "pergunta": "Como se chama a retribuição pecuniária pelo exercício de cargo público com valor fixado em lei?",
+              "opcoes": [
+                "Ajuda de custo.",
+                "Vencimento básico.",
+                "Diária de viagem.",
+                "Indenização de transporte."
+              ],
+              "respostaCorretaIndex": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 300,
+      "titulo": "Controladoria Geral do Município",
+      "descricao": "Estrutura de fiscalização e garantia de integridade nas contas e processos públicos.",
+      "aulas": [
+        {
+          "id": 301,
+          "titulo": "Controle Interno",
+          "conteudo": "O controle interno é exercido por órgãos da própria estrutura do Poder Executivo, como a Controladoria Geral do Município (CGM). Suas principais atribuições são:\n\n* **Auditoria Governamental:** Avaliar a legalidade e legitimidade da gestão contábil, financeira e orçamentária.\n* **Prevenção da Corrupção:** Desenvolver programas de integridade e compliance.\n* **Ouvidoria e Transparência:** Canal direto para denúncias, reclamações e pedidos de acesso à informação (LAI).\n\nO controle interno auxilia os secretários e diretores a tomarem decisões seguras, prevenindo apontamentos por parte de órgãos externos.",
+          "quiz": [
+            {
+              "pergunta": "Quem exerce o Controle Interno na esfera do Poder Executivo Municipal?",
+              "opcoes": [
+                "O Tribunal de Contas do Estado.",
+                "A Controladoria Geral do Município.",
+                "A Câmara Municipal de Vereadores.",
+                "O Ministério Público Estadual."
+              ],
+              "respostaCorretaIndex": 1
+            },
+            {
+              "pergunta": "Qual das opções a seguir é uma função primária do controle interno?",
+              "opcoes": [
+                "Julgar anualmente as contas do Prefeito.",
+                "Legislar sobre diretrizes orçamentárias.",
+                "Realizar auditorias preventivas e avaliar a gestão orçamentária interna.",
+                "Aplicar multas e intervenções em empresas privadas sem processo legal."
+              ],
+              "respostaCorretaIndex": 2
+            }
+          ]
+        },
+        {
+          "id": 302,
+          "titulo": "Controle Externo",
+          "conteudo": "O controle externo é exercido pelo Poder Legislativo (Câmara Municipal) com o auxílio do Tribunal de Contas do Estado (TCE). Ele avalia:\n\n* **Contas do Prefeito:** Julgamento político da gestão financeira e orçamentária do município.\n* **Fiscalização Contábil e Operacional:** O TCE analisa a legalidade dos contratos, licitações, obras e contratações de pessoal.\n* **Aplicação de Sanções:** O TCE pode imputar débitos e multas a administradores que cometerem irregularidades com dinheiro público.",
+          "quiz": [
+            {
+              "pergunta": "A quem cabe, com auxílio do Tribunal de Contas, o exercício do controle externo municipal?",
+              "opcoes": [
+                "À Assembleia Legislativa.",
+                "Ao Tribunal de Justiça.",
+                "À Controladoria Geral.",
+                "À Câmara Municipal."
+              ],
+              "respostaCorretaIndex": 3
+            },
+            {
+              "pergunta": "O Tribunal de Contas do Estado tem competência para:",
+              "opcoes": [
+                "Prender gestores municipais por corrupção.",
+                "Analisar e emitir parecer prévio sobre as contas anuais da prefeitura.",
+                "Revogar leis aprovadas pelos vereadores.",
+                "Nomear novos secretários municipais."
+              ],
+              "respostaCorretaIndex": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 400,
+      "titulo": "Comunicação Assertiva e Interpessoal",
+      "descricao": "Desenvolvimento de habilidades de comunicação para melhorar o clima organizacional e o atendimento.",
+      "aulas": [
+        {
+          "id": 401,
+          "titulo": "Técnicas de Comunicação Assertiva",
+          "conteudo": "A assertividade é a capacidade de expressar ideias, sentimentos e necessidades de maneira direta, honesta e adequada, sem agredir o interlocutor (comportamento agressivo) e sem omitir a própria opinião (comportamento passivo).\n\n* **Escuta Ativa:** Ouvir com atenção genuína antes de formular uma resposta.\n* **Uso da Linguagem em Primeira Pessoa (Eu):** Dizer 'Eu sinto que precisamos ajustar o relatório' em vez de 'Você errou o relatório'.\n* **Feedback Construtivo:** Focar no comportamento e no resultado, oferecendo soluções, e não em características pessoais.",
+          "quiz": [
+            {
+              "pergunta": "O que caracteriza a comunicação assertiva?",
+              "opcoes": [
+                "Imposição de opiniões com firmeza e agressividade.",
+                "Expressar ideias e necessidades de forma clara, respeitosa e honesta.",
+                "Silenciar diante de conflitos para evitar problemas na repartição.",
+                "Falar rapidamente sem deixar espaço para questionamentos."
+              ],
+              "respostaCorretaIndex": 1
+            },
+            {
+              "pergunta": "Qual técnica auxilia na compreensão real do que o cidadão está comunicando?",
+              "opcoes": [
+                "Interrupção frequente do discurso do cidadão.",
+                "Escuta ativa.",
+                "Comunicação puramente gestual.",
+                "Leitura de documentos durante o atendimento."
+              ],
+              "respostaCorretaIndex": 1
+            }
+          ]
+        },
+        {
+          "id": 402,
+          "titulo": "Oratória e Comunicação no Serviço Público",
+          "conteudo": "Uma boa oratória é fundamental para explicar projetos, conduzir reuniões e atender a comunidade de forma clara. Técnicas essenciais:\n\n* **Estruturação da Fala:** Introdução clara, desenvolvimento lógico e conclusão concisa.\n* **Tom e Projeção de Voz:** Adaptar o volume e ritmo para manter o interesse público.\n* **Linguagem Corporal:** Gestos harmônicos e contato visual transmitem confiança e segurança.\n* **Evitar Jargões Excessivos:** Falar com o cidadão de forma acessível, sem o uso desmedido de termos burocráticos.",
+          "quiz": [
+            {
+              "pergunta": "Qual é a melhor prática para falar em público no ambiente administrativo?",
+              "opcoes": [
+                "Usar o máximo de termos jurídicos difíceis para demonstrar erudição.",
+                "Estruturar a fala com introdução, desenvolvimento e conclusão acessíveis ao público.",
+                "Manter o olhar fixo para baixo para não se distrair.",
+                "Ler o texto integral do projeto sem olhar para a audiência."
+              ],
+              "respostaCorretaIndex": 1
+            },
+            {
+              "pergunta": "Que papel a linguagem corporal desempenha na oratória?",
+              "opcoes": [
+                "Nenhum, pois apenas a voz importa na comunicação.",
+                "Ela reforça e valida a mensagem falada, transmitindo credibilidade.",
+                "Deve ser evitada, mantendo-se o corpo completamente estático.",
+                "Serve apenas para entreter o público em apresentações longas."
+              ],
+              "respostaCorretaIndex": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 500,
+      "titulo": "Liderança na Gestão Pública",
+      "descricao": "Conceitos de coordenação, liderança de equipes e foco em resultados na administração.",
+      "aulas": [
+        {
+          "id": 501,
+          "titulo": "Técnicas de Liderança",
+          "conteudo": "Liderar no setor público exige sensibilidade política e foco técnico em eficiência. Existem diferentes estilos de liderança:\n\n* **Liderança Situacional:** Adaptar o estilo de liderança de acordo com o nível de maturidade profissional e independência do liderado.\n* **Delegação Eficaz:** Confiar tarefas a membros da equipe, empoderando-os, mantendo a responsabilidade final pelo resultado.\n* **Exemplo Pessoal:** O líder deve demonstrar na prática os valores éticos e o empenho profissional esperados da equipe.",
+          "quiz": [
+            {
+              "pergunta": "O que prega a Liderança Situacional?",
+              "opcoes": [
+                "Que o líder deve manter sempre a mesma conduta autoritária com todos.",
+                "Que a liderança deve mudar e se adaptar conforme a maturidade do liderado.",
+                "Que o líder deve se afastar das decisões diárias da repartição.",
+                "Que o líder só lidera em situações de crise extrema."
+              ],
+              "respostaCorretaIndex": 1
+            },
+            {
+              "pergunta": "Sobre a delegação de tarefas por um líder público, assinale a alternativa correta:",
+              "opcoes": [
+                "Exime o líder de qualquer responsabilidade sobre o resultado.",
+                "Significa abandonar a supervisão e controle do processo.",
+                "Capacita a equipe, embora a responsabilidade final ainda seja do líder.",
+                "Deve ser restrita a tarefas sem qualquer importância administrativa."
+              ],
+              "respostaCorretaIndex": 2
+            }
+          ]
+        },
+        {
+          "id": 502,
+          "titulo": "Motivação de Equipes no Serviço Público",
+          "conteudo": "Como o setor público não possui recompensas financeiras diretas associadas a metas de lucro, a motivação deve se concentrar em fatores intrínsecos:\n\n* **Sentimento de Propósito:** Compreender que o trabalho melhora diretamente a vida dos cidadãos de SJC.\n* **Reconhecimento:** Elogiar o desempenho excelente publicamente.\n* **Clima Organizacional:** Promover um ambiente saudável, seguro, livre de assédio e propício ao crescimento profissional.",
+          "quiz": [
+            {
+              "pergunta": "Qual fator motivacional é altamente eficaz no serviço público municipal?",
+              "opcoes": [
+                "Premiações financeiras baseadas em lucros da prefeitura.",
+                "A clareza de propósito sobre o impacto social do trabalho realizado.",
+                "Ameaças constantes de penalidades administrativas.",
+                "Competições individuais extremas entre os servidores."
+              ],
+              "respostaCorretaIndex": 1
+            },
+            {
+              "pergunta": "Como o líder pode promover um clima organizacional motivador?",
+              "opcoes": [
+                "Isolando-se em sua sala particular e reduzindo reuniões.",
+                "Reconhecendo bons desempenhos e incentivando a colaboração ética.",
+                "Ignorando conflitos internos para focar apenas nas metas escritas.",
+                "Centralizando todas as decisões sem ouvir a equipe."
+              ],
+              "respostaCorretaIndex": 1
+            }
+          ]
+        },
+        {
+          "id": 503,
+          "titulo": "Comunicação Interpessoal do Líder",
+          "conteudo": "O canal de comunicação entre o supervisor e a equipe deve ser claro, aberto e bidirecional. O líder precisa:\n\n* **Alinhar Metas:** Deixar claras as expectativas de entrega e os prazos.\n* **Feedback Periódico:** Realizar reuniões individuais (1on1) para orientar o desenvolvimento do servidor.\n* **Acolhimento de Ideias:** Ouvir sugestões de melhoria no fluxo de trabalho propostas por quem está na ponta executando o serviço.",
+          "quiz": [
+            {
+              "pergunta": "Qual é a melhor abordagem para o alinhamento de metas com a equipe?",
+              "opcoes": [
+                "Cobrar resultados sem detalhar o que é esperado do servidor.",
+                "Definir prazos irrealistas para forçar produtividade sob pressão.",
+                "Escrever metas confusas para manter a flexibilidade de julgamento.",
+                "Explicar claramente as expectativas, prazos e impactos do trabalho."
+              ],
+              "respostaCorretaIndex": 3
+            },
+            {
+              "pergunta": "O que caracteriza um feedback eficaz dado pelo supervisor?",
+              "opcoes": [
+                "Focar em críticas generalizadas à personalidade do servidor.",
+                "Focar em fatos, comportamentos objetivos e soluções de melhoria.",
+                "Evitar dar feedbacks para não expor fraquezas.",
+                "Enviar uma notificação em massa por e-mail para toda a equipe."
+              ],
+              "respostaCorretaIndex": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 600,
+      "titulo": "Acessibilidade",
+      "descricao": "Promoção da igualdade e atendimento inclusivo no serviço municipal.",
+      "aulas": [
+        {
+          "id": 601,
+          "titulo": "Acessibilidade e Inclusão no Serviço Público",
+          "conteudo": "Acessibilidade é um direito fundamental que garante a inclusão social e o exercício da cidadania de pessoas com deficiência (PcD) ou mobilidade reduzida. No atendimento público municipal:\n\n* **Acessibilidade Arquitetônica:** Presença de rampas, elevadores adaptados, piso tátil e banheiros acessíveis nos prédios da prefeitura.\n* **Acessibilidade Comunicacional:** Atendimento com auxílio de tradutores de Libras, documentos digitais em formatos compatíveis com leitores de tela e linguagem simplificada.\n* **Atendimento Prioritário:** Lei Federal 10.048/2000, que assegura atendimento imediato e preferencial para idosos, gestantes, PcD e lactantes.",
+          "quiz": [
+            {
+              "pergunta": "O que caracteriza a acessibilidade comunicacional no serviço público?",
+              "opcoes": [
+                "Construção de rampas nas calçadas das repartições.",
+                "Oferecer atendimento com recursos em Libras e arquivos digitais acessíveis.",
+                "Garantir estacionamento reservado para PcD.",
+                "Isolar o atendimento de minorias em guichês exclusivos fora da prefeitura."
+              ],
+              "respostaCorretaIndex": 1
+            },
+            {
+              "pergunta": "Quem possui direito ao atendimento prioritário segundo a legislação federal?",
+              "opcoes": [
+                "Apenas servidores públicos da ativa.",
+                "Pessoas com deficiência, idosos, gestantes, lactantes, pessoas com crianças de colo e obesos.",
+                "Qualquer cidadão que resida em bairro nobre.",
+                "Diretores e secretários municipais exclusivamente."
+              ],
+              "respostaCorretaIndex": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 700,
+      "titulo": "Gestão do Tempo",
+      "descricao": "Planejamento, produtividade e otimização da rotina de trabalho administrativo.",
+      "aulas": [
+        {
+          "id": 701,
+          "titulo": "Técnicas e Ferramentas de Gestão do Tempo",
+          "conteudo": "O dia a dia de um supervisor é repleto de demandas concorrentes. Gerenciar o tempo evita o estresse e melhora os resultados. Ferramentas úteis:\n\n* **Matriz de Eisenhower:** Dividir tarefas em Urgente/Não Urgente e Importante/Não Importante.\n  * *Urgente e Importante:* Fazer imediatamente.\n  * *Importante, mas Não Urgente:* Agendar para fazer depois.\n  * *Urgente, mas Não Importante:* Delegar se possível.\n  * *Não Urgente e Não Importante:* Eliminar.\n* **Técnica Pomodoro:** Trabalhar com foco total por 25 minutos, seguido por 5 minutos de descanso, para manter o foco cognitivo.",
+          "quiz": [
+            {
+              "pergunta": "De acordo com a Matriz de Eisenhower, tarefas classificadas como Importantes, mas Não Urgentes, devem ser:",
+              "opcoes": [
+                "Eliminadas imediatamente.",
+                "Feitas de forma desesperada na primeira hora do dia.",
+                "Planejadas e agendadas com calma no calendário.",
+                "Deixadas sem prazo de conclusão até que sumam."
+              ],
+              "respostaCorretaIndex": 2
+            },
+            {
+              "pergunta": "Qual é o principal objetivo da Técnica Pomodoro?",
+              "opcoes": [
+                "Controlar o tempo gasto no almoço da equipe.",
+                "Garantir foco absoluto em blocos de tempo para evitar distrações.",
+                "Otimizar a gravação de arquivos digitais pesados.",
+                "Substituir o uso de planilhas eletrônicas."
+              ],
+              "respostaCorretaIndex": 1
+            }
+          ]
+        },
+        {
+          "id": 702,
+          "titulo": "Métodos de Delegação",
+          "conteudo": "Delegar não é simplesmente 'se livrar' do trabalho ('delargar'), mas sim um processo planejado que envolve:\n\n1. **Escolha da Pessoa:** Avaliar competências, carga de trabalho e perfil para o desafio.\n2. **Definição de Parâmetros:** Deixar claro qual é o resultado esperado, os limites de autoridade e a data de entrega.\n3. **Apoio e Monitoramento:** Estar disponível para tirar dúvidas, sem exercer microgerenciamento.\n4. **Avaliação Conjunta:** Analisar o resultado entregue como oportunidade de aprendizado.",
+          "quiz": [
+            {
+              "pergunta": "O que constitui um erro comum na delegação de tarefas?",
+              "opcoes": [
+                "Explicar detalhadamente os prazos e resultados desejados.",
+                "Oferecer apoio caso o liderado tenha dúvidas complexas.",
+                "Transferir a responsabilidade total sumindo e não supervisionando nada.",
+                "Identificar previamente as competências do colaborador."
+              ],
+              "respostaCorretaIndex": 2
+            },
+            {
+              "pergunta": "Como deve ser feito o acompanhamento de uma tarefa delegada?",
+              "opcoes": [
+                "Por meio de microgerenciamento diário a cada hora.",
+                "Sem nenhuma supervisão até o último dia do prazo.",
+                "Com reuniões de acompanhamento programadas e apoio quando solicitado.",
+                "Cobrando a entrega a cada minuto por telefone particular."
+              ],
+              "respostaCorretaIndex": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 800,
+      "titulo": "Gestão de Conflitos",
+      "descricao": "Mediação de problemas internos e manutenção de harmonia de equipes.",
+      "aulas": [
+        {
+          "id": 801,
+          "titulo": "Formalização de Ocorrência",
+          "conteudo": "Quando um conflito ou infração ultrapassa a esfera da mediação direta e amigável, o supervisor deve conhecer os canais corretos de formalização da prefeitura:\n\n* **Registro de Fatos:** Redigir um relatório objetivo detalhando os envolvidos, datas, horários e testemunhas do fato, sem juízos de valor pessoais.\n* **Encaminhamento:** Enviar o relatório à chefia imediata ou ao Departamento de Recursos Humanos / Corregedoria do Município.\n* **Abertura de Processo:** Em casos graves (assédio, desvio de conduta), o registro dará início à abertura de Sindicância ou Processo Administrativo Disciplinar (PAD).",
+          "quiz": [
+            {
+              "pergunta": "Como deve ser redigido um relatório de ocorrência funcional para a Corregedoria?",
+              "opcoes": [
+                "Com adjetivos depreciativos e opiniões pessoais do supervisor.",
+                "De forma vaga para não comprometer ninguém da equipe.",
+                "Com linguagem clara, focada em fatos objetivos, datas, horários e testemunhas.",
+                "De forma verbal apenas, dispensando a escrita formal."
+              ],
+              "respostaCorretaIndex": 2
+            },
+            {
+              "pergunta": "Qual instrumento formal é aberto pela administração para apurar faltas funcionais graves?",
+              "opcoes": [
+                "Contrato de prestação de serviço emergencial.",
+                "Sindicância ou Processo Administrativo Disciplinar (PAD).",
+                "Licitação simplificada por dispensa de valor.",
+                "Relatório de desempenho financeiro anual."
+              ],
+              "respostaCorretaIndex": 1
+            }
+          ]
+        },
+        {
+          "id": 802,
+          "titulo": "Técnicas de Resolução de Conflitos",
+          "conteudo": "O conflito nas organizações é natural e, se bem administrado, pode gerar melhorias. O supervisor deve atuar como mediador, utilizando as seguintes etapas:\n\n1. **Acolhimento Individual:** Ouvir as partes envolvidas separadamente, em local reservado, garantindo escuta sem julgamento imediato.\n2. **Identificação do Foco:** Separar o problema técnico das emoções e diferenças pessoais.\n3. **Sessão Conjunta (Se viável):** Reunir as partes para focar em soluções futuras, não em culpas passadas.\n4. **Negociação Ganha-Ganha:** Estimular o acordo mútuo em que ambos cedem em prol da produtividade e harmonia do setor público.",
+          "quiz": [
+            {
+              "pergunta": "Qual a primeira atitude do supervisor ao mediar um conflito entre dois servidores?",
+              "opcoes": [
+                "Ignorar a situação torcendo para que passe sozinha.",
+                "Ouvir as partes de forma reservada para entender as diferentes perspectivas.",
+                "Aplicar suspensão imediatamente aos dois envolvidos sem ouvi-los.",
+                "Confrontá-los publicamente na frente de toda a repartição."
+              ],
+              "respostaCorretaIndex": 1
+            },
+            {
+              "pergunta": "O foco principal em uma sessão de mediação de conflitos deve ser:",
+              "opcoes": [
+                "Achar um único culpado para puni-lo diante de todos.",
+                "Expor dramas pessoais dos envolvidos para gerar constrangimento.",
+                "A busca de soluções colaborativas que viabilizem a continuidade do serviço público.",
+                "Obrigar as partes a virarem melhores amigos fora da repartição."
+              ],
+              "respostaCorretaIndex": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

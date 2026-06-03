@@ -1,0 +1,30 @@
+*.iml
+.gradle
+/local.properties
+local.properties
+/build
+/captures
+.externalNativeBuild
+.cxx
+.DS_Store
+
+# IDE - user specific files
+/.idea/workspace.xml
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/.idea/shelf/
+/.idea/gradle.xml
+
+# Keystores & Signing credentials
+*.jks
+*.keystore
+*.pkcs12
+*.p12
+*.pem
+
+# Local API Keys & Secret configurations
+secrets.properties
+google-services.json

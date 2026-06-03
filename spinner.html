@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading - Engrenagem SJC</title>
+    <style>
+        /* Estilos de demonstração (fundo escuro para contrastar o azul e dourado) */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #1a1e24;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* * ==========================================
+         * CÓDIGO DO COMPONENTE LOADING (Copie daqui)
+         * ==========================================
+         */
+
+        .sjc-loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sjc-svg-loader {
+            width: 90px;
+            height: 90px;
+            /* Um leve brilho para dar destaque */
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.2));
+        }
+
+        /* Animação APENAS na engrenagem exterior */
+        .sjc-gear-spin {
+            transform-origin: 50px 50px;
+            animation: spin 4s linear infinite;
+        }
+
+        .sjc-loading-text {
+            margin-top: 24px;
+            color: #E2E8F0;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Rotação contínua 360 graus */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Efeito de piscar suave no texto */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Container do Loading -->
+    <div class="sjc-loader-container">
+
+        <svg class="sjc-svg-loader" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <!-- Máscara para criar o furo central na engrenagem -->
+                <mask id="gear-hole">
+                    <rect width="100" height="100" fill="white" />
+                    <circle cx="50" cy="50" r="25" fill="black" />
+                </mask>
+
+                <!-- Desenho vetorial da Estrela (reutilizável) -->
+                <g id="estrela">
+                    <polygon points="0,-4 1.1,-1.2 4,-1.2 1.8,0.5 2.5,3.5 0,1.8 -2.5,3.5 -1.8,0.5 -4,-1.2 -1.1,-1.2"
+                        fill="#FFD700" />
+                </g>
+            </defs>
+
+            <!-- 1. PARTE EXTERIOR (ROTATIVA) -->
+            <g class="sjc-gear-spin" mask="url(#gear-hole)" fill="#FFD700">
+                <!-- Dentes da engrenagem -->
+                <rect x="41" y="4" width="18" height="92" rx="2" transform="rotate(0 50 50)" />
+                <rect x="41" y="4" width="18" height="92" rx="2" transform="rotate(45 50 50)" />
+                <rect x="41" y="4" width="18" height="92" rx="2" transform="rotate(90 50 50)" />
+                <rect x="41" y="4" width="18" height="92" rx="2" transform="rotate(135 50 50)" />
+                <!-- Anel maciço da engrenagem -->
+                <circle cx="50" cy="50" r="37" />
+            </g>
+
+            <!-- 2. PARTE INTERIOR (ESTÁTICA) -->
+            <g class="sjc-gear-static">
+                <!-- Fundo Azul do Brasão -->
+                <circle cx="50" cy="50" r="23" fill="#003882" />
+
+                <!-- Faixa Dourada Ondada (Rio Paraíba do Sul) -->
+                <!-- Q = curva Bezier que sobe, T = curva que reflete descendo -->
+                <path d="M 27 50 Q 38 42, 50 50 T 73 50" stroke="#FFD700" stroke-width="2.5" fill="none"
+                    stroke-linecap="round" />
+
+                <!-- 1 Estrela na parte de cima -->
+                <use href="#estrela" x="50" y="36" transform="scale(1.1) translate(-4.5, -3.2)" />
+
+                <!-- 2 Estrelas na parte de baixo -->
+                <use href="#estrela" x="38" y="62" transform="scale(1.1) translate(-3.4, -5.6)" />
+                <use href="#estrela" x="62" y="62" transform="scale(1.1) translate(-5.6, -5.6)" />
+            </g>
+
+        </svg>
+
+        <div class="sjc-loading-text">A Carregar...</div>
+
+    </div>
+
+</body>
+
+</html>

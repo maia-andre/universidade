@@ -1,0 +1,3 @@
+# Pregão Eletrônico
+
+O pregão eletrônico é a modalidade de licitação do tipo menor preço...

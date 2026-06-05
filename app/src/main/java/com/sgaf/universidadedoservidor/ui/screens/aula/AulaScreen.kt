@@ -2,12 +2,14 @@ package com.sgaf.universidadedoservidor.ui.screens.aula
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -20,8 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sgaf.universidadedoservidor.domain.model.Aula
 import com.sgaf.universidadedoservidor.ui.theme.*
+import com.mikepenz.markdown.m3.Markdown
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,7 +47,7 @@ fun AulaScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Voltar"
                         )
                     }
@@ -129,16 +131,14 @@ fun AulaScreen(
 
                     // Content Section
                     item {
-                        Text(
-                            text = aula.conteudo,
-                            fontSize = 16.sp,
-                            lineHeight = 24.sp,
-                            color = MaterialTheme.colorScheme.onSurface
+                        Markdown(
+                            content = aula.conteudo,
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
 
                     item {
-                        Divider(
+                        HorizontalDivider(
                             modifier = Modifier.padding(vertical = 12.dp),
                             color = MaterialTheme.colorScheme.outlineVariant
                         )
@@ -262,21 +262,21 @@ fun AulaScreen(
                                         // Colors based on validation state
                                         val cardBgColor = when {
                                             state.quizSubmitted && isCorrectAnswer -> SuccessGreen.copy(alpha = 0.15f)
-                                            state.quizSubmitted && isSelected && !isCorrectAnswer -> MaterialTheme.colorScheme.errorContainer
+                                            state.quizSubmitted && isSelected -> MaterialTheme.colorScheme.errorContainer
                                             isSelected -> BlueSjc.copy(alpha = 0.1f)
                                             else -> Color.Transparent
                                         }
                                         
                                         val borderStroke = when {
                                             state.quizSubmitted && isCorrectAnswer -> BorderStroke(2.dp, SuccessGreen)
-                                            state.quizSubmitted && isSelected && !isCorrectAnswer -> BorderStroke(2.dp, MaterialTheme.colorScheme.error)
+                                            state.quizSubmitted && isSelected -> BorderStroke(2.dp, MaterialTheme.colorScheme.error)
                                             isSelected -> BorderStroke(2.dp, BlueSjc)
                                             else -> BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
                                         }
                                         
                                         val textColor = when {
                                             state.quizSubmitted && isCorrectAnswer -> SuccessGreen
-                                            state.quizSubmitted && isSelected && !isCorrectAnswer -> MaterialTheme.colorScheme.onErrorContainer
+                                            state.quizSubmitted && isSelected -> MaterialTheme.colorScheme.onErrorContainer
                                             isSelected -> BlueSjc
                                             else -> MaterialTheme.colorScheme.onSurface
                                         }
@@ -290,9 +290,7 @@ fun AulaScreen(
                                                 .clickable(enabled = !state.quizSubmitted) {
                                                     viewModel.selectAnswer(questionIndex, optionIndex)
                                                 }
-                                                .then(
-                                                    if (borderStroke != null) Modifier.border(borderStroke, RoundedCornerShape(8.dp)) else Modifier
-                                                )
+                                                .border(borderStroke, RoundedCornerShape(8.dp))
                                                 .padding(12.dp)
                                         ) {
                                             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -359,10 +357,4 @@ fun AulaScreen(
     }
 }
 
-// Extension to allow chaining border easily
-private fun Modifier.border(border: BorderStroke, shape: RoundedCornerShape): Modifier {
-    return this.then(Modifier.background(Color.Transparent).clip(shape).then(Modifier.background(Color.Transparent)).then(
-        // Fallback for actual border rendering
-        androidx.compose.foundation.border(border, shape)
-    ))
-}
+

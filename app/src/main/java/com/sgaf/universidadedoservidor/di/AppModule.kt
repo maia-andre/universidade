@@ -2,6 +2,7 @@ package com.sgaf.universidadedoservidor.di
 
 import android.content.Context
 import com.sgaf.universidadedoservidor.data.local.dao.AulaDao
+import com.sgaf.universidadedoservidor.data.local.dao.CursoDao
 import com.sgaf.universidadedoservidor.data.local.dao.ModuloDao
 import com.sgaf.universidadedoservidor.data.local.dao.ProgressoDao
 import com.sgaf.universidadedoservidor.data.local.database.AppDatabase
@@ -42,6 +43,12 @@ abstract class AppModule {
             coroutineScope: CoroutineScope
         ): AppDatabase {
             return AppDatabase.getInstance(context, coroutineScope)
+        }
+
+        @Provides
+        @Singleton
+        fun provideCursoDao(database: AppDatabase): CursoDao {
+            return database.cursoDao()
         }
 
         @Provides

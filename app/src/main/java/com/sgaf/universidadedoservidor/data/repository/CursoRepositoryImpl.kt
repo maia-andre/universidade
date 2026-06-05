@@ -1,6 +1,7 @@
 package com.sgaf.universidadedoservidor.data.repository
 
 import com.sgaf.universidadedoservidor.data.local.dao.AulaDao
+import com.sgaf.universidadedoservidor.data.local.dao.CursoDao
 import com.sgaf.universidadedoservidor.data.local.dao.ModuloDao
 import com.sgaf.universidadedoservidor.data.local.dao.ProgressoDao
 import com.sgaf.universidadedoservidor.data.local.entities.AulaEntity
@@ -20,6 +21,7 @@ import javax.inject.Singleton
 
 @Singleton
 class CursoRepositoryImpl @Inject constructor(
+    private val cursoDao: CursoDao,
     private val moduloDao: ModuloDao,
     private val aulaDao: AulaDao,
     private val progressoDao: ProgressoDao
@@ -28,24 +30,46 @@ class CursoRepositoryImpl @Inject constructor(
     private val json = Json { ignoreUnknownKeys = true }
 
     override fun getCursos(): Flow<List<Curso>> {
-        return getCursoById(1).map { supervisoresCurso ->
-            val list = mutableListOf<Curso>()
-            supervisoresCurso?.let { list.add(it) }
-            list.addAll(getMockCourses())
-            list
+        return combine(
+            cursoDao.getCursos(),
+            moduloDao.getModulos(),
+            aulaDao.getAllAulas(),
+            progressoDao.getAllProgresso()
+        ) { cursos, modulos, aulas, progressos ->
+            val progressMap = progressos.associateBy { it.aulaId }
+            cursos.map { cursoEntity ->
+                val cursoModulos = modulos.filter { it.cursoId == cursoEntity.id }.map { moduloEntity ->
+                    val moduloAulas = aulas.filter { it.moduloId == moduloEntity.id }.map { aulaEntity ->
+                        mapToDomainAula(aulaEntity, progressMap[aulaEntity.id])
+                    }
+                    Modulo(
+                        id = moduloEntity.id,
+                        titulo = moduloEntity.titulo,
+                        descricao = moduloEntity.descricao,
+                        aulas = moduloAulas
+                    )
+                }
+                Curso(
+                    id = cursoEntity.id,
+                    titulo = cursoEntity.titulo,
+                    descricao = cursoEntity.descricao,
+                    modulos = cursoModulos,
+                    isAvailable = cursoEntity.isAvailable
+                )
+            }
         }
     }
 
     override fun getCursoById(id: Int): Flow<Curso?> {
-        if (id != 1) return kotlinx.coroutines.flow.flowOf(null)
-        
         return combine(
+            cursoDao.getCursoById(id),
             moduloDao.getModulos(),
             aulaDao.getAllAulas(),
             progressoDao.getAllProgresso()
-        ) { modulos, aulas, progressos ->
+        ) { cursoEntity, modulos, aulas, progressos ->
+            if (cursoEntity == null) return@combine null
             val progressMap = progressos.associateBy { it.aulaId }
-            val domainModulos = modulos.map { moduloEntity ->
+            val cursoModulos = modulos.filter { it.cursoId == cursoEntity.id }.map { moduloEntity ->
                 val moduloAulas = aulas.filter { it.moduloId == moduloEntity.id }.map { aulaEntity ->
                     mapToDomainAula(aulaEntity, progressMap[aulaEntity.id])
                 }
@@ -57,11 +81,11 @@ class CursoRepositoryImpl @Inject constructor(
                 )
             }
             Curso(
-                id = 1,
-                titulo = "Curso de Supervisores",
-                descricao = "Curso essencial de capacitação para supervisores da Prefeitura Municipal de São José dos Campos.",
-                modulos = domainModulos,
-                isAvailable = true
+                id = cursoEntity.id,
+                titulo = cursoEntity.titulo,
+                descricao = cursoEntity.descricao,
+                modulos = cursoModulos,
+                isAvailable = cursoEntity.isAvailable
             )
         }
     }
@@ -147,15 +171,4 @@ class CursoRepositoryImpl @Inject constructor(
         )
     }
 
-    private fun getMockCourses(): List<Curso> {
-        return listOf(
-            Curso(2, "Curso de Excel", "Domine planilhas de nível intermediário a avançado.", isAvailable = false),
-            Curso(3, "Planejamento Estratégico", "Planejamento e metas para o setor público municipal.", isAvailable = false),
-            Curso(4, "Curso de Formação de Diretores", "Liderança e gestão para novos diretores da prefeitura.", isAvailable = false),
-            Curso(5, "Curso de Formação de Chefes de Divisão", "Coordenação prática de equipes de divisão.", isAvailable = false),
-            Curso(6, "Curso de Sustentabilidade", "Práticas ecológicas e sustentabilidade no ambiente público.", isAvailable = false),
-            Curso(7, "Conhecendo o SUS", "Introdução ao funcionamento e diretrizes do Sistema Único de Saúde.", isAvailable = false),
-            Curso(8, "Educação 5.0", "Inovação tecnológica e novas diretrizes de ensino municipal.", isAvailable = false)
-        )
-    }
 }

@@ -1,0 +1,3 @@
+# Entrada e Saída
+
+Toda movimentação de estoque deve ser registrada com precisão...

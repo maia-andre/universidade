@@ -28,3 +28,12 @@ local.properties
 # Local API Keys & Secret configurations
 secrets.properties
 google-services.json
+
+# Build Outputs (para não subir builds de dezenas de MBs por acidente)
+*.apk
+*.aab
+app/build/
+
+# Diretórios temporários
+scratch/
+

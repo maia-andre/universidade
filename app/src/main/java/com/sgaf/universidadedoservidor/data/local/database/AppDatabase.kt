@@ -10,25 +10,32 @@ import com.sgaf.universidadedoservidor.data.local.dao.ProgressoDao
 import com.sgaf.universidadedoservidor.data.local.entities.AulaEntity
 import com.sgaf.universidadedoservidor.data.local.entities.ModuloEntity
 import com.sgaf.universidadedoservidor.data.local.entities.ProgressoEntity
+import com.sgaf.universidadedoservidor.data.local.entities.AvaliacaoEntity
+import com.sgaf.universidadedoservidor.data.local.dao.AvaliacaoDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
+import com.sgaf.universidadedoservidor.data.local.entities.CursoEntity
+import com.sgaf.universidadedoservidor.data.local.dao.CursoDao
+
 @Database(
-    entities = [ModuloEntity::class, AulaEntity::class, ProgressoEntity::class],
-    version = 1,
+    entities = [CursoEntity::class, ModuloEntity::class, AulaEntity::class, ProgressoEntity::class, AvaliacaoEntity::class],
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
+    abstract fun cursoDao(): CursoDao
     abstract fun moduloDao(): ModuloDao
     abstract fun aulaDao(): AulaDao
     abstract fun progressoDao(): ProgressoDao
+    abstract fun avaliacaoDao(): AvaliacaoDao
 
     companion object {
-        private const val DATABASE_NAME = "universidade_database"
+        private const val DATABASE_NAME = "universidade_database_v3"
 
         @Volatile
         private var INSTANCE: AppDatabase? = null
@@ -40,6 +47,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     DATABASE_NAME
                 )
+                .fallbackToDestructiveMigration()
                 .addCallback(DatabaseCallback(context, coroutineScope))
                 .build()
                 INSTANCE = instance
@@ -58,32 +66,49 @@ abstract class AppDatabase : RoomDatabase() {
                 try {
                     val jsonString = context.assets.open("curso_data.json").bufferedReader().use { it.readText() }
                     val json = Json { ignoreUnknownKeys = true }
-                    val courseJson = json.decodeFromString<CourseJson>(jsonString)
+                    val coursesJson = json.decodeFromString<List<CourseJson>>(jsonString)
                     
                     val dbInstance = INSTANCE ?: return@launch
                     
-                    val moduloEntities = courseJson.modulos.map {
-                        ModuloEntity(id = it.id, titulo = it.titulo, descricao = it.descricao)
+                    val cursoEntities = coursesJson.map { course ->
+                        CursoEntity(id = course.id, titulo = course.titulo, descricao = course.descricao)
+                    }
+
+                    val moduloEntities = coursesJson.flatMap { course -> 
+                        course.modulos.map {
+                            ModuloEntity(id = it.id, cursoId = course.id, titulo = it.titulo, descricao = it.descricao)
+                        }
                     }
                     
-                    val aulaEntities = courseJson.modulos.flatMap { modulo ->
+                    val aulaEntities = coursesJson.flatMap { course -> 
+                        course.modulos.flatMap { modulo ->
                         modulo.aulas.map { aula ->
                             val quizJsonString = json.encodeToString(
                                 kotlinx.serialization.builtins.ListSerializer(QuizPerguntaJson.serializer()),
                                 aula.quiz
                             )
+                            val conteudoLido = aula.conteudo ?: aula.contentPath?.let { path ->
+                                try {
+                                    context.assets.open(path).bufferedReader().use { it.readText() }
+                                } catch (e: Exception) {
+                                    "Conteúdo não encontrado."
+                                }
+                            } ?: ""
+                            
                             AulaEntity(
                                 id = aula.id,
                                 moduloId = modulo.id,
                                 titulo = aula.titulo,
-                                conteudo = aula.conteudo,
+                                conteudo = conteudoLido,
                                 quizJson = quizJsonString
                             )
                         }
                     }
+                }
                     
-                    dbInstance.moduloDao().insertModulos(moduloEntities)
-                    dbInstance.aulaDao().insertAulas(aulaEntities)
+                dbInstance.cursoDao().insertCursos(cursoEntities)
+                dbInstance.moduloDao().insertModulos(moduloEntities)
+                dbInstance.aulaDao().insertAulas(aulaEntities)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -112,7 +137,8 @@ private data class ModuloJson(
 private data class AulaJson(
     val id: Int,
     val titulo: String,
-    val conteudo: String,
+    val conteudo: String? = null,
+    val contentPath: String? = null,
     val quiz: List<QuizPerguntaJson> = emptyList()
 )
 

@@ -101,13 +101,13 @@ fun SjcGearSpinner(
             val midY = centerY + (50f - 50f) * scale
             
             moveTo(startX, startY)
-            quadraticBezierTo(q1x, q1y, midX, midY)
+            quadraticTo(q1x, q1y, midX, midY)
             
             val q2x = centerX + (62f - 50f) * scale
             val q2y = centerY + (58f - 50f) * scale
             val endX = centerX + (73f - 50f) * scale
             val endY = centerY + (50f - 50f) * scale
-            quadraticBezierTo(q2x, q2y, endX, endY)
+            quadraticTo(q2x, q2y, endX, endY)
         }
         drawPath(
             path = riverPath,
@@ -150,7 +150,8 @@ private fun Path.addStar(cx: Float, cy: Float, scale: Float) {
 fun GraduationCapIcon(
     modifier: Modifier = Modifier,
     size: Dp = 60.dp,
-    color: Color = GoldSjc
+    capColor: Color = Color(0xFF1E1E1E), // Chapéu quase preto
+    tasselColor: Color = GoldSjc         // Cordinha dourada
 ) {
     Canvas(modifier = modifier.size(size)) {
         val w = size.toPx()
@@ -164,17 +165,17 @@ fun GraduationCapIcon(
             lineTo(w * 0.1f, h * 0.4f)     // Left corner
             close()
         }
-        drawPath(path = diamondPath, color = color)
+        drawPath(path = diamondPath, color = capColor)
         
         // Draw the cap base (the head part)
         val basePath = Path().apply {
             moveTo(w * 0.3f, h * 0.51f)
-            quadraticBezierTo(w / 2f, h * 0.58f, w * 0.7f, h * 0.51f)
+            quadraticTo(w / 2f, h * 0.58f, w * 0.7f, h * 0.51f)
             lineTo(w * 0.7f, h * 0.68f)
-            quadraticBezierTo(w / 2f, h * 0.78f, w * 0.3f, h * 0.68f)
+            quadraticTo(w / 2f, h * 0.78f, w * 0.3f, h * 0.68f)
             close()
         }
-        drawPath(path = basePath, color = color)
+        drawPath(path = basePath, color = capColor)
         
         // Draw the tassel hanging on the right
         val tasselPath = Path().apply {
@@ -184,13 +185,13 @@ fun GraduationCapIcon(
         }
         drawPath(
             path = tasselPath,
-            color = color,
+            color = tasselColor,
             style = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round)
         )
         
         // Tassel fringe/brush
         drawCircle(
-            color = color,
+            color = tasselColor,
             radius = 3.dp.toPx(),
             center = Offset(w * 0.85f, h * 0.74f)
         )
@@ -201,6 +202,7 @@ fun GraduationCapIcon(
 fun UniversidadeLogo(
     modifier: Modifier = Modifier,
     gearSize: Dp = 38.dp,
+    scale: Float = 1f,
     textColor: Color = MaterialTheme.colorScheme.onBackground,
     backgroundColor: Color = if (isSystemInDarkTheme()) DarkBackground else LightBackground
 ) {
@@ -210,16 +212,17 @@ fun UniversidadeLogo(
     ) {
         // Capelo Logo
         GraduationCapIcon(
-            modifier = Modifier.padding(bottom = 8.dp),
-            size = 54.dp,
-            color = GoldSjc
+            modifier = Modifier.padding(bottom = (8 * scale).dp),
+            size = (54 * scale).dp,
+            capColor = Color(0xFF1A1A1A),
+            tasselColor = GoldSjc
         )
         
         // Brand Subtitle
         Text(
             text = "UNIVERSIDADE DO",
             color = GoldSjc,
-            fontSize = 11.sp,
+            fontSize = (11 * scale).sp,
             fontWeight = FontWeight.Bold,
             letterSpacing = 4.sp,
             fontFamily = FontFamily.SansSerif
@@ -234,7 +237,7 @@ fun UniversidadeLogo(
             Text(
                 text = "SERVID",
                 color = textColor,
-                fontSize = 28.sp,
+                fontSize = (28 * scale).sp,
                 fontWeight = FontWeight.Black,
                 letterSpacing = 1.sp,
                 fontFamily = FontFamily.SansSerif
@@ -251,7 +254,7 @@ fun UniversidadeLogo(
             Text(
                 text = "R",
                 color = textColor,
-                fontSize = 28.sp,
+                fontSize = (28 * scale).sp,
                 fontWeight = FontWeight.Black,
                 letterSpacing = 1.sp,
                 fontFamily = FontFamily.SansSerif

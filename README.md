@@ -1,6 +1,14 @@
 # 🎓 Universidade do Servidor
 
-Plataforma offline de capacitação continuada e desenvolvimento profissional para os servidores da Prefeitura Municipal de São José dos Campos.
+<div align="center">
+  <img src="docs/ic_launcher-playstore.png" width="150" alt="Logo Universidade do Servidor">
+  <br><br>
+  <img src="docs/feature_graphic_sjc.png" alt="Feature Graphic Universidade do Servidor">
+</div>
+
+<br>
+
+Plataforma offline de capacitação continuada e desenvolvimento profissional para os servidores da Prefeitura Municipal de São José dos Campos. Atualizado para a **Versão 2** com arquitetura multi-cursos e renderização de aulas em Markdown.
 
 ---
 
@@ -23,13 +31,30 @@ O aplicativo foi projetado com uma estética premium e totalmente integrada às 
 
 ---
 
-## 🌟 Funcionalidades (Fase 1 - MVP)
+## 🌟 Funcionalidades (V2 - Arquitetura Escalável)
 
+* **Suporte Multi-Cursos Dinâmico:** Banco de dados refatorado (Room V3) que carrega dinamicamente múltiplos cursos, módulos e aulas de forma escalável.
+* **Conteúdo Rico em Markdown:** Aulas formatadas com arquivos `.md` permitindo uma leitura muito mais agradável, com renderização nativa de títulos, listas e negritos no Jetpack Compose.
 * **Dashboard de Progresso (Home):** Exibição em tempo real do progresso de leitura do usuário (aulas lidas, porcentagem de conclusão e barra de progresso gráfica) e atalho rápido para as aulas marcadas como favoritas.
-* **Catálogo de Cursos:** Tela que gerencia os cursos da plataforma. O **Curso de Supervisores** está ativo para acesso completo, enquanto cursos futuros (Excel, Planejamento Estratégico, etc.) aparecem bloqueados em itálico e com opacidade reduzida.
-* **Menus Aninhados:** Detalhes do curso estruturados com módulos expandíveis que revelam suas respectivas aulas. Módulos com aula única direta abrem o conteúdo imediatamente ao clique, sem necessidade de expansão.
-* **Favoritos offline:** Opção de favoritar aulas para acesso rápido na Home, persistida em banco de dados local.
-* **Quiz de Fixação:** Ao final de cada aula, o servidor deve responder a um quiz interativo com duas perguntas de múltipla escolha. O acerto total valida a aula como concluída, salvando o progresso de forma instantânea.
+* **Catálogo de Cursos:** Tela que gerencia os cursos da plataforma. Cursos indisponíveis aparecem bloqueados visualmente, preparando terreno para gestão via painel do administrador.
+* **Menus Aninhados:** Detalhes do curso estruturados com módulos expandíveis que revelam suas respectivas aulas.
+* **Quiz de Fixação:** Ao final de cada aula, o servidor deve responder a um quiz interativo. O acerto total valida a aula como concluída, salvando o progresso offline.
+* **Bases para o Futuro:** Estruturas criadas para busca global em texto (SearchScreen) e sistema de avaliação de módulos por escala Likert.
+
+---
+
+## 🗄️ Fluxo de Dados e Conteúdo
+
+A Versão 2 introduziu uma separação inteligente de dados para otimizar o banco local:
+
+```mermaid
+graph LR
+    JSON[curso_data.json<br>Apenas Metadados] -->|Mappers| Room[(Room Database V3<br>Cursos, Módulos, Aulas)]
+    MD[Pasta assets/cursos/<br>Arquivos .md] -->|Carregamento sob demanda| Renderer[Markdown Renderer]
+    Room --> ViewModel
+    Renderer --> ViewModel
+    ViewModel --> UI[Jetpack Compose UI]
+```
 
 ---
 
@@ -50,14 +75,14 @@ graph TD
 
 ---
 
-## 📐 Arquitetura
+## 📐 Arquitetura e Modularização
 
-O projeto foi construído sobre as diretrizes da **Clean Architecture** aliada ao padrão **MVVM (Model-View-ViewModel)**:
+O projeto foi construído sobre as diretrizes da **Clean Architecture** aliada ao padrão **MVVM (Model-View-ViewModel)** e com os primeiros passos para uma **modularização por features** (Core, UI, Data, Domain):
 
 ```txt
 ┌─────────────────────────────────────────────────────────────┐
 │                       UI Layer (Compose)                    │
-│           (Telas, Componentes Canvas, Temas de Cores)       │
+│    (Telas modulares, Core Design System, Markdown UI)       │
 └──────────────────────────────┬──────────────────────────────┘
                                │ Observa StateFlow / Envia Eventos
 ┌──────────────────────────────▼──────────────────────────────┐
@@ -67,12 +92,12 @@ O projeto foi construído sobre as diretrizes da **Clean Architecture** aliada a
                                │ Dispara Ações
 ┌──────────────────────────────▼──────────────────────────────┐
 │                     Domain Layer (UseCases)                 │
-│         (Modelos puros Kotlin, Regras de negócio)           │
+│    (Modelos puros Kotlin, Regras de progresso e prova)      │
 └──────────────────────────────┬──────────────────────────────┘
                                │ Acessa Contratos (Interfaces)
 ┌──────────────────────────────▼──────────────────────────────┐
 │                      Data Layer (Room)                      │
-│        (Mappers, Repositório e banco offline Room)          │
+│ (Repositório unificado, leitura de Assets e banco Room V3)  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -86,15 +111,3 @@ O projeto foi construído sobre as diretrizes da **Clean Architecture** aliada a
 4. Execute o aplicativo em um Emulador ou dispositivo físico conectado rodando Android 8.0 (API 28) ou superior.
 
 ---
-
-## 📸 Screenshots (Demonstração)
-
-*Adicione aqui as capturas de tela do app rodando no seu dispositivo para enriquecer a vitrine:*
-
-| Splash Screen | Home Dashboard | Catálogo de Cursos | Detalhe do Curso |
-| :---: | :---: | :---: | :---: |
-| *[Adicionar Print]* | *[Adicionar Print]* | *[Adicionar Print]* | *[Adicionar Print]* |
-
-| Leitor de Aula | Quiz Interativo | Feedback de Sucesso |
-| :---: | :---: | :---: |
-| *[Adicionar Print]* | *[Adicionar Print]* | *[Adicionar Print]* |

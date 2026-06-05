@@ -1,0 +1,3 @@
+# Papel do Servidor na Sociedade
+
+O servidor público é o elo direto entre o Estado e o cidadão. Sua principal função social é garantir a prestação de serviços essenciais como saúde, educação, infraestrutura e segurança com qualidade e humanidade. Em São José dos Campos, a inovação no serviço público visa desburocratizar processos para aproximar a prefeitura do morador, garantindo um atendimento focado na dignidade e na eficiência.

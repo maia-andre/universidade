@@ -2,6 +2,7 @@ package com.sgaf.universidadedoservidor.ui.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -42,7 +43,7 @@ fun HomeScreen(
             TopAppBar(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        GraduationCapIcon(size = 28.dp, color = GoldSjc)
+                        GraduationCapIcon(size = 28.dp, capColor = Color(0xFF1A1A1A), tasselColor = GoldSjc)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Universidade do Servidor",

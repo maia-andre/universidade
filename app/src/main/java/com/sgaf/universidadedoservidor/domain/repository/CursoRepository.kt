@@ -3,6 +3,7 @@ package com.sgaf.universidadedoservidor.domain.repository
 import com.sgaf.universidadedoservidor.domain.model.Curso
 import com.sgaf.universidadedoservidor.domain.model.Modulo
 import com.sgaf.universidadedoservidor.domain.model.Aula
+import com.sgaf.universidadedoservidor.domain.model.ResultadoBusca
 import kotlinx.coroutines.flow.Flow
 
 interface CursoRepository {
@@ -27,4 +28,7 @@ interface CursoRepository {
 
     /** Registra o instante do último acesso à aula (Item 2.2). */
     suspend fun registrarAcesso(aulaId: Int)
+
+    /** Busca global por termo em cursos/módulos/aulas disponíveis (Item 3). */
+    suspend fun buscar(termo: String): List<ResultadoBusca>
 }

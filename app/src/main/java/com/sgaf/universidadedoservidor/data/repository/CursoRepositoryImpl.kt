@@ -4,6 +4,7 @@ import com.sgaf.universidadedoservidor.data.local.dao.AulaDao
 import com.sgaf.universidadedoservidor.data.local.dao.CursoDao
 import com.sgaf.universidadedoservidor.data.local.dao.ModuloDao
 import com.sgaf.universidadedoservidor.data.local.dao.ProgressoDao
+import com.sgaf.universidadedoservidor.data.local.dao.SearchDao
 import com.sgaf.universidadedoservidor.data.local.entities.AulaEntity
 import com.sgaf.universidadedoservidor.data.local.entities.ProgressoEntity
 import com.sgaf.universidadedoservidor.data.local.database.QuizPerguntaJson
@@ -11,6 +12,7 @@ import com.sgaf.universidadedoservidor.domain.model.Aula
 import com.sgaf.universidadedoservidor.domain.model.Curso
 import com.sgaf.universidadedoservidor.domain.model.Modulo
 import com.sgaf.universidadedoservidor.domain.model.QuizPergunta
+import com.sgaf.universidadedoservidor.domain.model.ResultadoBusca
 import com.sgaf.universidadedoservidor.domain.repository.CursoRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -26,7 +28,8 @@ class CursoRepositoryImpl @Inject constructor(
     private val cursoDao: CursoDao,
     private val moduloDao: ModuloDao,
     private val aulaDao: AulaDao,
-    private val progressoDao: ProgressoDao
+    private val progressoDao: ProgressoDao,
+    private val searchDao: SearchDao
 ) : CursoRepository {
 
     private val json = Json { ignoreUnknownKeys = true }
@@ -187,6 +190,32 @@ class CursoRepositoryImpl @Inject constructor(
         val existing = progressoDao.getProgressoForAula(aulaId)
         val base = existing ?: ProgressoEntity(aulaId = aulaId)
         progressoDao.saveProgresso(base.copy(ultimoAcessoEm = agora))
+    }
+
+    override suspend fun buscar(termo: String): List<ResultadoBusca> {
+        val limpo = termo.trim()
+        if (limpo.length < 2) return emptyList()
+        return searchDao.buscar(limpo).map { row ->
+            ResultadoBusca(
+                aulaId = row.aulaId,
+                aulaTitulo = row.aulaTitulo,
+                moduloTitulo = row.moduloTitulo,
+                cursoTitulo = row.cursoTitulo,
+                trecho = extrairTrecho(row.conteudo, limpo)
+            )
+        }
+    }
+
+    /** Extrai um trecho do conteúdo ao redor da primeira ocorrência do termo (sem Markdown). */
+    private fun extrairTrecho(conteudo: String, termo: String): String? {
+        val texto = conteudo.replace(Regex("[#*`>\\-\\[\\]()]"), " ").replace(Regex("\\s+"), " ").trim()
+        val idx = texto.indexOf(termo, ignoreCase = true)
+        if (idx < 0) return null
+        val inicio = (idx - 40).coerceAtLeast(0)
+        val fim = (idx + termo.length + 60).coerceAtMost(texto.length)
+        val prefixo = if (inicio > 0) "…" else ""
+        val sufixo = if (fim < texto.length) "…" else ""
+        return "$prefixo${texto.substring(inicio, fim)}$sufixo"
     }
 
     private fun mapToDomainAula(entity: AulaEntity, progresso: ProgressoEntity?): Aula {

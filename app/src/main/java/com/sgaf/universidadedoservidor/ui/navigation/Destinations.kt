@@ -15,6 +15,9 @@ object Cursos
 object Configuracoes
 
 @Serializable
+object Busca
+
+@Serializable
 data class CursoDetail(val cursoId: Int)
 
 @Serializable

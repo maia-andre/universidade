@@ -5,6 +5,7 @@ import com.sgaf.universidadedoservidor.data.local.dao.AulaDao
 import com.sgaf.universidadedoservidor.data.local.dao.CursoDao
 import com.sgaf.universidadedoservidor.data.local.dao.ModuloDao
 import com.sgaf.universidadedoservidor.data.local.dao.ProgressoDao
+import com.sgaf.universidadedoservidor.data.local.dao.SearchDao
 import com.sgaf.universidadedoservidor.data.local.database.AppDatabase
 import com.sgaf.universidadedoservidor.data.repository.CursoRepositoryImpl
 import com.sgaf.universidadedoservidor.domain.repository.CursoRepository
@@ -67,6 +68,12 @@ abstract class AppModule {
         @Singleton
         fun provideProgressoDao(database: AppDatabase): ProgressoDao {
             return database.progressoDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideSearchDao(database: AppDatabase): SearchDao {
+            return database.searchDao()
         }
     }
 }

@@ -118,11 +118,13 @@ Este documento detalha as 4 frentes de trabalho desta sessão, na ordem em que s
 
 **Escopo:**
 - Adicionar ponto de acesso à busca (ícone na Home / barra superior) e registrar a rota no `NavHost`.
-- Implementar busca local sobre cursos, módulos, aulas e **conteúdo textual** das aulas usando **FTS4** no Room (tabela virtual indexando o conteúdo já assado no banco).
-- Resultados navegáveis direto para a aula correspondente, com destaque do termo.
+- Implementar busca local sobre cursos, módulos, aulas e **conteúdo textual** das aulas.
+- Resultados navegáveis direto para a aula correspondente, com trecho do conteúdo.
 - Tratar estados: vazio, sem resultados, digitando.
 
 **Critério de pronto:** buscar termos como "inventário", "licitação", "patrimônio" retorna aulas relevantes e leva direto ao conteúdo.
+
+**Decisão técnica (implementado):** optou-se por **busca com `LIKE`** (JOIN cursos→módulos→aulas, restrita a cursos disponíveis, com debounce de 300ms e trecho extraído do conteúdo) em vez de FTS4. Motivos: o catálogo é pequeno (LIKE é instantâneo), **não exige migração nem re-seed** — funciona de imediato para os usuários do beta — e evita a complexidade de manter uma tabela FTS sincronizada/backfilled. **FTS4 fica como otimização futura** caso o volume de conteúdo cresça significativamente (ranking por relevância, snippets nativos).
 
 ---
 

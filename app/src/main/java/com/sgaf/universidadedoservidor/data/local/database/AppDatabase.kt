@@ -12,6 +12,7 @@ import com.sgaf.universidadedoservidor.data.local.entities.ModuloEntity
 import com.sgaf.universidadedoservidor.data.local.entities.ProgressoEntity
 import com.sgaf.universidadedoservidor.data.local.entities.AvaliacaoEntity
 import com.sgaf.universidadedoservidor.data.local.dao.AvaliacaoDao
+import com.sgaf.universidadedoservidor.data.local.dao.SearchDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,6 +34,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun aulaDao(): AulaDao
     abstract fun progressoDao(): ProgressoDao
     abstract fun avaliacaoDao(): AvaliacaoDao
+    abstract fun searchDao(): SearchDao
 
     companion object {
         private const val DATABASE_NAME = "universidade_database_v3"

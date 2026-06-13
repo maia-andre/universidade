@@ -26,10 +26,13 @@ import com.sgaf.universidadedoservidor.ui.navigation.Splash
 import com.sgaf.universidadedoservidor.ui.navigation.Home
 import com.sgaf.universidadedoservidor.ui.navigation.Cursos
 import com.sgaf.universidadedoservidor.ui.navigation.Configuracoes
+import com.sgaf.universidadedoservidor.ui.navigation.Busca
 import com.sgaf.universidadedoservidor.ui.navigation.CursoDetail
 import com.sgaf.universidadedoservidor.ui.navigation.Aula
 import com.sgaf.universidadedoservidor.ui.screens.settings.SettingsScreen
 import com.sgaf.universidadedoservidor.ui.screens.settings.SettingsViewModel
+import com.sgaf.universidadedoservidor.ui.screens.search.SearchScreen
+import com.sgaf.universidadedoservidor.ui.screens.search.SearchViewModel
 import com.sgaf.universidadedoservidor.ui.screens.splash.SplashScreen
 import com.sgaf.universidadedoservidor.ui.screens.home.HomeScreen
 import com.sgaf.universidadedoservidor.ui.screens.home.HomeViewModel
@@ -113,6 +116,20 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 },
                 onNavigateToConfig = {
                     navController.navigate(Configuracoes)
+                },
+                onNavigateToBusca = {
+                    navController.navigate(Busca)
+                }
+            )
+        }
+
+        composable<Busca> {
+            val viewModel: SearchViewModel = hiltViewModel()
+            SearchScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToAula = { aulaId ->
+                    navController.navigate(Aula(aulaId))
                 }
             )
         }

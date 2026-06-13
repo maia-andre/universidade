@@ -24,7 +24,7 @@ import com.sgaf.universidadedoservidor.data.local.dao.CursoDao
 @Database(
     entities = [CursoEntity::class, ModuloEntity::class, AulaEntity::class, ProgressoEntity::class, AvaliacaoEntity::class],
     version = 3,
-    exportSchema = false
+    exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
 
@@ -47,7 +47,10 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     DATABASE_NAME
                 )
-                .fallbackToDestructiveMigration()
+                // Migrações versionadas preservam o progresso dos usuários (beta ativo).
+                // Destrutivo APENAS em downgrade (não ocorre em uso normal de loja).
+                .addMigrations(*ALL_MIGRATIONS)
+                .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
                 .addCallback(DatabaseCallback(context, coroutineScope))
                 .build()
                 INSTANCE = instance

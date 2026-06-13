@@ -16,6 +16,16 @@ import androidx.room.migration.Migration
  *   3. Adicione-a a [ALL_MIGRATIONS].
  *   4. Compile: o Room valida o schema final contra o JSON exportado em app/schemas.
  */
+/**
+ * v3 -> v4 (Item 1.2): persistência do estado do quiz na tabela `progresso`.
+ * Adiciona colunas preservando todo o progresso existente (concluídas/favoritos).
+ */
+val MIGRATION_3_4 = Migration(3, 4) { db ->
+    db.execSQL("ALTER TABLE progresso ADD COLUMN quizSubmitted INTEGER NOT NULL DEFAULT 0")
+    db.execSQL("ALTER TABLE progresso ADD COLUMN quizAcertos INTEGER NOT NULL DEFAULT 0")
+    db.execSQL("ALTER TABLE progresso ADD COLUMN quizRespostasJson TEXT NOT NULL DEFAULT ''")
+}
+
 val ALL_MIGRATIONS: Array<Migration> = arrayOf(
-    // Nenhuma migração ainda — baseline é a versão 3.
+    MIGRATION_3_4,
 )

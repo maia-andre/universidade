@@ -15,6 +15,8 @@ import com.sgaf.universidadedoservidor.domain.repository.CursoRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -28,6 +30,7 @@ class CursoRepositoryImpl @Inject constructor(
 ) : CursoRepository {
 
     private val json = Json { ignoreUnknownKeys = true }
+    private val respostasSerializer = MapSerializer(Int.serializer(), Int.serializer())
 
     override fun getCursos(): Flow<List<Curso>> {
         return combine(
@@ -148,6 +151,37 @@ class CursoRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun salvarResultadoQuiz(
+        aulaId: Int,
+        respostas: Map<Int, Int>,
+        acertos: Int,
+        aprovado: Boolean
+    ) {
+        val respostasJson = json.encodeToString(respostasSerializer, respostas)
+        val existing = progressoDao.getProgressoForAula(aulaId)
+        val base = existing ?: ProgressoEntity(aulaId = aulaId)
+        progressoDao.saveProgresso(
+            base.copy(
+                quizSubmitted = true,
+                quizAcertos = acertos,
+                quizRespostasJson = respostasJson,
+                // Conclusão só avança para true; nunca regride por uma submissão.
+                isCompleted = base.isCompleted || aprovado
+            )
+        )
+    }
+
+    override suspend fun resetarQuiz(aulaId: Int) {
+        val existing = progressoDao.getProgressoForAula(aulaId) ?: return
+        progressoDao.saveProgresso(
+            existing.copy(
+                quizSubmitted = false,
+                quizAcertos = 0,
+                quizRespostasJson = ""
+            )
+        )
+    }
+
     private fun mapToDomainAula(entity: AulaEntity, progresso: ProgressoEntity?): Aula {
         val quizList = try {
             json.decodeFromString<List<QuizPerguntaJson>>(entity.quizJson).map {
@@ -161,13 +195,25 @@ class CursoRepositoryImpl @Inject constructor(
             emptyList()
         }
 
+        val respostas = progresso?.quizRespostasJson
+            ?.takeIf { it.isNotEmpty() }
+            ?.let {
+                try {
+                    json.decodeFromString(respostasSerializer, it)
+                } catch (e: Exception) {
+                    emptyMap()
+                }
+            } ?: emptyMap()
+
         return Aula(
             id = entity.id,
             titulo = entity.titulo,
             conteudo = entity.conteudo,
             isCompleted = progresso?.isCompleted ?: false,
             isFavorite = progresso?.isFavorite ?: false,
-            quiz = quizList
+            quiz = quizList,
+            quizRespostas = respostas,
+            quizSubmitted = progresso?.quizSubmitted ?: false
         )
     }
 

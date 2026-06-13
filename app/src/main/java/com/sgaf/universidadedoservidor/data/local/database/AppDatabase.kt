@@ -23,7 +23,7 @@ import com.sgaf.universidadedoservidor.data.local.dao.CursoDao
 
 @Database(
     entities = [CursoEntity::class, ModuloEntity::class, AulaEntity::class, ProgressoEntity::class, AvaliacaoEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {

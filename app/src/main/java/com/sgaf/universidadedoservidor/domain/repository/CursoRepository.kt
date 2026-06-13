@@ -24,4 +24,7 @@ interface CursoRepository {
 
     /** Limpa o estado submetido do quiz (botão "Tentar Novamente"). Não altera a conclusão. */
     suspend fun resetarQuiz(aulaId: Int)
+
+    /** Registra o instante do último acesso à aula (Item 2.2). */
+    suspend fun registrarAcesso(aulaId: Int)
 }

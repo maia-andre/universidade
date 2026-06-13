@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.sgaf.universidadedoservidor.core.data.preferences.UserPreferencesRepository
 import com.sgaf.universidadedoservidor.domain.model.Aula
 import com.sgaf.universidadedoservidor.domain.usecase.GetAulaContentUseCase
+import com.sgaf.universidadedoservidor.domain.usecase.RegistrarAcessoAulaUseCase
 import com.sgaf.universidadedoservidor.domain.usecase.ResetarQuizUseCase
 import com.sgaf.universidadedoservidor.domain.usecase.SalvarResultadoQuizUseCase
 import com.sgaf.universidadedoservidor.domain.usecase.ToggleFavoritoUseCase
@@ -35,11 +36,19 @@ class AulaViewModel @Inject constructor(
     private val toggleFavoritoUseCase: ToggleFavoritoUseCase,
     private val salvarResultadoQuizUseCase: SalvarResultadoQuizUseCase,
     private val resetarQuizUseCase: ResetarQuizUseCase,
+    private val registrarAcessoAulaUseCase: RegistrarAcessoAulaUseCase,
     private val userPreferencesRepository: UserPreferencesRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val aulaId: Int = savedStateHandle.get<Int>("aulaId") ?: 101
+
+    init {
+        // Registra o acesso para alimentar o "continuar de onde parou" (Item 2.2).
+        viewModelScope.launch {
+            registrarAcessoAulaUseCase(aulaId)
+        }
+    }
 
     private data class QuizState(
         val selectedAnswers: Map<Int, Int>,

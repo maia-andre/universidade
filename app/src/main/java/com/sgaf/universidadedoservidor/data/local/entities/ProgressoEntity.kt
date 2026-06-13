@@ -12,6 +12,8 @@ data class ProgressoEntity(
     // (índice da questão -> índice da opção escolhida). quizAcertos alimenta a prova final (Item 4).
     val quizSubmitted: Boolean = false,
     val quizAcertos: Int = 0,
-    val quizRespostasJson: String = ""
+    val quizRespostasJson: String = "",
+    // Timestamp do último acesso à aula (Item 2.2 — "continuar de onde parou"). 0 = nunca aberta.
+    val ultimoAcessoEm: Long = 0
 )
 // 100% offline - tracks user completion, bookmarking and quiz state per class/lesson

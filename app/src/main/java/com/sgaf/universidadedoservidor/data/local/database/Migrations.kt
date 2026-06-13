@@ -26,6 +26,14 @@ val MIGRATION_3_4 = Migration(3, 4) { db ->
     db.execSQL("ALTER TABLE progresso ADD COLUMN quizRespostasJson TEXT NOT NULL DEFAULT ''")
 }
 
+/**
+ * v4 -> v5 (Item 2.2): registra o último acesso de cada aula para "continuar de onde parou".
+ */
+val MIGRATION_4_5 = Migration(4, 5) { db ->
+    db.execSQL("ALTER TABLE progresso ADD COLUMN ultimoAcessoEm INTEGER NOT NULL DEFAULT 0")
+}
+
 val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_3_4,
+    MIGRATION_4_5,
 )

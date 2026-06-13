@@ -18,6 +18,8 @@ data class HomeState(
     val concluídasAulas: Int = 0,
     val percentualConclusao: Float = 0f,
     val aulasFavoritas: List<Pair<Int, String>> = emptyList(),
+    // "Continuar de onde parou" (Item 2.2): última aula acessada e ainda não concluída.
+    val continuarAula: Pair<Int, String>? = null,
     val isLoading: Boolean = true
 )
 
@@ -40,12 +42,19 @@ class HomeViewModel @Inject constructor(
         val percent = if (total > 0) completed.toFloat() / total.toFloat() else 0f
         val favorites = allAulas.filter { it.isFavorite }.map { it.id to it.titulo }
 
+        // Última aula acessada que ainda não foi concluída.
+        val continuar = allAulas
+            .filter { it.ultimoAcessoEm > 0 && !it.isCompleted }
+            .maxByOrNull { it.ultimoAcessoEm }
+            ?.let { it.id to it.titulo }
+
         HomeState(
             cursoAtivoTitulo = cursoAtivo.titulo,
             totalAulas = total,
             concluídasAulas = completed,
             percentualConclusao = percent,
             aulasFavoritas = favorites,
+            continuarAula = continuar,
             isLoading = false
         )
     }.stateIn(

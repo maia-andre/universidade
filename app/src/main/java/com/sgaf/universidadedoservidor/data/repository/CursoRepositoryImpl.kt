@@ -182,6 +182,13 @@ class CursoRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun registrarAcesso(aulaId: Int) {
+        val agora = System.currentTimeMillis()
+        val existing = progressoDao.getProgressoForAula(aulaId)
+        val base = existing ?: ProgressoEntity(aulaId = aulaId)
+        progressoDao.saveProgresso(base.copy(ultimoAcessoEm = agora))
+    }
+
     private fun mapToDomainAula(entity: AulaEntity, progresso: ProgressoEntity?): Aula {
         val quizList = try {
             json.decodeFromString<List<QuizPerguntaJson>>(entity.quizJson).map {
@@ -213,7 +220,8 @@ class CursoRepositoryImpl @Inject constructor(
             isFavorite = progresso?.isFavorite ?: false,
             quiz = quizList,
             quizRespostas = respostas,
-            quizSubmitted = progresso?.quizSubmitted ?: false
+            quizSubmitted = progresso?.quizSubmitted ?: false,
+            ultimoAcessoEm = progresso?.ultimoAcessoEm ?: 0
         )
     }
 

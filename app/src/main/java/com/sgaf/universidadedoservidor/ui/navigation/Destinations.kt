@@ -12,6 +12,9 @@ object Home
 object Cursos
 
 @Serializable
+object Configuracoes
+
+@Serializable
 data class CursoDetail(val cursoId: Int)
 
 @Serializable

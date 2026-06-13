@@ -3,6 +3,7 @@ package com.sgaf.universidadedoservidor.ui.screens.aula
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sgaf.universidadedoservidor.core.data.preferences.UserPreferencesRepository
 import com.sgaf.universidadedoservidor.domain.model.Aula
 import com.sgaf.universidadedoservidor.domain.usecase.GetAulaContentUseCase
 import com.sgaf.universidadedoservidor.domain.usecase.ResetarQuizUseCase
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,7 +25,8 @@ data class AulaUiState(
     val selectedAnswers: Map<Int, Int> = emptyMap(),
     val quizSubmitted: Boolean = false,
     val quizCorrect: Boolean = false,
-    val showFeedback: Boolean = false
+    val showFeedback: Boolean = false,
+    val fontScale: Float = 1f
 )
 
 @HiltViewModel
@@ -32,6 +35,7 @@ class AulaViewModel @Inject constructor(
     private val toggleFavoritoUseCase: ToggleFavoritoUseCase,
     private val salvarResultadoQuizUseCase: SalvarResultadoQuizUseCase,
     private val resetarQuizUseCase: ResetarQuizUseCase,
+    private val userPreferencesRepository: UserPreferencesRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -49,8 +53,9 @@ class AulaViewModel @Inject constructor(
 
     val state: StateFlow<AulaUiState> = combine(
         getAulaContentUseCase(aulaId),
-        _quizState
-    ) { aula, quiz ->
+        _quizState,
+        userPreferencesRepository.fontScale
+    ) { aula, quiz, fontScale ->
         // Sem interação local: reflete o que foi salvo no banco (quiz preenchido e travado, se já submetido).
         val effective = quiz ?: aula?.let { restoredStateFrom(it) } ?: EMPTY_QUIZ
         AulaUiState(
@@ -59,7 +64,8 @@ class AulaViewModel @Inject constructor(
             selectedAnswers = effective.selectedAnswers,
             quizSubmitted = effective.submitted,
             quizCorrect = effective.correct,
-            showFeedback = effective.showFeedback
+            showFeedback = effective.showFeedback,
+            fontScale = fontScale
         )
     }.stateIn(
         scope = viewModelScope,
@@ -136,6 +142,17 @@ class AulaViewModel @Inject constructor(
         _quizState.value = EMPTY_QUIZ
         viewModelScope.launch {
             resetarQuizUseCase(aulaId)
+        }
+    }
+
+    fun aumentarFonte() = ajustarFonte(UserPreferencesRepository.FONT_SCALE_STEP)
+
+    fun diminuirFonte() = ajustarFonte(-UserPreferencesRepository.FONT_SCALE_STEP)
+
+    private fun ajustarFonte(delta: Float) {
+        viewModelScope.launch {
+            val atual = userPreferencesRepository.fontScale.first()
+            userPreferencesRepository.setFontScale(atual + delta)
         }
     }
 

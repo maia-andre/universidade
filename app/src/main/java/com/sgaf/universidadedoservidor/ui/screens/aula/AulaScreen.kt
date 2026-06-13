@@ -13,15 +13,19 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sgaf.universidadedoservidor.core.components.LoadingBox
 import com.sgaf.universidadedoservidor.ui.theme.*
 import com.mikepenz.markdown.m3.Markdown
 
@@ -54,6 +58,23 @@ fun AulaScreen(
                 },
                 actions = {
                     state.aula?.let { aula ->
+                        // Controles de acessibilidade: tamanho da fonte de leitura (Item 2.3)
+                        IconButton(onClick = { viewModel.diminuirFonte() }) {
+                            Text(
+                                text = "A-",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        IconButton(onClick = { viewModel.aumentarFonte() }) {
+                            Text(
+                                text = "A+",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                         IconButton(onClick = { viewModel.toggleFavorito() }) {
                             Icon(
                                 imageVector = if (aula.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
@@ -71,14 +92,7 @@ fun AulaScreen(
         modifier = modifier
     ) { innerPadding ->
         if (state.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(color = GoldSjc)
-            }
+            LoadingBox(contentPadding = innerPadding)
         } else {
             val aula = state.aula
             if (aula == null) {
@@ -91,6 +105,14 @@ fun AulaScreen(
                     Text(text = "Aula não encontrada.", color = TextGray)
                 }
             } else {
+                val baseDensity = LocalDensity.current
+                CompositionLocalProvider(
+                    // Escala apenas a tipografia (sp); mantém os dp do layout (Item 2.3).
+                    LocalDensity provides Density(
+                        density = baseDensity.density,
+                        fontScale = baseDensity.fontScale * state.fontScale
+                    )
+                ) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -352,6 +374,7 @@ fun AulaScreen(
                         Spacer(modifier = Modifier.height(32.dp))
                     }
                 }
+                } // CompositionLocalProvider (escala de fonte)
             }
         }
     }

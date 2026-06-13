@@ -77,6 +77,9 @@ dependencies {
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)
+
+    // Preferences (DataStore)
+    implementation(libs.androidx.datastore.preferences)
     
     // Markdown
     implementation(libs.markdown.renderer.m3)

@@ -93,8 +93,7 @@ fun HomeScreen(
 
                 // Progress Card
                 item {
-                    val progressPercent = (state.percentualConclusao * 100).toInt()
-                    
+                    val cursoAtivoTitulo = state.cursoAtivoTitulo
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -109,45 +108,73 @@ fun HomeScreen(
                             )
                             .padding(20.dp)
                     ) {
-                        Column {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+                        if (cursoAtivoTitulo == null) {
+                            // Nenhum curso ativo ainda: convida o aluno a escolher um curso.
+                            Column {
                                 Text(
-                                    text = "Seu Progresso Geral",
+                                    text = "Comece sua capacitação",
                                     color = Color.White,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )
+                                Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = "$progressPercent%",
-                                    color = GoldSjc,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Black
+                                    text = "Você ainda não iniciou nenhum curso. Acesse a plataforma e escolha por onde começar.",
+                                    color = Color.White.copy(alpha = 0.85f),
+                                    fontSize = 13.sp
                                 )
                             }
-                            
-                            Spacer(modifier = Modifier.height(12.dp))
-                            
-                            LinearProgressIndicator(
-                                progress = { state.percentualConclusao },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(8.dp)
-                                    .clip(RoundedCornerShape(4.dp)),
-                                color = GoldSjc,
-                                trackColor = Color.White.copy(alpha = 0.2f)
-                            )
-                            
-                            Spacer(modifier = Modifier.height(12.dp))
-                            
-                            Text(
-                                text = "${state.concluídasAulas} de ${state.totalAulas} aulas concluídas",
-                                color = Color.White.copy(alpha = 0.8f),
-                                fontSize = 13.sp
-                            )
+                        } else {
+                            val progressPercent = (state.percentualConclusao * 100).toInt()
+                            Column {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Seu Progresso",
+                                        color = Color.White,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = "$progressPercent%",
+                                        color = GoldSjc,
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Black
+                                    )
+                                }
+
+                                Text(
+                                    text = cursoAtivoTitulo,
+                                    color = GoldSjc.copy(alpha = 0.9f),
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                LinearProgressIndicator(
+                                    progress = { state.percentualConclusao },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(8.dp)
+                                        .clip(RoundedCornerShape(4.dp)),
+                                    color = GoldSjc,
+                                    trackColor = Color.White.copy(alpha = 0.2f)
+                                )
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                Text(
+                                    text = "${state.concluídasAulas} de ${state.totalAulas} aulas concluídas",
+                                    color = Color.White.copy(alpha = 0.8f),
+                                    fontSize = 13.sp
+                                )
+                            }
                         }
                     }
                 }

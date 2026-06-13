@@ -37,11 +37,3 @@ Com o `.aab` e o link da Política de Privacidade em mãos, as etapas finais na 
 ## Próximos Passos
 Após enviar para teste, a equipe poderá instalar o app através do link de convite do Google Play e testar a estabilidade e usabilidade antes da migração para Firebase na V3.
 
-Build successful - 5 warning
-
-> Task :app:compileReleaseKotlin
-w: file:///D:/Users/andre.maia/AndroidStudioProjects/UniversidadedoServidor/app/src/main/java/com/sgaf/universidadedoservidor/data/local/database/AppDatabase.kt:50:18 'fun fallbackToDestructiveMigration(): RoomDatabase.Builder<AppDatabase>' is deprecated. Replace by overloaded version with parameter to indicate if all tables should be dropped or not.
-w: file:///D:/Users/andre.maia/AndroidStudioProjects/UniversidadedoServidor/app/src/main/java/com/sgaf/universidadedoservidor/ui/screens/curso_detail/CursoDetailScreen.kt:53:57 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///D:/Users/andre.maia/AndroidStudioProjects/UniversidadedoServidor/app/src/main/java/com/sgaf/universidadedoservidor/ui/screens/curso_detail/CursoDetailScreen.kt:229:25 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
-w: file:///D:/Users/andre.maia/AndroidStudioProjects/UniversidadedoServidor/app/src/main/java/com/sgaf/universidadedoservidor/ui/screens/cursos/CursosScreen.kt:53:57 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///D:/Users/andre.maia/AndroidStudioProjects/UniversidadedoServidor/app/src/main/java/com/sgaf/universidadedoservidor/ui/theme/Theme.kt:51:20 'var statusBarColor: Int' is deprecated. Deprecated in Java.

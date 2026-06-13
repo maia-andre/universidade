@@ -42,6 +42,15 @@ A principal motivação para a versão 2 foi criar uma arquitetura escalável qu
 - **Administrador**: Terá acesso a um painel dentro do próprio aplicativo onde poderá cadastrar alunos e liberar o acesso a qual curso eles podem fazer.
 - **Aluno**: Só poderá ter **1 (um) curso ativo por vez**. Após a conclusão do curso e aprovação na prova final (emissão do certificado), o curso passa para um histórico de "Concluídos" (acesso vitalício), e o Administrador ou o sistema poderá liberar o próximo curso ativo.
 
+## Lições Aprendidas V2
+
+- Separar conteúdo do banco reduz drasticamente o peso dos dados.
+- Markdown é mais sustentável que grandes blocos de texto em JSON.
+- Room exige planejamento cuidadoso de migrações.
+- Configuração de versões Kotlin/Gradle é um fator crítico de estabilidade.
+- Registrar bugs recorrentes acelera projetos futuros.
+- Preparar contratos (interfaces) antes da implementação reduz refatorações.
+
 ## Sugestões e Próximos Passos (V3)
 1. **Resolver o Débito do Quiz**: Na próxima sessão, conectar adequadamente o estado do quiz persistido na `AulaEntity/ProgressoEntity` e refleti-lo na `AulaViewModel` como "Somente Leitura" com os acertos/erros visíveis.
 2. **Implementar Prova Final**: Finalizar a lógica para o módulo de avaliação/prova e integração com a tela de emissão de certificado.

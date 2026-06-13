@@ -18,12 +18,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sgaf.universidadedoservidor.core.components.LoadingBox
 import com.sgaf.universidadedoservidor.domain.model.Aula
 import com.sgaf.universidadedoservidor.domain.model.Modulo
 import com.sgaf.universidadedoservidor.ui.theme.*
@@ -63,14 +65,7 @@ fun CursoDetailScreen(
         modifier = modifier
     ) { innerPadding ->
         if (state.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(color = GoldSjc)
-            }
+            LoadingBox(contentPadding = innerPadding)
         } else {
             val curso = state.curso
             if (curso == null) {
@@ -99,6 +94,61 @@ fun CursoDetailScreen(
                             color = TextGray
                         )
                         Spacer(modifier = Modifier.height(12.dp))
+
+                        // Progresso do curso inteiro (Item 2.4)
+                        val todasAulas = curso.modulos.flatMap { it.aulas }
+                        val totalCurso = todasAulas.size
+                        val concluidasCurso = todasAulas.count { it.isCompleted }
+                        val percentualCurso = if (totalCurso > 0) {
+                            concluidasCurso.toFloat() / totalCurso.toFloat()
+                        } else 0f
+
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (isSystemInDarkTheme()) CardDarkBg else Color.White
+                            ),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Progresso do curso",
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Text(
+                                        text = "${(percentualCurso * 100).toInt()}%",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = BlueSjc
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                LinearProgressIndicator(
+                                    progress = { percentualCurso },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(8.dp)
+                                        .clip(RoundedCornerShape(4.dp)),
+                                    color = GoldSjc,
+                                    trackColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = "$concluidasCurso de $totalCurso aulas concluídas",
+                                    fontSize = 12.sp,
+                                    color = TextGray
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             text = "Módulos do Curso:",
                             fontSize = 18.sp,
@@ -191,6 +241,21 @@ fun ModuloListItem(
                             )
                         }
                     }
+
+                    // Barra de progresso do módulo (Item 2.4)
+                    val percentualModulo = if (totalAulas > 0) {
+                        completedAulas.toFloat() / totalAulas.toFloat()
+                    } else 0f
+                    Spacer(modifier = Modifier.height(6.dp))
+                    LinearProgressIndicator(
+                        progress = { percentualModulo },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(5.dp)
+                            .clip(RoundedCornerShape(3.dp)),
+                        color = if (completedAulas == totalAulas) SuccessGreen else GoldSjc,
+                        trackColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+                    )
                 }
                 
                 Spacer(modifier = Modifier.width(8.dp))

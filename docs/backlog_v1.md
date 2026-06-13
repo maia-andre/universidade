@@ -91,6 +91,25 @@ Este documento detalha as 4 frentes de trabalho desta sessão, na ordem em que s
 
 ---
 
+## Central de Acessibilidade (PLANEJADO — backlog futuro, não nesta sprint)
+
+**Objetivo:** consolidar a acessibilidade numa tela/painel dedicado, indo além do ajuste de fonte do Item 2.3. Atende diretamente o público servidor (faixa etária ampla, uso prolongado de leitura). Item 2.3 é a semente: a fonte ajustável migra para cá quando esta central existir.
+
+**Recursos planejados:**
+- **Tamanho de fonte global e responsivo:** botão/slider que escala toda a tipografia do app (não só o leitor), respeitando também o `fontScale` do sistema, com layouts que não quebram em fontes grandes.
+- **Modo daltônico (color-blind safe):** não depender só de cor para transmitir informação. Concreto: no quiz, além de verde/vermelho, usar ícones ✓/✗ e texto; oferecer paletas alternativas (deuteranopia/protanopia/tritanopia) ou um tema de alto contraste.
+- **Alto contraste:** variante de tema com contraste reforçado entre texto e fundo.
+- **Suporte a leitor de tela (TalkBack):** auditar `contentDescription` em todos os ícones/imagens, ordem de foco e semântica dos componentes; garantir alvos de toque ≥ 48dp.
+- **Redução de movimento:** opção para desabilitar animações (ex.: engrenagem girando no splash, transições de tela) para usuários sensíveis a movimento.
+- **Sugestões adicionais a avaliar:**
+  - **Leitura em voz alta (TTS)** do conteúdo das aulas via `TextToSpeech` nativo.
+  - **Fonte para dislexia** (opção de tipografia tipo OpenDyslexic).
+  - **Espaçamento de linha/parágrafo ajustável** no leitor.
+
+**Critério de pronto (futuro):** uma tela "Acessibilidade" (a partir de Configurações) reúne os ajustes, todos persistidos no DataStore e refletidos em todo o app.
+
+---
+
 ## Item 3 — Busca global funcional
 
 **Objetivo:** ligar a `SearchScreen` (que já existe na UI mas está órfã) a uma busca real, reduzindo o tempo de navegação até o conhecimento.

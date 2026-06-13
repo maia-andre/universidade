@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,6 +37,7 @@ fun CursoDetailScreen(
     viewModel: CursoDetailViewModel,
     onNavigateBack: () -> Unit,
     onNavigateToAula: (Int) -> Unit,
+    onNavigateToCertificado: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
@@ -145,6 +147,29 @@ fun CursoDetailScreen(
                                     fontSize = 12.sp,
                                     color = TextGray
                                 )
+                            }
+                        }
+
+                        // Curso 100% concluído: libera a emissão do certificado (Item 4)
+                        if (totalCurso > 0 && concluidasCurso == totalCurso) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Button(
+                                onClick = { onNavigateToCertificado(curso.id) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(52.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = GoldSjc,
+                                    contentColor = Color.Black
+                                ),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.WorkspacePremium,
+                                    contentDescription = null
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Emitir Certificado", fontWeight = FontWeight.Bold)
                             }
                         }
 

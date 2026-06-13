@@ -28,7 +28,10 @@ import com.sgaf.universidadedoservidor.ui.navigation.Cursos
 import com.sgaf.universidadedoservidor.ui.navigation.Configuracoes
 import com.sgaf.universidadedoservidor.ui.navigation.Busca
 import com.sgaf.universidadedoservidor.ui.navigation.CursoDetail
+import com.sgaf.universidadedoservidor.ui.navigation.Certificado
 import com.sgaf.universidadedoservidor.ui.navigation.Aula
+import com.sgaf.universidadedoservidor.ui.screens.certificado.CertificadoScreen
+import com.sgaf.universidadedoservidor.ui.screens.certificado.CertificadoViewModel
 import com.sgaf.universidadedoservidor.ui.screens.settings.SettingsScreen
 import com.sgaf.universidadedoservidor.ui.screens.settings.SettingsViewModel
 import com.sgaf.universidadedoservidor.ui.screens.search.SearchScreen
@@ -166,7 +169,18 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 },
                 onNavigateToAula = { aulaId ->
                     navController.navigate(Aula(aulaId))
+                },
+                onNavigateToCertificado = { cursoId ->
+                    navController.navigate(Certificado(cursoId))
                 }
+            )
+        }
+
+        composable<Certificado> {
+            val viewModel: CertificadoViewModel = hiltViewModel()
+            CertificadoScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
         

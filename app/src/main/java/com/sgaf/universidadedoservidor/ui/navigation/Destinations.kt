@@ -21,4 +21,7 @@ object Busca
 data class CursoDetail(val cursoId: Int)
 
 @Serializable
+data class Certificado(val cursoId: Int)
+
+@Serializable
 data class Aula(val aulaId: Int)

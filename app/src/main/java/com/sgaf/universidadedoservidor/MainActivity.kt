@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -14,9 +16,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -26,6 +31,7 @@ import com.sgaf.universidadedoservidor.ui.navigation.Splash
 import com.sgaf.universidadedoservidor.ui.navigation.Home
 import com.sgaf.universidadedoservidor.ui.navigation.Cursos
 import com.sgaf.universidadedoservidor.ui.navigation.Configuracoes
+import com.sgaf.universidadedoservidor.ui.navigation.Acessibilidade
 import com.sgaf.universidadedoservidor.ui.navigation.Busca
 import com.sgaf.universidadedoservidor.ui.navigation.CursoDetail
 import com.sgaf.universidadedoservidor.ui.navigation.Certificado
@@ -34,6 +40,8 @@ import com.sgaf.universidadedoservidor.ui.screens.certificado.CertificadoScreen
 import com.sgaf.universidadedoservidor.ui.screens.certificado.CertificadoViewModel
 import com.sgaf.universidadedoservidor.ui.screens.settings.SettingsScreen
 import com.sgaf.universidadedoservidor.ui.screens.settings.SettingsViewModel
+import com.sgaf.universidadedoservidor.ui.screens.acessibilidade.AcessibilidadeScreen
+import com.sgaf.universidadedoservidor.ui.screens.acessibilidade.AcessibilidadeViewModel
 import com.sgaf.universidadedoservidor.ui.screens.search.SearchScreen
 import com.sgaf.universidadedoservidor.ui.screens.search.SearchViewModel
 import com.sgaf.universidadedoservidor.ui.screens.splash.SplashScreen
@@ -57,17 +65,27 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val themeMode by mainViewModel.themeMode.collectAsState()
-            val darkTheme = when (themeMode) {
+            val ui by mainViewModel.uiState.collectAsState()
+            val darkTheme = when (ui.themeMode) {
                 ThemeMode.LIGHT -> false
                 ThemeMode.DARK -> true
                 ThemeMode.SYSTEM -> isSystemInDarkTheme()
             }
-            UniversidadeDoServidorTheme(darkTheme = darkTheme) {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    AppNavigation(
-                        modifier = Modifier.padding(innerPadding)
+            UniversidadeDoServidorTheme(darkTheme = darkTheme, highContrast = ui.highContrast) {
+                // Escala global da tipografia (acessibilidade v4): só sp, mantém os dp.
+                val baseDensity = LocalDensity.current
+                CompositionLocalProvider(
+                    LocalDensity provides Density(
+                        density = baseDensity.density,
+                        fontScale = baseDensity.fontScale * ui.fontScale
                     )
+                ) {
+                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                        AppNavigation(
+                            reducedMotion = ui.reducedMotion,
+                            modifier = Modifier.padding(innerPadding)
+                        )
+                    }
                 }
             }
         }
@@ -75,30 +93,38 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigation(modifier: Modifier = Modifier) {
+fun AppNavigation(
+    reducedMotion: Boolean = false,
+    modifier: Modifier = Modifier
+) {
     val navController = rememberNavController()
-    
+
     val anim = tween<Float>(300)
     NavHost(
         navController = navController,
         startDestination = Splash,
         modifier = modifier,
-        // Transições suaves de slide + fade entre telas (Item 2.5)
+        // Transições slide + fade (Item 2.5); desligadas quando "redução de movimento" (v4 acessibilidade)
         enterTransition = {
-            slideIntoContainer(SlideDirection.Start, tween(300)) + fadeIn(anim)
+            if (reducedMotion) EnterTransition.None
+            else slideIntoContainer(SlideDirection.Start, tween(300)) + fadeIn(anim)
         },
         exitTransition = {
-            slideOutOfContainer(SlideDirection.Start, tween(300)) + fadeOut(anim)
+            if (reducedMotion) ExitTransition.None
+            else slideOutOfContainer(SlideDirection.Start, tween(300)) + fadeOut(anim)
         },
         popEnterTransition = {
-            slideIntoContainer(SlideDirection.End, tween(300)) + fadeIn(anim)
+            if (reducedMotion) EnterTransition.None
+            else slideIntoContainer(SlideDirection.End, tween(300)) + fadeIn(anim)
         },
         popExitTransition = {
-            slideOutOfContainer(SlideDirection.End, tween(300)) + fadeOut(anim)
+            if (reducedMotion) ExitTransition.None
+            else slideOutOfContainer(SlideDirection.End, tween(300)) + fadeOut(anim)
         }
     ) {
         composable<Splash> {
             SplashScreen(
+                reducedMotion = reducedMotion,
                 onSplashFinished = {
                     navController.navigate(Home) {
                         popUpTo(Splash) { inclusive = true }
@@ -143,7 +169,18 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 viewModel = viewModel,
                 onNavigateBack = {
                     navController.popBackStack()
+                },
+                onNavigateToAcessibilidade = {
+                    navController.navigate(Acessibilidade)
                 }
+            )
+        }
+
+        composable<Acessibilidade> {
+            val viewModel: AcessibilidadeViewModel = hiltViewModel()
+            AcessibilidadeScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
         

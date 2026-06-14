@@ -30,10 +30,11 @@ import com.sgaf.universidadedoservidor.ui.theme.LightBackground
 fun SjcGearSpinner(
     modifier: Modifier = Modifier,
     size: Dp = 90.dp,
+    animate: Boolean = true,
     backgroundColor: Color = if (isSystemInDarkTheme()) DarkBackground else LightBackground
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "gearRotation")
-    val rotationAngle by infiniteTransition.animateFloat(
+    val animatedAngle by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 360f,
         animationSpec = infiniteRepeatable(
@@ -42,6 +43,8 @@ fun SjcGearSpinner(
         ),
         label = "angle"
     )
+    // Redução de movimento (acessibilidade v4): engrenagem estática.
+    val rotationAngle = if (animate) animatedAngle else 0f
 
     Canvas(modifier = modifier.size(size)) {
         val width = size.toPx()
@@ -203,6 +206,7 @@ fun UniversidadeLogo(
     modifier: Modifier = Modifier,
     gearSize: Dp = 38.dp,
     scale: Float = 1f,
+    animate: Boolean = true,
     textColor: Color = MaterialTheme.colorScheme.onBackground,
     backgroundColor: Color = if (isSystemInDarkTheme()) DarkBackground else LightBackground
 ) {
@@ -248,6 +252,7 @@ fun UniversidadeLogo(
                     .size(gearSize)
                     .padding(horizontal = 2.dp),
                 size = gearSize,
+                animate = animate,
                 backgroundColor = backgroundColor
             )
             

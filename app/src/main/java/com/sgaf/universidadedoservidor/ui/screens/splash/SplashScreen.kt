@@ -16,6 +16,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(
     onSplashFinished: () -> Unit,
+    reducedMotion: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     LaunchedEffect(key1 = true) {
@@ -40,6 +41,7 @@ fun SplashScreen(
             modifier = Modifier.padding(16.dp),
             gearSize = 56.dp, // Gear ajustada para a nova escala
             scale = 1.35f, // Aumenta todo o conjunto (textos e capelo)
+            animate = !reducedMotion,
             textColor = Color.White,
             backgroundColor = Color(0xFF003882) // Match intermediário do gradiente
         )

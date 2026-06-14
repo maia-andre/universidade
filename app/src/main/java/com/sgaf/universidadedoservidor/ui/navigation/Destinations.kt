@@ -15,6 +15,9 @@ object Cursos
 object Configuracoes
 
 @Serializable
+object Acessibilidade
+
+@Serializable
 object Busca
 
 @Serializable

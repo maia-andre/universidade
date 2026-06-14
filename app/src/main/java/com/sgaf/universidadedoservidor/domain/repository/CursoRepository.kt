@@ -3,6 +3,7 @@ package com.sgaf.universidadedoservidor.domain.repository
 import com.sgaf.universidadedoservidor.domain.model.Curso
 import com.sgaf.universidadedoservidor.domain.model.Modulo
 import com.sgaf.universidadedoservidor.domain.model.Aula
+import com.sgaf.universidadedoservidor.domain.model.AvaliacaoCurso
 import com.sgaf.universidadedoservidor.domain.model.ResultadoBusca
 import kotlinx.coroutines.flow.Flow
 
@@ -31,4 +32,10 @@ interface CursoRepository {
 
     /** Busca global por termo em cursos/módulos/aulas disponíveis (Item 3). */
     suspend fun buscar(termo: String): List<ResultadoBusca>
+
+    /** Salva (ou substitui) a avaliação Likert do curso (v4 Item 3.3). */
+    suspend fun salvarAvaliacao(avaliacao: AvaliacaoCurso)
+
+    /** Avaliação previamente enviada para o curso, se houver. */
+    suspend fun getAvaliacao(cursoId: Int): AvaliacaoCurso?
 }

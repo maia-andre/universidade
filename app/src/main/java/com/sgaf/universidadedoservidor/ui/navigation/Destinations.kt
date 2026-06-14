@@ -18,6 +18,9 @@ object Configuracoes
 object Acessibilidade
 
 @Serializable
+object Desempenho
+
+@Serializable
 object Busca
 
 @Serializable
@@ -25,6 +28,9 @@ data class CursoDetail(val cursoId: Int)
 
 @Serializable
 data class Certificado(val cursoId: Int)
+
+@Serializable
+data class Avaliacao(val cursoId: Int)
 
 @Serializable
 data class Aula(val aulaId: Int)

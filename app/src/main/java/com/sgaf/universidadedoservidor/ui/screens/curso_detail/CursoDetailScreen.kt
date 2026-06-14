@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.RateReview
 import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -38,6 +39,7 @@ fun CursoDetailScreen(
     onNavigateBack: () -> Unit,
     onNavigateToAula: (Int) -> Unit,
     onNavigateToCertificado: (Int) -> Unit = {},
+    onNavigateToAvaliacao: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
@@ -170,6 +172,22 @@ fun CursoDetailScreen(
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text("Emitir Certificado", fontWeight = FontWeight.Bold)
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedButton(
+                                onClick = { onNavigateToAvaliacao(curso.id) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.RateReview,
+                                    contentDescription = null,
+                                    tint = BlueSjc
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Avaliar curso", fontWeight = FontWeight.Bold, color = BlueSjc)
                             }
                         }
 

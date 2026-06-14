@@ -6,6 +6,7 @@ import com.sgaf.universidadedoservidor.data.local.dao.ModuloDao
 import com.sgaf.universidadedoservidor.data.local.dao.ProgressoDao
 import com.sgaf.universidadedoservidor.data.local.dao.SearchDao
 import com.sgaf.universidadedoservidor.data.local.dao.SearchResultRow
+import com.sgaf.universidadedoservidor.data.local.dao.AvaliacaoDao
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -23,9 +24,10 @@ class CursoRepositoryImplBuscaTest {
     private val aulaDao = mockk<AulaDao>(relaxed = true)
     private val progressoDao = mockk<ProgressoDao>(relaxed = true)
     private val searchDao = mockk<SearchDao>()
+    private val avaliacaoDao = mockk<AvaliacaoDao>(relaxed = true)
 
     private val repository = CursoRepositoryImpl(
-        cursoDao, moduloDao, aulaDao, progressoDao, searchDao
+        cursoDao, moduloDao, aulaDao, progressoDao, searchDao, avaliacaoDao
     )
 
     @Test

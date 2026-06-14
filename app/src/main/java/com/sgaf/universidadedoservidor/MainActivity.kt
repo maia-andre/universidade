@@ -32,16 +32,22 @@ import com.sgaf.universidadedoservidor.ui.navigation.Home
 import com.sgaf.universidadedoservidor.ui.navigation.Cursos
 import com.sgaf.universidadedoservidor.ui.navigation.Configuracoes
 import com.sgaf.universidadedoservidor.ui.navigation.Acessibilidade
+import com.sgaf.universidadedoservidor.ui.navigation.Desempenho
 import com.sgaf.universidadedoservidor.ui.navigation.Busca
 import com.sgaf.universidadedoservidor.ui.navigation.CursoDetail
 import com.sgaf.universidadedoservidor.ui.navigation.Certificado
+import com.sgaf.universidadedoservidor.ui.navigation.Avaliacao
 import com.sgaf.universidadedoservidor.ui.navigation.Aula
 import com.sgaf.universidadedoservidor.ui.screens.certificado.CertificadoScreen
 import com.sgaf.universidadedoservidor.ui.screens.certificado.CertificadoViewModel
+import com.sgaf.universidadedoservidor.ui.screens.avaliacao.AvaliacaoScreen
+import com.sgaf.universidadedoservidor.ui.screens.avaliacao.AvaliacaoViewModel
 import com.sgaf.universidadedoservidor.ui.screens.settings.SettingsScreen
 import com.sgaf.universidadedoservidor.ui.screens.settings.SettingsViewModel
 import com.sgaf.universidadedoservidor.ui.screens.acessibilidade.AcessibilidadeScreen
 import com.sgaf.universidadedoservidor.ui.screens.acessibilidade.AcessibilidadeViewModel
+import com.sgaf.universidadedoservidor.ui.screens.desempenho.DesempenhoScreen
+import com.sgaf.universidadedoservidor.ui.screens.desempenho.DesempenhoViewModel
 import com.sgaf.universidadedoservidor.ui.screens.search.SearchScreen
 import com.sgaf.universidadedoservidor.ui.screens.search.SearchViewModel
 import com.sgaf.universidadedoservidor.ui.screens.splash.SplashScreen
@@ -148,7 +154,18 @@ fun AppNavigation(
                 },
                 onNavigateToBusca = {
                     navController.navigate(Busca)
+                },
+                onNavigateToDesempenho = {
+                    navController.navigate(Desempenho)
                 }
+            )
+        }
+
+        composable<Desempenho> {
+            val viewModel: DesempenhoViewModel = hiltViewModel()
+            DesempenhoScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 
@@ -209,6 +226,9 @@ fun AppNavigation(
                 },
                 onNavigateToCertificado = { cursoId ->
                     navController.navigate(Certificado(cursoId))
+                },
+                onNavigateToAvaliacao = { cursoId ->
+                    navController.navigate(Avaliacao(cursoId))
                 }
             )
         }
@@ -216,6 +236,14 @@ fun AppNavigation(
         composable<Certificado> {
             val viewModel: CertificadoViewModel = hiltViewModel()
             CertificadoScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<Avaliacao> {
+            val viewModel: AvaliacaoViewModel = hiltViewModel()
+            AvaliacaoScreen(
                 viewModel = viewModel,
                 onNavigateBack = { navController.popBackStack() }
             )

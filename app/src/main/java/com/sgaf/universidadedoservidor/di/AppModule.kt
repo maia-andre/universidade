@@ -6,6 +6,7 @@ import com.sgaf.universidadedoservidor.data.local.dao.CursoDao
 import com.sgaf.universidadedoservidor.data.local.dao.ModuloDao
 import com.sgaf.universidadedoservidor.data.local.dao.ProgressoDao
 import com.sgaf.universidadedoservidor.data.local.dao.SearchDao
+import com.sgaf.universidadedoservidor.data.local.dao.AvaliacaoDao
 import com.sgaf.universidadedoservidor.data.local.database.AppDatabase
 import com.sgaf.universidadedoservidor.data.repository.CursoRepositoryImpl
 import com.sgaf.universidadedoservidor.domain.repository.CursoRepository
@@ -74,6 +75,12 @@ abstract class AppModule {
         @Singleton
         fun provideSearchDao(database: AppDatabase): SearchDao {
             return database.searchDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideAvaliacaoDao(database: AppDatabase): AvaliacaoDao {
+            return database.avaliacaoDao()
         }
     }
 }

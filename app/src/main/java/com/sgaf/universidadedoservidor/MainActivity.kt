@@ -33,6 +33,8 @@ import com.sgaf.universidadedoservidor.ui.navigation.Cursos
 import com.sgaf.universidadedoservidor.ui.navigation.Configuracoes
 import com.sgaf.universidadedoservidor.ui.navigation.Acessibilidade
 import com.sgaf.universidadedoservidor.ui.navigation.Desempenho
+import com.sgaf.universidadedoservidor.ui.navigation.Ferramentas
+import com.sgaf.universidadedoservidor.ui.navigation.FerramentaEditor
 import com.sgaf.universidadedoservidor.ui.navigation.Busca
 import com.sgaf.universidadedoservidor.ui.navigation.CursoDetail
 import com.sgaf.universidadedoservidor.ui.navigation.Certificado
@@ -48,6 +50,10 @@ import com.sgaf.universidadedoservidor.ui.screens.acessibilidade.AcessibilidadeS
 import com.sgaf.universidadedoservidor.ui.screens.acessibilidade.AcessibilidadeViewModel
 import com.sgaf.universidadedoservidor.ui.screens.desempenho.DesempenhoScreen
 import com.sgaf.universidadedoservidor.ui.screens.desempenho.DesempenhoViewModel
+import com.sgaf.universidadedoservidor.ui.screens.ferramentas.FerramentasScreen
+import com.sgaf.universidadedoservidor.ui.screens.ferramentas.FerramentasViewModel
+import com.sgaf.universidadedoservidor.ui.screens.ferramentas.FerramentaEditorScreen
+import com.sgaf.universidadedoservidor.ui.screens.ferramentas.FerramentaEditorViewModel
 import com.sgaf.universidadedoservidor.ui.screens.search.SearchScreen
 import com.sgaf.universidadedoservidor.ui.screens.search.SearchViewModel
 import com.sgaf.universidadedoservidor.ui.screens.splash.SplashScreen
@@ -157,6 +163,9 @@ fun AppNavigation(
                 },
                 onNavigateToDesempenho = {
                     navController.navigate(Desempenho)
+                },
+                onNavigateToFerramentas = {
+                    navController.navigate(Ferramentas)
                 }
             )
         }
@@ -164,6 +173,25 @@ fun AppNavigation(
         composable<Desempenho> {
             val viewModel: DesempenhoViewModel = hiltViewModel()
             DesempenhoScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<Ferramentas> {
+            val viewModel: FerramentasViewModel = hiltViewModel()
+            FerramentasScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onAbrirEditor = { tipo, id ->
+                    navController.navigate(FerramentaEditor(tipo.name, id))
+                }
+            )
+        }
+
+        composable<FerramentaEditor> {
+            val viewModel: FerramentaEditorViewModel = hiltViewModel()
+            FerramentaEditorScreen(
                 viewModel = viewModel,
                 onNavigateBack = { navController.popBackStack() }
             )

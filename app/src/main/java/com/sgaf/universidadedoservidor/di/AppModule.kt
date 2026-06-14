@@ -7,9 +7,12 @@ import com.sgaf.universidadedoservidor.data.local.dao.ModuloDao
 import com.sgaf.universidadedoservidor.data.local.dao.ProgressoDao
 import com.sgaf.universidadedoservidor.data.local.dao.SearchDao
 import com.sgaf.universidadedoservidor.data.local.dao.AvaliacaoDao
+import com.sgaf.universidadedoservidor.data.local.dao.FerramentaDao
 import com.sgaf.universidadedoservidor.data.local.database.AppDatabase
 import com.sgaf.universidadedoservidor.data.repository.CursoRepositoryImpl
+import com.sgaf.universidadedoservidor.data.repository.FerramentaRepositoryImpl
 import com.sgaf.universidadedoservidor.domain.repository.CursoRepository
+import com.sgaf.universidadedoservidor.domain.repository.FerramentaRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -29,6 +32,12 @@ abstract class AppModule {
     abstract fun bindCursoRepository(
         impl: CursoRepositoryImpl
     ): CursoRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFerramentaRepository(
+        impl: FerramentaRepositoryImpl
+    ): FerramentaRepository
 
     companion object {
 
@@ -81,6 +90,12 @@ abstract class AppModule {
         @Singleton
         fun provideAvaliacaoDao(database: AppDatabase): AvaliacaoDao {
             return database.avaliacaoDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideFerramentaDao(database: AppDatabase): FerramentaDao {
+            return database.ferramentaDao()
         }
     }
 }

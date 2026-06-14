@@ -2,4 +2,6 @@
 <paths>
     <!-- Certificados gerados em cacheDir/certificados/ (Item 4) -->
     <cache-path name="certificados" path="certificados/" />
+    <!-- Ferramentas práticas exportadas em cacheDir/ferramentas/ (v4 Item 2) -->
+    <cache-path name="ferramentas" path="ferramentas/" />
 </paths>

@@ -21,6 +21,12 @@ object Acessibilidade
 object Desempenho
 
 @Serializable
+object Ferramentas
+
+@Serializable
+data class FerramentaEditor(val tipo: String, val ferramentaId: Long)
+
+@Serializable
 object Busca
 
 @Serializable

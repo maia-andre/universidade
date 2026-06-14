@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
@@ -42,6 +43,7 @@ fun HomeScreen(
     onNavigateToConfig: () -> Unit = {},
     onNavigateToBusca: () -> Unit = {},
     onNavigateToDesempenho: () -> Unit = {},
+    onNavigateToFerramentas: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
@@ -300,6 +302,53 @@ fun HomeScreen(
                                 )
                                 Text(
                                     text = "Conclusão e acertos por módulo",
+                                    fontSize = 12.sp,
+                                    color = TextGray
+                                )
+                            }
+                            Icon(
+                                imageVector = Icons.Default.ChevronRight,
+                                contentDescription = null,
+                                tint = TextGray
+                            )
+                        }
+                    }
+                }
+
+                // Ferramentas Práticas (v4 Item 2)
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onNavigateToFerramentas() },
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (isSystemInDarkTheme()) CardDarkBg else Color.White
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Build,
+                                contentDescription = null,
+                                tint = BlueSjc,
+                                modifier = Modifier.size(28.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Ferramentas Práticas",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "Matriz SWOT, 5W2H e mais",
                                     fontSize = 12.sp,
                                     color = TextGray
                                 )

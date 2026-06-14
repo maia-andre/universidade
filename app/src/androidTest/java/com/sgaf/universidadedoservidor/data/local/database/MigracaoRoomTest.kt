@@ -28,7 +28,7 @@ class MigracaoRoomTest {
     )
 
     @Test
-    fun migra_v3_para_v5_preservando_progresso() {
+    fun migra_v3_para_v6_preservando_progresso() {
         // Cria o banco na v3 e insere um progresso (esquema antigo: sem colunas de quiz/acesso).
         helper.createDatabase(dbName, 3).apply {
             execSQL(
@@ -37,9 +37,9 @@ class MigracaoRoomTest {
             close()
         }
 
-        // Aplica v3→v4→v5 e valida o esquema final contra o schema exportado.
+        // Aplica v3→v4→v5→v6 e valida o esquema final contra o schema exportado.
         val db = helper.runMigrationsAndValidate(
-            dbName, 5, true, MIGRATION_3_4, MIGRATION_4_5
+            dbName, 6, true, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6
         )
 
         db.query(
@@ -49,11 +49,17 @@ class MigracaoRoomTest {
             assertTrue("linha de progresso deve sobreviver à migração", cursor.moveToFirst())
             assertEquals(1, cursor.getInt(0)) // isCompleted preservado
             assertEquals(1, cursor.getInt(1)) // isFavorite preservado
-            // Novas colunas existem com os defaults da migração.
+            // Colunas do quiz (v4) existem com os defaults da migração.
             assertEquals(0, cursor.getInt(2)) // quizSubmitted
             assertEquals(0, cursor.getInt(3)) // quizAcertos
             assertEquals("", cursor.getString(4)) // quizRespostasJson
             assertEquals(0L, cursor.getLong(5)) // ultimoAcessoEm
+        }
+
+        // A tabela de ferramentas (v6) deve existir e estar vazia.
+        db.query("SELECT COUNT(*) FROM ferramentas").use { cursor ->
+            assertTrue(cursor.moveToFirst())
+            assertEquals(0, cursor.getInt(0))
         }
     }
 }

@@ -8,7 +8,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.School
@@ -39,6 +41,7 @@ fun HomeScreen(
     onNavigateToAula: (Int) -> Unit,
     onNavigateToConfig: () -> Unit = {},
     onNavigateToBusca: () -> Unit = {},
+    onNavigateToDesempenho: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
@@ -260,6 +263,53 @@ fun HomeScreen(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
+                    }
+                }
+
+                // Meu Desempenho (v4 Item 3)
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onNavigateToDesempenho() },
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (isSystemInDarkTheme()) CardDarkBg else Color.White
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.BarChart,
+                                contentDescription = null,
+                                tint = BlueSjc,
+                                modifier = Modifier.size(28.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Meu Desempenho",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "Conclusão e acertos por módulo",
+                                    fontSize = 12.sp,
+                                    color = TextGray
+                                )
+                            }
+                            Icon(
+                                imageVector = Icons.Default.ChevronRight,
+                                contentDescription = null,
+                                tint = TextGray
+                            )
+                        }
                     }
                 }
 

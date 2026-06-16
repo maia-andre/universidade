@@ -110,7 +110,7 @@ fun CursoDetailScreen(
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(
-                                containerColor = if (isSystemInDarkTheme()) CardDarkBg else Color.White
+                                containerColor = MaterialTheme.colorScheme.surface
                             ),
                             shape = RoundedCornerShape(12.dp)
                         ) {
@@ -239,7 +239,7 @@ fun ModuloListItem(
                 }
             },
         colors = CardDefaults.cardColors(
-            containerColor = if (isSystemInDarkTheme()) CardDarkBg else Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)

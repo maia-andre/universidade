@@ -1,7 +1,6 @@
 package com.sgaf.universidadedoservidor.ui.screens.settings
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sgaf.universidadedoservidor.core.data.preferences.ThemeMode
 import com.sgaf.universidadedoservidor.ui.theme.BlueSjc
-import com.sgaf.universidadedoservidor.ui.theme.CardDarkBg
 import com.sgaf.universidadedoservidor.ui.theme.TextGray
 
 private data class ThemeOption(
@@ -112,7 +110,7 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .clickable(onClick = onNavigateToAcessibilidade),
                 colors = CardDefaults.cardColors(
-                    containerColor = if (isSystemInDarkTheme()) CardDarkBg else MaterialTheme.colorScheme.surface
+                    containerColor = MaterialTheme.colorScheme.surface
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -163,7 +161,7 @@ private fun ThemeOptionRow(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSystemInDarkTheme()) CardDarkBg else MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         shape = RoundedCornerShape(12.dp),
         border = if (selected) androidx.compose.foundation.BorderStroke(2.dp, BlueSjc) else null

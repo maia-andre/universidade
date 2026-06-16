@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import com.sgaf.universidadedoservidor.core.components.LoadingBox
 import com.sgaf.universidadedoservidor.domain.model.Curso
 import com.sgaf.universidadedoservidor.ui.theme.BlueSjc
-import com.sgaf.universidadedoservidor.ui.theme.CardDarkBg
 import com.sgaf.universidadedoservidor.ui.theme.GoldSjc
 import com.sgaf.universidadedoservidor.ui.theme.TextGray
 

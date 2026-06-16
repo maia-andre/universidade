@@ -1,7 +1,6 @@
 package com.sgaf.universidadedoservidor.ui.screens.search
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,7 +24,6 @@ import androidx.compose.ui.unit.sp
 import com.sgaf.universidadedoservidor.core.components.EmptyMessage
 import com.sgaf.universidadedoservidor.domain.model.ResultadoBusca
 import com.sgaf.universidadedoservidor.ui.theme.BlueSjc
-import com.sgaf.universidadedoservidor.ui.theme.CardDarkBg
 import com.sgaf.universidadedoservidor.ui.theme.GoldSjc
 import com.sgaf.universidadedoservidor.ui.theme.TextGray
 
@@ -128,7 +126,7 @@ private fun SearchResultCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSystemInDarkTheme()) CardDarkBg else MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)

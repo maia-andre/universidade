@@ -2,7 +2,6 @@ package com.sgaf.universidadedoservidor.ui.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -206,7 +205,7 @@ fun HomeScreen(
                                 .fillMaxWidth()
                                 .clickable { onNavigateToAula(aulaId) },
                             colors = CardDefaults.cardColors(
-                                containerColor = if (isSystemInDarkTheme()) CardDarkBg else Color.White
+                                containerColor = MaterialTheme.colorScheme.surface
                             ),
                             shape = RoundedCornerShape(12.dp),
                             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -275,7 +274,7 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .clickable { onNavigateToDesempenho() },
                         colors = CardDefaults.cardColors(
-                            containerColor = if (isSystemInDarkTheme()) CardDarkBg else Color.White
+                            containerColor = MaterialTheme.colorScheme.surface
                         ),
                         shape = RoundedCornerShape(12.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -322,7 +321,7 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .clickable { onNavigateToFerramentas() },
                         colors = CardDefaults.cardColors(
-                            containerColor = if (isSystemInDarkTheme()) CardDarkBg else Color.White
+                            containerColor = MaterialTheme.colorScheme.surface
                         ),
                         shape = RoundedCornerShape(12.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -377,7 +376,7 @@ fun HomeScreen(
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(
-                                containerColor = if (isSystemInDarkTheme()) CardDarkBg else Color.White
+                                containerColor = MaterialTheme.colorScheme.surface
                             ),
                             shape = RoundedCornerShape(12.dp)
                         ) {
@@ -415,7 +414,7 @@ fun HomeScreen(
                                 .fillMaxWidth()
                                 .clickable { onNavigateToAula(aulaId) },
                             colors = CardDefaults.cardColors(
-                                containerColor = if (isSystemInDarkTheme()) CardDarkBg else Color.White
+                                containerColor = MaterialTheme.colorScheme.surface
                             ),
                             shape = RoundedCornerShape(12.dp),
                             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)

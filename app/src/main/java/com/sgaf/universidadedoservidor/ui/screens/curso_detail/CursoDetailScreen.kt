@@ -39,6 +39,7 @@ fun CursoDetailScreen(
     onNavigateBack: () -> Unit,
     onNavigateToAula: (Int) -> Unit,
     onNavigateToCertificado: (Int) -> Unit = {},
+    onNavigateToProvaFinal: (Int) -> Unit = {},
     onNavigateToAvaliacao: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -155,23 +156,45 @@ fun CursoDetailScreen(
                         // Curso 100% concluído: libera a emissão do certificado (Item 4)
                         if (totalCurso > 0 && concluidasCurso == totalCurso) {
                             Spacer(modifier = Modifier.height(12.dp))
-                            Button(
-                                onClick = { onNavigateToCertificado(curso.id) },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(52.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = GoldSjc,
-                                    contentColor = Color.Black
-                                ),
-                                shape = RoundedCornerShape(12.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.WorkspacePremium,
-                                    contentDescription = null
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("Emitir Certificado", fontWeight = FontWeight.Bold)
+                            if (state.provaFinalAprovada) {
+                                Button(
+                                    onClick = { onNavigateToCertificado(curso.id) },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(52.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = GoldSjc,
+                                        contentColor = Color.Black
+                                    ),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.WorkspacePremium,
+                                        contentDescription = null
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("Emitir Certificado", fontWeight = FontWeight.Bold)
+                                }
+                            } else {
+                                // Prova final ainda não aprovada: o caminho para o certificado passa por ela.
+                                Button(
+                                    onClick = { onNavigateToProvaFinal(curso.id) },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(52.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = BlueSjc,
+                                        contentColor = Color.White
+                                    ),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PlayArrow,
+                                        contentDescription = null
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("Fazer prova final", fontWeight = FontWeight.Bold)
+                                }
                             }
                             Spacer(modifier = Modifier.height(8.dp))
                             OutlinedButton(

@@ -6,22 +6,25 @@ import androidx.lifecycle.viewModelScope
 import com.sgaf.universidadedoservidor.core.data.preferences.UserPreferencesRepository
 import com.sgaf.universidadedoservidor.domain.model.Curso
 import com.sgaf.universidadedoservidor.domain.usecase.GetCursoDetailUseCase
+import com.sgaf.universidadedoservidor.domain.usecase.GetResultadoProvaFinalUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class CursoDetailState(
     val curso: Curso? = null,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val provaFinalAprovada: Boolean = false
 )
 
 @HiltViewModel
 class CursoDetailViewModel @Inject constructor(
     private val getCursoDetailUseCase: GetCursoDetailUseCase,
+    private val getResultadoProvaFinalUseCase: GetResultadoProvaFinalUseCase,
     private val userPreferencesRepository: UserPreferencesRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -36,8 +39,15 @@ class CursoDetailViewModel @Inject constructor(
         }
     }
 
-    val state: StateFlow<CursoDetailState> = getCursoDetailUseCase(cursoId).map { curso ->
-        CursoDetailState(curso = curso, isLoading = false)
+    val state: StateFlow<CursoDetailState> = combine(
+        getCursoDetailUseCase(cursoId),
+        getResultadoProvaFinalUseCase(cursoId)
+    ) { curso, prova ->
+        CursoDetailState(
+            curso = curso,
+            isLoading = false,
+            provaFinalAprovada = prova?.aprovado == true
+        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),

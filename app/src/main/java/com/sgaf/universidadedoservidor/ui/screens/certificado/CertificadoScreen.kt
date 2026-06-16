@@ -63,8 +63,8 @@ fun CertificadoScreen(
                 EmptyMessage(
                     icon = Icons.Default.Lock,
                     titulo = "Certificado ainda indisponível",
-                    descricao = "Conclua 100% das aulas e atinja o aproveitamento mínimo para emitir o certificado.\n\n" +
-                        "Aulas: ${d.aulasConcluidas}/${d.totalAulas} • Aproveitamento: ${(d.percentualAcerto * 100).toInt()}%",
+                    descricao = "Conclua 100% das aulas e seja aprovado na prova final para emitir o certificado.\n\n" +
+                        "Aulas: ${d.aulasConcluidas}/${d.totalAulas} • Prova final: ${(d.percentualAcerto * 100).toInt()}%",
                     contentPadding = innerPadding
                 )
             }
@@ -97,7 +97,7 @@ fun CertificadoScreen(
                         color = BlueSjc
                     )
                     Text(
-                        text = "Aproveitamento: ${(d.percentualAcerto * 100).toInt()}%  •  ${d.aulasConcluidas}/${d.totalAulas} aulas",
+                        text = "Prova final: ${(d.percentualAcerto * 100).toInt()}%  •  ${d.aulasConcluidas}/${d.totalAulas} aulas",
                         fontSize = 13.sp,
                         color = SuccessGreen,
                         fontWeight = FontWeight.Medium

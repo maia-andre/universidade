@@ -5,8 +5,11 @@ import com.sgaf.universidadedoservidor.data.local.dao.CursoDao
 import com.sgaf.universidadedoservidor.data.local.dao.ModuloDao
 import com.sgaf.universidadedoservidor.data.local.dao.ProgressoDao
 import com.sgaf.universidadedoservidor.data.local.dao.SearchDao
+import com.sgaf.universidadedoservidor.data.local.dao.AvaliacaoDao
 import com.sgaf.universidadedoservidor.data.local.entities.AulaEntity
 import com.sgaf.universidadedoservidor.data.local.entities.ProgressoEntity
+import com.sgaf.universidadedoservidor.data.local.entities.AvaliacaoEntity
+import com.sgaf.universidadedoservidor.domain.model.AvaliacaoCurso
 import com.sgaf.universidadedoservidor.data.local.database.QuizPerguntaJson
 import com.sgaf.universidadedoservidor.domain.model.Aula
 import com.sgaf.universidadedoservidor.domain.model.Curso
@@ -29,7 +32,8 @@ class CursoRepositoryImpl @Inject constructor(
     private val moduloDao: ModuloDao,
     private val aulaDao: AulaDao,
     private val progressoDao: ProgressoDao,
-    private val searchDao: SearchDao
+    private val searchDao: SearchDao,
+    private val avaliacaoDao: AvaliacaoDao
 ) : CursoRepository {
 
     private val json = Json { ignoreUnknownKeys = true }
@@ -204,6 +208,35 @@ class CursoRepositoryImpl @Inject constructor(
                 trecho = extrairTrecho(row.conteudo, limpo)
             )
         }
+    }
+
+    override suspend fun salvarAvaliacao(avaliacao: AvaliacaoCurso) {
+        val r = avaliacao.respostas
+        // Mantém o id existente (se houver) para substituir em vez de duplicar.
+        val existenteId = avaliacaoDao.getAvaliacaoForCurso(avaliacao.cursoId)?.id ?: 0
+        avaliacaoDao.insertAvaliacao(
+            AvaliacaoEntity(
+                id = existenteId,
+                cursoId = avaliacao.cursoId,
+                pergunta1 = r.getOrElse(0) { 0 },
+                pergunta2 = r.getOrElse(1) { 0 },
+                pergunta3 = r.getOrElse(2) { 0 },
+                pergunta4 = r.getOrElse(3) { 0 },
+                pergunta5 = r.getOrElse(4) { 0 },
+                oQueMaisGostou = avaliacao.oQueMaisGostou,
+                sugestoes = avaliacao.sugestoes
+            )
+        )
+    }
+
+    override suspend fun getAvaliacao(cursoId: Int): AvaliacaoCurso? {
+        val e = avaliacaoDao.getAvaliacaoForCurso(cursoId) ?: return null
+        return AvaliacaoCurso(
+            cursoId = e.cursoId,
+            respostas = listOf(e.pergunta1, e.pergunta2, e.pergunta3, e.pergunta4, e.pergunta5),
+            oQueMaisGostou = e.oQueMaisGostou,
+            sugestoes = e.sugestoes
+        )
     }
 
     /** Extrai um trecho do conteúdo ao redor da primeira ocorrência do termo (sem Markdown). */

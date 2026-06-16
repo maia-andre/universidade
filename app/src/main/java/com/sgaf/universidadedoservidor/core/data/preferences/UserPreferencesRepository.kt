@@ -2,6 +2,7 @@ package com.sgaf.universidadedoservidor.core.data.preferences
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -64,6 +65,24 @@ class UserPreferencesRepository @Inject constructor(
         }
     }
 
+    /** Alto contraste (acessibilidade, v4). Off por padrão. */
+    val highContrast: Flow<Boolean> = dataStore.data.map { prefs ->
+        prefs[KEY_HIGH_CONTRAST] ?: false
+    }
+
+    suspend fun setHighContrast(ativo: Boolean) {
+        dataStore.edit { prefs -> prefs[KEY_HIGH_CONTRAST] = ativo }
+    }
+
+    /** Redução de movimento: desabilita animações/transições (acessibilidade, v4). Off por padrão. */
+    val reducedMotion: Flow<Boolean> = dataStore.data.map { prefs ->
+        prefs[KEY_REDUCED_MOTION] ?: false
+    }
+
+    suspend fun setReducedMotion(ativo: Boolean) {
+        dataStore.edit { prefs -> prefs[KEY_REDUCED_MOTION] = ativo }
+    }
+
     companion object {
         const val DATASTORE_NAME = "user_preferences"
         const val FONT_SCALE_MIN = 0.85f
@@ -72,5 +91,7 @@ class UserPreferencesRepository @Inject constructor(
         private val KEY_CURSO_ATIVO_ID = intPreferencesKey("curso_ativo_id")
         private val KEY_THEME_MODE = stringPreferencesKey("theme_mode")
         private val KEY_FONT_SCALE = floatPreferencesKey("font_scale")
+        private val KEY_HIGH_CONTRAST = booleanPreferencesKey("high_contrast")
+        private val KEY_REDUCED_MOTION = booleanPreferencesKey("reduced_motion")
     }
 }

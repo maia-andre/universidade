@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Brightness6
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.SettingsBrightness
@@ -37,6 +39,7 @@ private data class ThemeOption(
 fun SettingsScreen(
     viewModel: SettingsViewModel,
     onNavigateBack: () -> Unit,
+    onNavigateToAcessibilidade: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
@@ -101,6 +104,49 @@ fun SettingsScreen(
                     selected = option.mode == themeMode,
                     onClick = { viewModel.setThemeMode(option.mode) }
                 )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onNavigateToAcessibilidade),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (isSystemInDarkTheme()) CardDarkBg else MaterialTheme.colorScheme.surface
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Accessibility,
+                        contentDescription = null,
+                        tint = BlueSjc
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Acessibilidade",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = "Tamanho de fonte, alto contraste e movimento",
+                            fontSize = 13.sp,
+                            color = TextGray
+                        )
+                    }
+                    Icon(
+                        imageVector = Icons.Default.ChevronRight,
+                        contentDescription = null,
+                        tint = TextGray
+                    )
+                }
             }
         }
     }

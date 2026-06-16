@@ -13,6 +13,8 @@ import com.sgaf.universidadedoservidor.data.local.entities.ProgressoEntity
 import com.sgaf.universidadedoservidor.data.local.entities.AvaliacaoEntity
 import com.sgaf.universidadedoservidor.data.local.dao.AvaliacaoDao
 import com.sgaf.universidadedoservidor.data.local.dao.SearchDao
+import com.sgaf.universidadedoservidor.data.local.entities.FerramentaEntity
+import com.sgaf.universidadedoservidor.data.local.dao.FerramentaDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,8 +25,8 @@ import com.sgaf.universidadedoservidor.data.local.entities.CursoEntity
 import com.sgaf.universidadedoservidor.data.local.dao.CursoDao
 
 @Database(
-    entities = [CursoEntity::class, ModuloEntity::class, AulaEntity::class, ProgressoEntity::class, AvaliacaoEntity::class],
-    version = 5,
+    entities = [CursoEntity::class, ModuloEntity::class, AulaEntity::class, ProgressoEntity::class, AvaliacaoEntity::class, FerramentaEntity::class],
+    version = 6,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -35,6 +37,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun progressoDao(): ProgressoDao
     abstract fun avaliacaoDao(): AvaliacaoDao
     abstract fun searchDao(): SearchDao
+    abstract fun ferramentaDao(): FerramentaDao
 
     companion object {
         private const val DATABASE_NAME = "universidade_database_v3"

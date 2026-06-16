@@ -33,7 +33,23 @@ val MIGRATION_4_5 = Migration(4, 5) { db ->
     db.execSQL("ALTER TABLE progresso ADD COLUMN ultimoAcessoEm INTEGER NOT NULL DEFAULT 0")
 }
 
+/**
+ * v5 -> v6 (v4 Item 2): cria a tabela de ferramentas práticas (SWOT, 5W2H).
+ * Apenas adiciona uma tabela nova — não afeta dados existentes.
+ */
+val MIGRATION_5_6 = Migration(5, 6) { db ->
+    db.execSQL(
+        "CREATE TABLE IF NOT EXISTS `ferramentas` (" +
+            "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+            "`tipo` TEXT NOT NULL, " +
+            "`titulo` TEXT NOT NULL, " +
+            "`camposJson` TEXT NOT NULL, " +
+            "`criadoEm` INTEGER NOT NULL)"
+    )
+}
+
 val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_3_4,
     MIGRATION_4_5,
+    MIGRATION_5_6,
 )

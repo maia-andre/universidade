@@ -3,6 +3,7 @@ package com.sgaf.universidadedoservidor.domain.repository
 import com.sgaf.universidadedoservidor.domain.model.Curso
 import com.sgaf.universidadedoservidor.domain.model.Modulo
 import com.sgaf.universidadedoservidor.domain.model.Aula
+import com.sgaf.universidadedoservidor.domain.model.ResultadoBusca
 import kotlinx.coroutines.flow.Flow
 
 interface CursoRepository {
@@ -13,4 +14,21 @@ interface CursoRepository {
     fun getAulaById(aulaId: Int): Flow<Aula?>
     suspend fun toggleFavorito(aulaId: Int)
     suspend fun marcarConcluida(aulaId: Int)
+
+    /** Persiste o resultado de uma submissão de quiz. Se [aprovado], marca a aula como concluída. */
+    suspend fun salvarResultadoQuiz(
+        aulaId: Int,
+        respostas: Map<Int, Int>,
+        acertos: Int,
+        aprovado: Boolean
+    )
+
+    /** Limpa o estado submetido do quiz (botão "Tentar Novamente"). Não altera a conclusão. */
+    suspend fun resetarQuiz(aulaId: Int)
+
+    /** Registra o instante do último acesso à aula (Item 2.2). */
+    suspend fun registrarAcesso(aulaId: Int)
+
+    /** Busca global por termo em cursos/módulos/aulas disponíveis (Item 3). */
+    suspend fun buscar(termo: String): List<ResultadoBusca>
 }

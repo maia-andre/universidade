@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
@@ -17,11 +17,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sgaf.universidadedoservidor.core.components.LoadingBox
 import com.sgaf.universidadedoservidor.domain.model.Curso
 import com.sgaf.universidadedoservidor.ui.theme.BlueSjc
 import com.sgaf.universidadedoservidor.ui.theme.CardDarkBg
@@ -50,7 +52,7 @@ fun CursosScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Voltar"
                         )
                     }
@@ -63,14 +65,7 @@ fun CursosScreen(
         modifier = modifier
     ) { innerPadding ->
         if (state.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(color = GoldSjc)
-            }
+            LoadingBox(contentPadding = innerPadding)
         } else {
             LazyColumn(
                 modifier = Modifier
@@ -160,9 +155,46 @@ fun AvailableCursoCard(
                 fontSize = 13.sp,
                 lineHeight = 18.sp
             )
-            
+
+            // Progresso do curso (Item 2.4)
+            val todasAulas = curso.modulos.flatMap { it.aulas }
+            val totalAulas = todasAulas.size
+            val concluidas = todasAulas.count { it.isCompleted }
+            val percentual = if (totalAulas > 0) concluidas.toFloat() / totalAulas.toFloat() else 0f
+
+            if (totalAulas > 0) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "$concluidas/$totalAulas aulas",
+                        color = Color.White.copy(alpha = 0.85f),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        text = "${(percentual * 100).toInt()}%",
+                        color = GoldSjc,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Spacer(modifier = Modifier.height(6.dp))
+                LinearProgressIndicator(
+                    progress = { percentual },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(3.dp)),
+                    color = GoldSjc,
+                    trackColor = Color.White.copy(alpha = 0.25f)
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,

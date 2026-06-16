@@ -12,6 +12,7 @@ import com.sgaf.universidadedoservidor.data.local.entities.ModuloEntity
 import com.sgaf.universidadedoservidor.data.local.entities.ProgressoEntity
 import com.sgaf.universidadedoservidor.data.local.entities.AvaliacaoEntity
 import com.sgaf.universidadedoservidor.data.local.dao.AvaliacaoDao
+import com.sgaf.universidadedoservidor.data.local.dao.SearchDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,8 +24,8 @@ import com.sgaf.universidadedoservidor.data.local.dao.CursoDao
 
 @Database(
     entities = [CursoEntity::class, ModuloEntity::class, AulaEntity::class, ProgressoEntity::class, AvaliacaoEntity::class],
-    version = 3,
-    exportSchema = false
+    version = 5,
+    exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
 
@@ -33,6 +34,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun aulaDao(): AulaDao
     abstract fun progressoDao(): ProgressoDao
     abstract fun avaliacaoDao(): AvaliacaoDao
+    abstract fun searchDao(): SearchDao
 
     companion object {
         private const val DATABASE_NAME = "universidade_database_v3"
@@ -47,7 +49,10 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     DATABASE_NAME
                 )
-                .fallbackToDestructiveMigration()
+                // Migrações versionadas preservam o progresso dos usuários (beta ativo).
+                // Destrutivo APENAS em downgrade (não ocorre em uso normal de loja).
+                .addMigrations(*ALL_MIGRATIONS)
+                .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
                 .addCallback(DatabaseCallback(context, coroutineScope))
                 .build()
                 INSTANCE = instance

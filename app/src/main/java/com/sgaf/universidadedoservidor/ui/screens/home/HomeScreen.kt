@@ -12,6 +12,8 @@ import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sgaf.universidadedoservidor.core.components.LoadingBox
 import com.sgaf.universidadedoservidor.ui.components.GraduationCapIcon
 import com.sgaf.universidadedoservidor.ui.theme.*
 
@@ -34,6 +37,8 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onNavigateToCursos: () -> Unit,
     onNavigateToAula: (Int) -> Unit,
+    onNavigateToConfig: () -> Unit = {},
+    onNavigateToBusca: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
@@ -52,6 +57,22 @@ fun HomeScreen(
                         )
                     }
                 },
+                actions = {
+                    IconButton(onClick = onNavigateToBusca) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Buscar",
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                    IconButton(onClick = onNavigateToConfig) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Configurações",
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 )
@@ -60,14 +81,7 @@ fun HomeScreen(
         modifier = modifier
     ) { innerPadding ->
         if (state.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(color = GoldSjc)
-            }
+            LoadingBox(contentPadding = innerPadding)
         } else {
             LazyColumn(
                 modifier = Modifier
@@ -93,8 +107,7 @@ fun HomeScreen(
 
                 // Progress Card
                 item {
-                    val progressPercent = (state.percentualConclusao * 100).toInt()
-                    
+                    val cursoAtivoTitulo = state.cursoAtivoTitulo
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -109,45 +122,120 @@ fun HomeScreen(
                             )
                             .padding(20.dp)
                     ) {
-                        Column {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+                        if (cursoAtivoTitulo == null) {
+                            // Nenhum curso ativo ainda: convida o aluno a escolher um curso.
+                            Column {
                                 Text(
-                                    text = "Seu Progresso Geral",
+                                    text = "Comece sua capacitação",
                                     color = Color.White,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )
+                                Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = "$progressPercent%",
-                                    color = GoldSjc,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Black
+                                    text = "Você ainda não iniciou nenhum curso. Acesse a plataforma e escolha por onde começar.",
+                                    color = Color.White.copy(alpha = 0.85f),
+                                    fontSize = 13.sp
                                 )
                             }
-                            
-                            Spacer(modifier = Modifier.height(12.dp))
-                            
-                            LinearProgressIndicator(
-                                progress = { state.percentualConclusao },
+                        } else {
+                            val progressPercent = (state.percentualConclusao * 100).toInt()
+                            Column {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Seu Progresso",
+                                        color = Color.White,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = "$progressPercent%",
+                                        color = GoldSjc,
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Black
+                                    )
+                                }
+
+                                Text(
+                                    text = cursoAtivoTitulo,
+                                    color = GoldSjc.copy(alpha = 0.9f),
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                LinearProgressIndicator(
+                                    progress = { state.percentualConclusao },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(8.dp)
+                                        .clip(RoundedCornerShape(4.dp)),
+                                    color = GoldSjc,
+                                    trackColor = Color.White.copy(alpha = 0.2f)
+                                )
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                Text(
+                                    text = "${state.concluídasAulas} de ${state.totalAulas} aulas concluídas",
+                                    color = Color.White.copy(alpha = 0.8f),
+                                    fontSize = 13.sp
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // Continuar de onde parou (Item 2.2)
+                state.continuarAula?.let { (aulaId, titulo) ->
+                    item {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onNavigateToAula(aulaId) },
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (isSystemInDarkTheme()) CardDarkBg else Color.White
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                        ) {
+                            Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(8.dp)
-                                    .clip(RoundedCornerShape(4.dp)),
-                                color = GoldSjc,
-                                trackColor = Color.White.copy(alpha = 0.2f)
-                            )
-                            
-                            Spacer(modifier = Modifier.height(12.dp))
-                            
-                            Text(
-                                text = "${state.concluídasAulas} de ${state.totalAulas} aulas concluídas",
-                                color = Color.White.copy(alpha = 0.8f),
-                                fontSize = 13.sp
-                            )
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.PlayArrow,
+                                    contentDescription = null,
+                                    tint = GoldSjc,
+                                    modifier = Modifier.size(28.dp)
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = "Continuar de onde parou",
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = TextGray
+                                    )
+                                    Text(
+                                        text = titulo,
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+                            }
                         }
                     }
                 }

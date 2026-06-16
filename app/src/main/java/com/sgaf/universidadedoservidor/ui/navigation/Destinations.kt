@@ -12,7 +12,16 @@ object Home
 object Cursos
 
 @Serializable
+object Configuracoes
+
+@Serializable
+object Busca
+
+@Serializable
 data class CursoDetail(val cursoId: Int)
+
+@Serializable
+data class Certificado(val cursoId: Int)
 
 @Serializable
 data class Aula(val aulaId: Int)

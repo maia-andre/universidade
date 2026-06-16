@@ -44,6 +44,12 @@ kotlin {
     }
 }
 
+// Exporta o schema do Room para diffs versionados e testes de migração.
+// Cada incremento de versão do banco gera um JSON em app/schemas.
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
@@ -71,6 +77,9 @@ dependencies {
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)
+
+    // Preferences (DataStore)
+    implementation(libs.androidx.datastore.preferences)
     
     // Markdown
     implementation(libs.markdown.renderer.m3)

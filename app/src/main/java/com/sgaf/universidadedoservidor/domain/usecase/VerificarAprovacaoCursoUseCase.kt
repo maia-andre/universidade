@@ -1,20 +1,51 @@
 package com.sgaf.universidadedoservidor.domain.usecase
 
-import com.sgaf.universidadedoservidor.data.local.dao.AulaDao
-import com.sgaf.universidadedoservidor.data.local.dao.ProgressoDao
 import com.sgaf.universidadedoservidor.core.utils.Constants
-import kotlinx.coroutines.flow.first
+import com.sgaf.universidadedoservidor.domain.model.DesempenhoCurso
+import com.sgaf.universidadedoservidor.domain.repository.CursoRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class VerificarAprovacaoCursoUseCase(
-    private val aulaDao: AulaDao,
-    private val progressoDao: ProgressoDao
+/**
+ * Calcula o desempenho do aluno no curso e determina a aprovação (Item 4).
+ *
+ * Regra de negócio (V2): aprovado quando 100% das aulas estão concluídas E o
+ * aproveitamento no quiz é >= [Constants.MINIMUM_PASSING_SCORE]%.
+ */
+class VerificarAprovacaoCursoUseCase @Inject constructor(
+    private val repository: CursoRepository
 ) {
-    suspend operator fun invoke(cursoId: Int): Boolean {
-        // Obter todas as aulas do curso (via modulos)
-        // Simplificado: Assumiremos que a regra é Nota >= 70%
-        // O progresso salva a pontuacao de cada aula.
-        
-        // Aqui deve buscar do banco o progresso. Como é mock:
-        return true
-    }
+    operator fun invoke(cursoId: Int): Flow<DesempenhoCurso?> =
+        repository.getCursoById(cursoId).map { curso ->
+            if (curso == null) return@map null
+
+            val aulas = curso.modulos.flatMap { it.aulas }
+            val totalAulas = aulas.size
+            val concluidas = aulas.count { it.isCompleted }
+
+            var totalQuestoes = 0
+            var acertos = 0
+            aulas.forEach { aula ->
+                totalQuestoes += aula.quiz.size
+                aula.quiz.forEachIndexed { index, questao ->
+                    if (aula.quizRespostas[index] == questao.respostaCorretaIndex) acertos++
+                }
+            }
+
+            val percentual = if (totalQuestoes > 0) acertos.toFloat() / totalQuestoes else 0f
+            val aprovado = totalAulas > 0 &&
+                concluidas == totalAulas &&
+                percentual >= Constants.MINIMUM_PASSING_SCORE / 100f
+
+            DesempenhoCurso(
+                cursoTitulo = curso.titulo,
+                totalAulas = totalAulas,
+                aulasConcluidas = concluidas,
+                totalQuestoes = totalQuestoes,
+                acertos = acertos,
+                percentualAcerto = percentual,
+                aprovado = aprovado
+            )
+        }
 }

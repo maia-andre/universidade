@@ -240,3 +240,38 @@ Alinhar a versão do Compose BOM para uma versão estável e compatível com a s
    composeBom = "2025.02.00"
    ```
 2. Realize o **Sync Project with Gradle Files**. Caso o erro persista, certifique-se de que a versão do Kotlin no bloco `plugins` coincide com a versão do plugin `kotlin-compose`.
+
+---
+
+## 10. Firebase (`google-services`) no AGP 9 — receita validada
+
+### Sintoma (risco antecipado)
+Adicionar o plugin `com.google.gms.google-services` e os SDKs do Firebase é um candidato natural a quebra no AGP 9.x (como o Hilt na seção 2): plugins do ecossistema Google frequentemente referenciam APIs de DSL removidas. O risco foi tratado com um **probe isolado** (apólice) **antes** de comprometer a integração: adicionar plugin + BoM + um `google-services.json` *dummy*, rodar `:app:assembleDebug` e reverter.
+
+### Causa Raiz / Resultado
+**Não houve incompatibilidade.** Validado em **2026-06-21**: build `SUCCESSFUL`, com a task `:app:processDebugGoogleServices` executando e o APK gerado — convivendo com AGP **9.2.1**, Gradle 9, KSP2, Kotlin **2.2.10**, Hilt **2.59.2**, Room **2.8.4** e Compose BOM **2025.02.00**.
+
+### Solução de Engenharia (receita)
+Versões provadas: **`google-services` 4.5.0** + **`firebase-bom` 34.15.0**. Tudo via o **version catalog** (regra do projeto — **nunca** hardcoded como o console do Firebase sugere).
+
+1. `gradle/libs.versions.toml`:
+   ```toml
+   [versions]
+   googleServices = "4.5.0"
+   firebaseBom = "34.15.0"
+
+   [libraries]
+   firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+   firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+   firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+
+   [plugins]
+   google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+   ```
+2. `build.gradle.kts` (raiz): `alias(libs.plugins.google.services) apply false`
+3. `app/build.gradle.kts`: aplicar `alias(libs.plugins.google.services)` e declarar
+   `implementation(platform(libs.firebase.bom))` + `libs.firebase.auth` + `libs.firebase.firestore`
+   (SDKs **sem versão** — o BoM gerencia).
+
+> [!IMPORTANT]
+> O plugin **exige** um `app/google-services.json` presente, senão a task `processDebugGoogleServices` falha com *"File google-services.json is missing"*. O arquivo é **gitignored** (config local do projeto Firebase). Para builds sem o arquivo real (ex.: CI), um `google-services.json` *dummy* com `package_name` igual ao `applicationId` (`com.sgaf.universidadedoservidor`) é suficiente para compilar.

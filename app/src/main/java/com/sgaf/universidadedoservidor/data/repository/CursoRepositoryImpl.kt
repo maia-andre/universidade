@@ -17,9 +17,17 @@ import com.sgaf.universidadedoservidor.domain.model.Modulo
 import com.sgaf.universidadedoservidor.domain.model.QuizPergunta
 import com.sgaf.universidadedoservidor.domain.model.ResultadoBusca
 import com.sgaf.universidadedoservidor.domain.repository.CursoRepository
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
@@ -28,6 +36,7 @@ import javax.inject.Singleton
 
 @Singleton
 class CursoRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val cursoDao: CursoDao,
     private val moduloDao: ModuloDao,
     private val aulaDao: AulaDao,
@@ -239,6 +248,29 @@ class CursoRepositoryImpl @Inject constructor(
         )
     }
 
+    // Carga horária vive nos assets (curso_data.json) e é lida em runtime — assim chega às
+    // instalações já publicadas sem re-seed, como a prova final. Imutável após a 1ª leitura.
+    @Volatile
+    private var cargaHorariaCache: Map<Int, Int>? = null
+    private val cargaHorariaMutex = Mutex()
+
+    override suspend fun getCargaHoraria(cursoId: Int): Int? = carregarCargaHoraria()[cursoId]
+
+    private suspend fun carregarCargaHoraria(): Map<Int, Int> {
+        cargaHorariaCache?.let { return it }
+        return cargaHorariaMutex.withLock {
+            cargaHorariaCache ?: run {
+                val texto = withContext(Dispatchers.IO) {
+                    context.assets.open("curso_data.json").bufferedReader().use { it.readText() }
+                }
+                json.decodeFromString(ListSerializer(CargaHorariaCursoJson.serializer()), texto)
+                    .mapNotNull { c -> c.cargaHoraria?.let { c.id to it } }
+                    .toMap()
+                    .also { cargaHorariaCache = it }
+            }
+        }
+    }
+
     /** Extrai um trecho do conteúdo ao redor da primeira ocorrência do termo (sem Markdown). */
     private fun extrairTrecho(conteudo: String, termo: String): String? {
         val texto = conteudo.replace(Regex("[#*`>\\-\\[\\]()]"), " ").replace(Regex("\\s+"), " ").trim()
@@ -288,3 +320,10 @@ class CursoRepositoryImpl @Inject constructor(
     }
 
 }
+
+/** DTO para ler apenas a carga horária de cada curso do curso_data.json (ignora o resto). */
+@Serializable
+private data class CargaHorariaCursoJson(
+    val id: Int,
+    val cargaHoraria: Int? = null
+)

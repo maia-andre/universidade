@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sgaf.universidadedoservidor.core.data.preferences.ThemeMode
 import com.sgaf.universidadedoservidor.ui.navigation.Splash
+import com.sgaf.universidadedoservidor.ui.navigation.Login
 import com.sgaf.universidadedoservidor.ui.navigation.Home
 import com.sgaf.universidadedoservidor.ui.navigation.Cursos
 import com.sgaf.universidadedoservidor.ui.navigation.Configuracoes
@@ -58,6 +59,9 @@ import com.sgaf.universidadedoservidor.ui.screens.ferramentas.FerramentaEditorVi
 import com.sgaf.universidadedoservidor.ui.screens.search.SearchScreen
 import com.sgaf.universidadedoservidor.ui.screens.search.SearchViewModel
 import com.sgaf.universidadedoservidor.ui.screens.splash.SplashScreen
+import com.sgaf.universidadedoservidor.ui.screens.splash.SplashViewModel
+import com.sgaf.universidadedoservidor.ui.screens.login.LoginScreen
+import com.sgaf.universidadedoservidor.ui.screens.login.LoginViewModel
 import com.sgaf.universidadedoservidor.ui.screens.home.HomeScreen
 import com.sgaf.universidadedoservidor.ui.screens.home.HomeViewModel
 import com.sgaf.universidadedoservidor.ui.screens.cursos.CursosScreen
@@ -138,16 +142,30 @@ fun AppNavigation(
         }
     ) {
         composable<Splash> {
+            val splashViewModel: SplashViewModel = hiltViewModel()
             SplashScreen(
                 reducedMotion = reducedMotion,
                 onSplashFinished = {
-                    navController.navigate(Home) {
+                    val destino: Any = if (splashViewModel.isLoggedIn()) Home else Login
+                    navController.navigate(destino) {
                         popUpTo(Splash) { inclusive = true }
                     }
                 }
             )
         }
-        
+
+        composable<Login> {
+            val viewModel: LoginViewModel = hiltViewModel()
+            LoginScreen(
+                viewModel = viewModel,
+                onLoginSuccess = {
+                    navController.navigate(Home) {
+                        popUpTo(Login) { inclusive = true }
+                    }
+                }
+            )
+        }
+
         composable<Home> {
             val viewModel: HomeViewModel = hiltViewModel()
             HomeScreen(
@@ -220,6 +238,11 @@ fun AppNavigation(
                 },
                 onNavigateToAcessibilidade = {
                     navController.navigate(Acessibilidade)
+                },
+                onLogout = {
+                    navController.navigate(Login) {
+                        popUpTo(Home) { inclusive = true }
+                    }
                 }
             )
         }

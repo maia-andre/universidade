@@ -36,6 +36,7 @@ fun CertificadoScreen(
     modifier: Modifier = Modifier
 ) {
     val desempenho by viewModel.desempenho.collectAsState()
+    val cargaHoraria by viewModel.cargaHoraria.collectAsState()
     val context = LocalContext.current
     var nome by remember { mutableStateOf("") }
 
@@ -119,9 +120,11 @@ fun CertificadoScreen(
                                 context = context,
                                 nomeAluno = nome.trim(),
                                 cursoTitulo = d.cursoTitulo,
-                                aproveitamento = (d.percentualAcerto * 100).toInt(),
+                                cargaHoraria = cargaHoraria,
                                 dataTexto = LocalDate.now().format(DATA_FORMATTER)
                             )
+                            // D4: registra a conclusão no backend (upstream para o RH).
+                            viewModel.registrarConclusao((d.percentualAcerto * 100).toInt())
                             val uri = FileProvider.getUriForFile(
                                 context,
                                 "${context.packageName}.fileprovider",

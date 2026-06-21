@@ -2,6 +2,7 @@
   {
     "id": 1,
     "titulo": "Curso de Supervisores",
+    "cargaHoraria": 20,
     "descricao": "Curso essencial de capacitação para supervisores da Prefeitura Municipal de São José dos Campos.",
     "provaFinal": [
       { "pergunta": "Qual é um dever fundamental do servidor público no trato com o cidadão?", "opcoes": ["Tratar com urbanidade e presteza os cidadãos", "Priorizar interesses pessoais", "Recusar fé a documentos públicos", "Delegar suas funções a terceiros sem autorização"], "respostaCorretaIndex": 0 },
@@ -559,6 +560,7 @@
   {
     "id": 2,
     "titulo": "Gestão de Patrimônio",
+    "cargaHoraria": 4,
     "descricao": "Controle e inventário de bens públicos do município.",
     "provaFinal": [
       { "pergunta": "O que caracteriza um bem móvel?", "opcoes": ["Pode ser transportado sem alteração de sua substância", "É sempre um imóvel", "Não pode ser inventariado", "Pertence somente a particulares"], "respostaCorretaIndex": 0 },
@@ -595,6 +597,7 @@
   {
     "id": 3,
     "titulo": "Noções de Licitação",
+    "cargaHoraria": 4,
     "descricao": "Processos de compras governamentais sob a nova lei.",
     "provaFinal": [
       { "pergunta": "A principal característica do pregão é a busca pelo:", "opcoes": ["Maior preço", "Menor preço", "Sorteio entre fornecedores", "Indicação direta"], "respostaCorretaIndex": 1 },
@@ -631,6 +634,7 @@
   {
     "id": 4,
     "titulo": "Almoxarifado e Suprimentos",
+    "cargaHoraria": 4,
     "descricao": "Gestão de estoque e fluxo de materiais na prefeitura.",
     "provaFinal": [
       { "pergunta": "Ao receber um material no almoxarifado, deve-se primeiro:", "opcoes": ["Guardar sem conferir", "Conferir a nota fiscal e a quantidade", "Descartar a embalagem", "Usar o material imediatamente"], "respostaCorretaIndex": 1 },

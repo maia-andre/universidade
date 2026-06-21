@@ -1,0 +1,50 @@
+// Security Rules do Firestore — Universidade do Servidor (plataforma v6).
+//
+// Estas regras protegem o acesso do CLIENTE (app Android, autenticado via Firebase Auth).
+// O Painel RH usa o Admin SDK, que IGNORA estas regras — por isso a escrita administrativa
+// (criar servidor, liberar curso) é permitida só pelo painel, e negada ao cliente aqui.
+//
+// Modelo de dados: ver docs/arquitetura_plataforma_v6.md §4.2.
+// Como aplicar: Firebase Console → Firestore Database → Regras → colar e Publicar
+//               (ou `firebase deploy --only firestore:rules` se usar a CLI).
+//
+// Só passa a valer quando o app conectar (Fase D). Até lá, não afeta o painel.
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Perfil do servidor: o aluno lê só o seu. Criação/edição é só via Admin SDK (painel).
+    match /servidores/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Matrículas: o aluno lê as suas (consultar filtrando por uid == auth.uid).
+    // Liberar curso é só via Admin SDK (painel).
+    match /matriculas/{matriculaId} {
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow write: if false;
+    }
+
+    // Conclusões: o aluno cria/atualiza a sua (upstream do app). Não pode apagar nem mexer na de outro.
+    match /conclusoes/{conclusaoId} {
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow create, update: if request.auth != null
+                            && request.resource.data.uid == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // Configuração de conteúdo (fase futura — sync de catálogo): leitura por autenticados.
+    match /config/{doc} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Tudo o mais: negado por padrão.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,14 @@
+# Tema com a identidade de São José dos Campos (azul oficial #003882).
+[theme]
+primaryColor = "#003882"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F4F8"
+textColor = "#1A1A1A"
+font = "sans serif"
+
+[server]
+headless = true
+port = 8501
+
+[browser]
+gatherUsageStats = false

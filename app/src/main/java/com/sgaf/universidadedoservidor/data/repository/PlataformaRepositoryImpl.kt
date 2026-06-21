@@ -21,6 +21,19 @@ class PlataformaRepositoryImpl @Inject constructor() : PlataformaRepository {
         matricula?.getLong("cursoId")?.toInt()
     }.getOrNull()
 
+    override suspend fun getCursosMatriculados(uid: String): List<Int> = runCatching {
+        db.collection("matriculas").whereEqualTo("uid", uid).get().await()
+            .documents
+            .filter { it.getString("status") == "ativa" }
+            .mapNotNull { it.getLong("cursoId")?.toInt() }
+    }.getOrDefault(emptyList())
+
+    override suspend fun getCursosConcluidos(uid: String): List<Int> = runCatching {
+        db.collection("conclusoes").whereEqualTo("uid", uid).get().await()
+            .documents
+            .mapNotNull { it.getLong("cursoId")?.toInt() }
+    }.getOrDefault(emptyList())
+
     override suspend fun getNomeServidor(uid: String): String? = runCatching {
         db.collection("servidores").document(uid).get().await().getString("nome")
     }.getOrNull()

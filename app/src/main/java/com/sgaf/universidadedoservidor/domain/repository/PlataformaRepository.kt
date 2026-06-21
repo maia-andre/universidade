@@ -9,6 +9,12 @@ interface PlataformaRepository {
     /** Curso liberado para o servidor (matrícula "ativa"), ou null se não houver. */
     suspend fun getCursoAtivoMatriculado(uid: String): Int?
 
+    /** Todos os cursos com matrícula "ativa" liberada pelo RH (v7, Item 1). */
+    suspend fun getCursosMatriculados(uid: String): List<Int>
+
+    /** Todos os cursos que o servidor já concluiu (registro durável no Firestore) (v7, Item 1). */
+    suspend fun getCursosConcluidos(uid: String): List<Int>
+
     /** Nome do servidor no cadastro (para o certificado), ou null. */
     suspend fun getNomeServidor(uid: String): String?
 

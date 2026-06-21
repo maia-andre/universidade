@@ -12,41 +12,38 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class CursoDetailState(
     val curso: Curso? = null,
     val isLoading: Boolean = true,
-    val provaFinalAprovada: Boolean = false
+    val provaFinalAprovada: Boolean = false,
+    /** Aluno sem acesso a este curso (nem matriculado nem concluído) — v7, Item 1. */
+    val bloqueado: Boolean = false
 )
 
 @HiltViewModel
 class CursoDetailViewModel @Inject constructor(
     private val getCursoDetailUseCase: GetCursoDetailUseCase,
     private val getResultadoProvaFinalUseCase: GetResultadoProvaFinalUseCase,
-    private val userPreferencesRepository: UserPreferencesRepository,
+    userPreferencesRepository: UserPreferencesRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val cursoId: Int = savedStateHandle.get<Int>("cursoId") ?: 1
 
-    init {
-        // Entrar em um curso o torna o curso ativo do aluno (regra de 1 curso por vez).
-        // Cursos bloqueados não são navegáveis, então só chegam aqui cursos disponíveis.
-        viewModelScope.launch {
-            userPreferencesRepository.setCursoAtivo(cursoId)
-        }
-    }
-
+    // O "curso ativo" passa a vir só da matrícula (sync na Home) — sem a heurística antiga de
+    // "entrar no curso o torna ativo" (v7, Item 1.5). Aqui só gateamos o acesso (defesa em profundidade).
     val state: StateFlow<CursoDetailState> = combine(
         getCursoDetailUseCase(cursoId),
-        getResultadoProvaFinalUseCase(cursoId)
-    ) { curso, prova ->
+        getResultadoProvaFinalUseCase(cursoId),
+        userPreferencesRepository.cursosAcessiveis
+    ) { curso, prova, acessiveis ->
         CursoDetailState(
             curso = curso,
             isLoading = false,
-            provaFinalAprovada = prova?.aprovado == true
+            provaFinalAprovada = prova?.aprovado == true,
+            bloqueado = cursoId !in acessiveis
         )
     }.stateIn(
         scope = viewModelScope,

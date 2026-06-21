@@ -40,9 +40,10 @@ class HomeViewModel @Inject constructor(
 
     val state: StateFlow<HomeState> = combine(
         getCursosUseCase(),
-        userPreferencesRepository.cursoAtivoId
-    ) { cursos, cursoAtivoId ->
-        val cursoAtivo = resolverCursoAtivo(cursos, cursoAtivoId)
+        userPreferencesRepository.cursoAtivoId,
+        userPreferencesRepository.cursosAcessiveis
+    ) { cursos, cursoAtivoId, acessiveis ->
+        val cursoAtivo = resolverCursoAtivo(cursos, cursoAtivoId, acessiveis)
             ?: return@combine HomeState(isLoading = false)
 
         val allAulas = cursoAtivo.modulos.flatMap { it.aulas }
@@ -73,11 +74,13 @@ class HomeViewModel @Inject constructor(
     )
 
     /**
-     * Curso ativo do aluno: o explicitamente escolhido (se ainda disponível) ou,
-     * como fallback, o primeiro curso disponível. Null quando não há curso disponível.
+     * Curso ativo do aluno: o explicitamente escolhido (se acessível) ou, como fallback, o
+     * primeiro curso acessível. Só considera cursos a que o aluno tem acesso — matriculado ou
+     * concluído (v7, Item 1). Null quando não há nenhum acessível.
      */
-    private fun resolverCursoAtivo(cursos: List<Curso>, cursoAtivoId: Int?): Curso? {
-        val escolhido = cursoAtivoId?.let { id -> cursos.firstOrNull { it.id == id && it.isAvailable } }
-        return escolhido ?: cursos.firstOrNull { it.isAvailable }
+    private fun resolverCursoAtivo(cursos: List<Curso>, cursoAtivoId: Int?, acessiveis: Set<Int>): Curso? {
+        fun acessivel(c: Curso) = c.isAvailable && c.id in acessiveis
+        val escolhido = cursoAtivoId?.let { id -> cursos.firstOrNull { it.id == id && acessivel(it) } }
+        return escolhido ?: cursos.firstOrNull { acessivel(it) }
     }
 }

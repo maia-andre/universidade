@@ -29,10 +29,13 @@ service cloud.firestore {
     }
 
     // Conclusões: o aluno cria/atualiza a sua (upstream do app). Não pode apagar nem mexer na de outro.
+    // v7 (Item 1.4): só pode concluir um curso em que ESTÁ MATRICULADO — defesa em profundidade
+    // contra um cliente adulterado certificar curso não liberado. O doc de matrícula é {uid}_{cursoId}.
     match /conclusoes/{conclusaoId} {
       allow read: if request.auth != null && resource.data.uid == request.auth.uid;
       allow create, update: if request.auth != null
-                            && request.resource.data.uid == request.auth.uid;
+                            && request.resource.data.uid == request.auth.uid
+                            && exists(/databases/$(database)/documents/matriculas/$(request.auth.uid + '_' + string(request.resource.data.cursoId)));
       allow delete: if false;
     }
 

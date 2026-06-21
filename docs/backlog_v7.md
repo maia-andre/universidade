@@ -1,7 +1,7 @@
 # Backlog V7 — Correções da plataforma + maturidade (pós-smoke test V6)
 
 Data: 21 de junho de 2026
-Status: planejamento (a iniciar após o merge da `features_v6` na `main`).
+Status: **Itens 1–5 implementados e build-verde** na `features_v7` (validação no device em curso). Itens 6 e 7 **movidos para a V8** (`docs/backlog_v8.md`).
 
 > **Onde estamos:** a V6 entregou a virada para **plataforma institucional** (login Firebase + Painel RH + sync de mão dupla) e foi **validada por smoke test no device** (ver §1). O teste confirmou que o eixo central funciona — login, reset por e-mail, sync da matrícula, conclusão chegando ao painel, desempenho e "continuar de onde parou" — mas expôs **um bug de controle de acesso** e listou ajustes de acabamento. Esta é a fase de **endurecer o que já existe** antes de avançar para conteúdo dinâmico e novos cursos.
 >
@@ -120,28 +120,13 @@ Em resumo: **`acessível = matriculado OU concluído`**. "Curso ativo" volta a s
 
 ---
 
-## Item 6 — Conteúdo dinâmico + ampliação do catálogo
+## Item 6 — Conteúdo dinâmico + ampliação do catálogo  → **movido para a V8**
 
-**Objetivo:** permitir que o RH atualize conteúdo de cursos **sem republicar APK** e ampliar o catálogo (pendências #7 da V6 e itens 2 e 7.1 do backlog_v3).
+Adiado para a V8 (Item 1). Ver `docs/backlog_v8.md`.
 
-**Escopo (fase maior, a detalhar):**
-- **6.1 — Sincronização de conteúdo** (`version.json` + leitura em runtime), seguindo o padrão "ler de assets/remoto em runtime" já usado para prova final e carga horária.
-- **6.2 — Página de Conteúdo no painel** (gerenciar cursos/módulos/aulas).
-- **6.3 — Completar os cursos** esqueleto (Patrimônio, Licitação, Almoxarifado) e novos cursos prioritários do RH.
+## Item 7 — LGPD + distribuição  → **movido para a V8**
 
----
-
-## Item 7 — LGPD + débitos herdados
-
-- **7.1 — LGPD:** revisar `docs/politica_de_privacidade.md` com login + dados pessoais já em produção (nome, matrícula, e-mail, lotação). Obrigatório.
-- **7.2 — Distribuição:** o aviso do Play Protect ("desenvolvedor desconhecido") é do **sideload**, não da assinatura — planejar publicação por **track de teste interno** no Play Console (AAB assinado) para o RH/beta instalar sem alerta. Atenção: debug↔release não atualizam um sobre o outro (assinaturas distintas) e desinstalar apaga o Room local — padronizar a **mesma chave** para preservar progresso.
-- **7.3 — Migração da máquina de build (assinatura).** A V1 está em teste fechado assinada com a **upload key** gerada no Android Studio, hoje **só no PC do trabalho**; a V2 (pós-V7) será buildada **só no PC pessoal**. Cada release gera um **`.aab` novo** (normal), mas a **chave não pode mudar** sem cuidado:
-  - **App signing key** (Google, via Play App Signing) **nunca muda** e não está em máquina nenhuma — atualizações para os testers são preservadas.
-  - **Upload key** (a que assina o `.aab`) é o que precisa migrar. Subir a V2 com uma **chave nova** é **rejeitado** pela Play.
-  - **Caminho A (preferido):** copiar o keystore `.jks` + as 3 credenciais (senha do keystore, alias, senha da chave) do PC do trabalho para o PC pessoal e fazer backup seguro. Fazer **antes** de perder acesso à máquina do trabalho.
-  - **Caminho B (fallback):** **reset da upload key** no Play Console (Integridade do app → Assinatura do app) — gera-se uma upload key nova no PC pessoal; a app signing key não muda. Só existe se o **Play App Signing estiver ativado** (confirmar no console).
-  - **Pré-requisito:** confirmar "Play App Signing: ativado" no Play Console. Se não estiver, a chave do trabalho é a única que assina o app — perdê-la inviabiliza updates.
-- **7.3 — Aparelho compartilhado** (progresso por `uid`): segue **congelado** em `docs/backlog_congelado.md` (C1) — reavaliar quando houver demanda.
+Adiado/redistribuído na V8: LGPD + auth real de operador no Item 2; distribuição + migração da chave + a publicação propriamente dita no **Item 3 (Publicação da V2 no teste interno)**. Ver `docs/backlog_v8.md`. (Aparelho compartilhado segue congelado em `docs/backlog_congelado.md`, C1.)
 
 ---
 

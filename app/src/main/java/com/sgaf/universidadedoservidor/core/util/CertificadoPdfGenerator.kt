@@ -56,11 +56,10 @@ object CertificadoPdfGenerator {
         return arquivo
     }
 
-    /** Banner azul superior simétrico com acentos ouro nos cantos; faixa cinza sutil na base. */
+    /** Banner azul superior simétrico ("capelo") com acentos ouro nos cantos. */
     private fun desenharOrnamentos(canvas: Canvas) {
         val ouro = Paint().apply { color = OURO; style = Paint.Style.FILL; isAntiAlias = true }
         val azul = Paint().apply { color = AZUL; style = Paint.Style.FILL; isAntiAlias = true }
-        val cinza = Paint().apply { color = CINZA_FORMA; style = Paint.Style.FILL; isAntiAlias = true }
 
         // Faixa azul no topo, simétrica, com leve dip ao centro (banner do Modelo.pdf).
         canvas.drawPath(Path().apply {
@@ -74,11 +73,6 @@ object CertificadoPdfGenerator {
         canvas.drawPath(Path().apply {
             moveTo(LARGURA.toFloat(), 0f); lineTo(LARGURA - 220f, 0f); lineTo(LARGURA.toFloat(), 74f); close()
         }, ouro)
-        // Faixa cinza sutil na base.
-        canvas.drawPath(Path().apply {
-            moveTo(0f, ALTURA.toFloat()); lineTo(LARGURA.toFloat(), ALTURA.toFloat())
-            lineTo(LARGURA.toFloat(), ALTURA - 16f); lineTo(0f, ALTURA - 28f); close()
-        }, cinza)
     }
 
     private fun desenharMoldura(canvas: Canvas) {

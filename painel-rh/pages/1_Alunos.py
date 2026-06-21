@@ -46,6 +46,30 @@ with tab_planilha:
 
 with tab_lista:
     try:
-        st.dataframe(pd.DataFrame(alunos.listar_alunos()), width="stretch")
+        lista = alunos.listar_alunos()
     except Exception as e:  # noqa: BLE001
         st.error(str(e))
+        lista = []
+    st.dataframe(pd.DataFrame(lista), width="stretch")
+
+    if lista:
+        st.divider()
+        st.subheader("🔑 Redefinir senha")
+        st.caption("Define uma nova senha temporária para o aluno; oriente a troca no acesso.")
+        opcoes = {f"{a.get('nome', '?')} — {a.get('email', '')}": a["uid"] for a in lista}
+        with st.form("redefinir_senha"):
+            alvo = st.selectbox("Aluno", list(opcoes.keys()))
+            nova = st.text_input("Nova senha temporária", value="mudar@123")
+            reset_ok = st.form_submit_button("Redefinir senha")
+        if reset_ok:
+            if len(nova) < 6:
+                st.error("A senha deve ter ao menos 6 caracteres (regra do Firebase Auth).")
+            else:
+                try:
+                    alunos.redefinir_senha(opcoes[alvo], nova, operador)
+                    st.success(
+                        "Senha redefinida. Entregue a nova senha temporária ao servidor "
+                        "e oriente a troca no primeiro acesso."
+                    )
+                except Exception as e:  # noqa: BLE001
+                    st.error(f"Falha ao redefinir: {e}")

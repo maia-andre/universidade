@@ -14,8 +14,11 @@ SERVICE_ACCOUNT_PATH = os.environ.get(
     os.path.join(_BASE, "secrets", "service-account.json"),
 )
 
-# Senha de acesso ao painel (equipe de treinamento). Sobrescreva por env em produção.
-PANEL_PASSWORD = os.environ.get("UNISERVIDOR_PANEL_PASSWORD", "trocar-esta-senha")
+# Operadores do painel (usuário: senha) — ⚠️ CREDENCIAL DE TESTE.
+# Em produção: substituir por autenticação real (backend / per-operador); nunca senha em código.
+OPERADORES = {
+    "andre": "admin",
+}
 
 # Coleções do Firestore — espelham docs/arquitetura_plataforma_v6.md §4.2
 COL_SERVIDORES = "servidores"

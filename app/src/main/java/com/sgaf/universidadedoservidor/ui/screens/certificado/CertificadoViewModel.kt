@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sgaf.universidadedoservidor.domain.model.DesempenhoCurso
 import com.sgaf.universidadedoservidor.domain.usecase.ObterCargaHorariaUseCase
+import com.sgaf.universidadedoservidor.domain.usecase.RegistrarConclusaoUseCase
 import com.sgaf.universidadedoservidor.domain.usecase.VerificarAprovacaoCursoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class CertificadoViewModel @Inject constructor(
     verificarAprovacaoCursoUseCase: VerificarAprovacaoCursoUseCase,
     obterCargaHorariaUseCase: ObterCargaHorariaUseCase,
+    private val registrarConclusaoUseCase: RegistrarConclusaoUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -39,5 +41,10 @@ class CertificadoViewModel @Inject constructor(
         viewModelScope.launch {
             _cargaHoraria.value = obterCargaHorariaUseCase(cursoId)
         }
+    }
+
+    /** Registra a conclusão no backend (upstream RH) ao emitir o certificado. Best-effort/offline-safe. */
+    fun registrarConclusao(aproveitamento: Int) {
+        viewModelScope.launch { registrarConclusaoUseCase(cursoId, aproveitamento) }
     }
 }

@@ -123,6 +123,8 @@ fun CertificadoScreen(
                                 cargaHoraria = cargaHoraria,
                                 dataTexto = LocalDate.now().format(DATA_FORMATTER)
                             )
+                            // D4: registra a conclusão no backend (upstream para o RH).
+                            viewModel.registrarConclusao((d.percentualAcerto * 100).toInt())
                             val uri = FileProvider.getUriForFile(
                                 context,
                                 "${context.packageName}.fileprovider",

@@ -18,6 +18,8 @@ import com.sgaf.universidadedoservidor.domain.repository.FerramentaRepository
 import com.sgaf.universidadedoservidor.domain.repository.ProvaFinalRepository
 import com.sgaf.universidadedoservidor.core.data.repository.FirebaseAuthRepositoryImpl
 import com.sgaf.universidadedoservidor.core.domain.repository.AuthRepository
+import com.sgaf.universidadedoservidor.data.repository.PlataformaRepositoryImpl
+import com.sgaf.universidadedoservidor.domain.repository.PlataformaRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -55,6 +57,12 @@ abstract class AppModule {
     abstract fun bindAuthRepository(
         impl: FirebaseAuthRepositoryImpl
     ): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindPlataformaRepository(
+        impl: PlataformaRepositoryImpl
+    ): PlataformaRepository
 
     companion object {
 

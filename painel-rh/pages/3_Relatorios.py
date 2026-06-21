@@ -17,6 +17,6 @@ try:
 
     st.divider()
     st.subheader("Conclusões")
-    st.dataframe(pd.DataFrame(relatorios.listar_conclusoes()), use_container_width=True)
+    st.dataframe(pd.DataFrame(relatorios.listar_conclusoes()), width="stretch")
 except Exception as e:  # noqa: BLE001
     st.error(str(e))

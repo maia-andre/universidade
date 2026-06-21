@@ -34,6 +34,6 @@ else:
 st.divider()
 st.subheader("Matrículas existentes")
 try:
-    st.dataframe(pd.DataFrame(matriculas.listar_matriculas()), use_container_width=True)
+    st.dataframe(pd.DataFrame(matriculas.listar_matriculas()), width="stretch")
 except Exception as e:  # noqa: BLE001
     st.error(str(e))

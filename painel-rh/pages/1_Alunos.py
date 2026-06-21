@@ -42,10 +42,10 @@ with tab_planilha:
         st.success(f"{len(criados)} aluno(s) criado(s).")
         if erros:
             st.error(f"{len(erros)} com erro:")
-            st.dataframe(pd.DataFrame(erros, columns=["email", "erro"]), use_container_width=True)
+            st.dataframe(pd.DataFrame(erros, columns=["email", "erro"]), width="stretch")
 
 with tab_lista:
     try:
-        st.dataframe(pd.DataFrame(alunos.listar_alunos()), use_container_width=True)
+        st.dataframe(pd.DataFrame(alunos.listar_alunos()), width="stretch")
     except Exception as e:  # noqa: BLE001
         st.error(str(e))

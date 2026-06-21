@@ -1,0 +1,14 @@
+# Chave de service account (Admin SDK) — NUNCA versionar (privilégio total no projeto)
+secrets/
+service-account*.json
+*serviceAccount*.json
+.streamlit/secrets.toml
+
+# Dados de importação (planilhas com dados pessoais — LGPD)
+dados/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/

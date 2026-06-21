@@ -38,4 +38,10 @@ interface CursoRepository {
 
     /** Avaliação previamente enviada para o curso, se houver. */
     suspend fun getAvaliacao(cursoId: Int): AvaliacaoCurso?
+
+    /**
+     * Carga horária do curso (em horas), lida dos assets (`curso_data.json`) em runtime — assim
+     * chega a instalações já publicadas sem re-seed, como a prova final (v6, certificado).
+     */
+    suspend fun getCargaHoraria(cursoId: Int): Int?
 }

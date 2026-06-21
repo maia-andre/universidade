@@ -34,6 +34,31 @@ else:
 st.divider()
 st.subheader("Matrículas existentes")
 try:
-    st.dataframe(pd.DataFrame(matriculas.listar_matriculas()), width="stretch")
+    lista_matriculas = matriculas.listar_matriculas()
 except Exception as e:  # noqa: BLE001
     st.error(str(e))
+    lista_matriculas = []
+st.dataframe(pd.DataFrame(lista_matriculas), width="stretch")
+
+# Encerrar matrícula (desmatricular) — v7, Item 5.
+ativas = [m for m in lista_matriculas if m.get("status") == "ativa"]
+if ativas:
+    st.divider()
+    st.subheader("Encerrar matrícula")
+    st.caption("Encerra o acesso ao curso no app (cursos já concluídos seguem acessíveis).")
+    nomes = {a["uid"]: a.get("nome", a["uid"]) for a in lista}
+    rotulos = {
+        f"{nomes.get(m['uid'], m['uid'])} — {m.get('cursoTitulo', m.get('cursoId'))}": m
+        for m in ativas
+    }
+    with st.form("encerrar"):
+        alvo = st.selectbox("Matrícula ativa", list(rotulos.keys()))
+        enc = st.form_submit_button("Encerrar matrícula")
+    if enc:
+        m = rotulos[alvo]
+        try:
+            matriculas.encerrar_matricula(m["uid"], m["cursoId"], operador)
+            st.success("Matrícula encerrada.")
+            st.rerun()
+        except Exception as e:  # noqa: BLE001
+            st.error(str(e))

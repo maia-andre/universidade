@@ -19,6 +19,18 @@ def liberar_curso(uid, curso_id, operador):
     return doc_id
 
 
+def encerrar_matricula(uid, curso_id, operador):
+    """Encerra (desmatricula) uma matrícula: status='encerrada'. O curso deixa de ser
+    acessível no app — salvo se já concluído, que permanece acessível (v7, Item 5)."""
+    doc_id = f"{uid}_{curso_id}"
+    get_db().collection(COL_MATRICULAS).document(doc_id).update({
+        "status": "encerrada",
+        "encerradoPor": operador,
+        "encerradoEm": firestore.SERVER_TIMESTAMP,
+    })
+    return doc_id
+
+
 def listar_matriculas(limite=500):
     docs = get_db().collection(COL_MATRICULAS).limit(limite).stream()
     return [{"id": d.id, **d.to_dict()} for d in docs]

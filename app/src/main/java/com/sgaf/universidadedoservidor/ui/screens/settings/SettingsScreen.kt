@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Brightness6
 import androidx.compose.material.icons.filled.ChevronRight
@@ -38,6 +39,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel,
     onNavigateBack: () -> Unit,
     onNavigateToAcessibilidade: () -> Unit = {},
+    onLogout: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
@@ -145,6 +147,23 @@ fun SettingsScreen(
                         tint = TextGray
                     )
                 }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            OutlinedButton(
+                onClick = {
+                    viewModel.logout()
+                    onLogout()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Logout,
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Sair da conta")
             }
         }
     }

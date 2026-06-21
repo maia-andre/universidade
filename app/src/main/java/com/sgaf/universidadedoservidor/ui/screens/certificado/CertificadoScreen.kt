@@ -37,8 +37,16 @@ fun CertificadoScreen(
 ) {
     val desempenho by viewModel.desempenho.collectAsState()
     val cargaHoraria by viewModel.cargaHoraria.collectAsState()
+    val nomeSugerido by viewModel.nomeServidor.collectAsState()
     val context = LocalContext.current
     var nome by remember { mutableStateOf("") }
+
+    // Auto-preenche o nome do cadastro do RH (v7, Item 4); o aluno ainda pode ajustar.
+    LaunchedEffect(nomeSugerido) {
+        if (nome.isBlank() && !nomeSugerido.isNullOrBlank()) {
+            nome = nomeSugerido!!.trim()
+        }
+    }
 
     Scaffold(
         topBar = {

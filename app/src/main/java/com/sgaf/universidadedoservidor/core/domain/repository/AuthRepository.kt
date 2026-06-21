@@ -22,5 +22,11 @@ interface AuthRepository {
     /** Dispara o e-mail de redefinição de senha. */
     suspend fun enviarResetSenha(email: String): Result<Unit>
 
+    /**
+     * Troca a senha do usuário logado (v7, Item 2). Reautentica com a senha atual antes
+     * (o Firebase exige login recente para [updatePassword]).
+     */
+    suspend fun trocarSenha(senhaAtual: String, novaSenha: String): Result<Unit>
+
     fun logout()
 }

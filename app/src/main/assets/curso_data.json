@@ -2,7 +2,7 @@
   {
     "id": 1,
     "titulo": "Curso de Supervisores",
-    "cargaHoraria": 20,
+    "cargaHoraria": 33,
     "descricao": "Curso essencial de capacitação para supervisores da Prefeitura Municipal de São José dos Campos.",
     "provaFinal": [
       { "pergunta": "Qual é um dever fundamental do servidor público no trato com o cidadão?", "opcoes": ["Tratar com urbanidade e presteza os cidadãos", "Priorizar interesses pessoais", "Recusar fé a documentos públicos", "Delegar suas funções a terceiros sem autorização"], "respostaCorretaIndex": 0 },

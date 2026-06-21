@@ -27,6 +27,21 @@ def criar_aluno(nome, email, matricula, lotacao, senha_temporaria, operador):
     return user.uid
 
 
+def redefinir_senha(uid, nova_senha, operador):
+    """Define uma nova senha temporária para o aluno (RH dispara o reset).
+
+    O Admin SDK altera a credencial direto, sem depender de e-mail — o RH entrega
+    a nova senha e o servidor a troca no acesso. Carimba quem redefiniu e quando,
+    para auditoria, no doc do servidor (que sempre existe para um aluno listado).
+    """
+    get_auth().update_user(uid, password=nova_senha)
+    get_db().collection(COL_SERVIDORES).document(uid).update({
+        "senhaRedefinidaPor": operador,
+        "senhaRedefinidaEm": firestore.SERVER_TIMESTAMP,
+    })
+    return uid
+
+
 def listar_alunos(limite=500):
     docs = get_db().collection(COL_SERVIDORES).limit(limite).stream()
     return [{"uid": d.id, **d.to_dict()} for d in docs]

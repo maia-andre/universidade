@@ -24,9 +24,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sgaf.universidadedoservidor.core.components.LoadingBox
+import com.sgaf.universidadedoservidor.domain.model.AcessoCurso
 import com.sgaf.universidadedoservidor.domain.model.Curso
 import com.sgaf.universidadedoservidor.ui.theme.BlueSjc
 import com.sgaf.universidadedoservidor.ui.theme.GoldSjc
+import com.sgaf.universidadedoservidor.ui.theme.SuccessGreen
 import com.sgaf.universidadedoservidor.ui.theme.TextGray
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,14 +84,27 @@ fun CursosScreen(
                     )
                 }
 
-                items(state.cursos) { curso ->
-                    if (curso.isAvailable) {
-                        AvailableCursoCard(
+                items(state.cursos) { item ->
+                    val curso = item.curso
+                    when {
+                        // Conteúdo ainda não publicado ("Em breve") — independe de matrícula.
+                        !curso.isAvailable -> UnavailableCursoCard(curso = curso)
+                        // Nem matriculado nem concluído: bloqueado (não navegável).
+                        item.acesso == AcessoCurso.BLOQUEADO -> BloqueadoCursoCard(curso = curso)
+                        // Concluído: acessível para sempre.
+                        item.acesso == AcessoCurso.CONCLUIDO -> AvailableCursoCard(
                             curso = curso,
-                            onClick = { onNavigateToCursoDetail(curso.id) }
+                            onClick = { onNavigateToCursoDetail(curso.id) },
+                            badgeText = "CONCLUÍDO",
+                            badgeColor = SuccessGreen,
+                            badgeTextColor = Color.White
                         )
-                    } else {
-                        UnavailableCursoCard(curso = curso)
+                        // Matriculado, em andamento.
+                        else -> AvailableCursoCard(
+                            curso = curso,
+                            onClick = { onNavigateToCursoDetail(curso.id) },
+                            badgeText = "EM ANDAMENTO"
+                        )
                     }
                 }
                 
@@ -105,6 +120,9 @@ fun CursosScreen(
 fun AvailableCursoCard(
     curso: Curso,
     onClick: () -> Unit,
+    badgeText: String = "EM ANDAMENTO",
+    badgeColor: Color = GoldSjc,
+    badgeTextColor: Color = Color.Black,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -133,12 +151,12 @@ fun AvailableCursoCard(
                 )
                 
                 Surface(
-                    color = GoldSjc,
+                    color = badgeColor,
                     shape = RoundedCornerShape(20.dp)
                 ) {
                     Text(
-                        text = "ATIVO",
-                        color = Color.Black,
+                        text = badgeText,
+                        color = badgeTextColor,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
@@ -262,6 +280,64 @@ fun UnavailableCursoCard(
                 fontSize = 13.sp,
                 lineHeight = 18.sp,
                 fontStyle = FontStyle.Italic
+            )
+        }
+    }
+}
+
+/**
+ * Curso bloqueado: o aluno não está matriculado nem o concluiu (v7, Item 1).
+ * Visível no catálogo, mas não navegável (sem `clickable`).
+ */
+@Composable
+fun BloqueadoCursoCard(
+    curso: Curso,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = curso.titulo,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = "Bloqueado",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = curso.descricao,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                fontSize = 13.sp,
+                lineHeight = 18.sp
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = "Disponível mediante matrícula pelo RH.",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium
             )
         }
     }

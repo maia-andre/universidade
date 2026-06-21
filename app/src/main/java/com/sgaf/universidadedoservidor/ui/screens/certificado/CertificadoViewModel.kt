@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sgaf.universidadedoservidor.domain.model.DesempenhoCurso
 import com.sgaf.universidadedoservidor.domain.usecase.ObterCargaHorariaUseCase
+import com.sgaf.universidadedoservidor.domain.usecase.ObterNomeServidorUseCase
 import com.sgaf.universidadedoservidor.domain.usecase.RegistrarConclusaoUseCase
 import com.sgaf.universidadedoservidor.domain.usecase.VerificarAprovacaoCursoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class CertificadoViewModel @Inject constructor(
     verificarAprovacaoCursoUseCase: VerificarAprovacaoCursoUseCase,
     obterCargaHorariaUseCase: ObterCargaHorariaUseCase,
+    obterNomeServidorUseCase: ObterNomeServidorUseCase,
     private val registrarConclusaoUseCase: RegistrarConclusaoUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -37,9 +39,16 @@ class CertificadoViewModel @Inject constructor(
     /** Carga horária do curso (horas) para o certificado; null enquanto carrega ou se não definida. */
     val cargaHoraria: StateFlow<Int?> = _cargaHoraria.asStateFlow()
 
+    private val _nomeServidor = MutableStateFlow<String?>(null)
+    /** Nome do cadastro (RH) para preencher o certificado automaticamente; null = digitar (v7, Item 4). */
+    val nomeServidor: StateFlow<String?> = _nomeServidor.asStateFlow()
+
     init {
         viewModelScope.launch {
             _cargaHoraria.value = obterCargaHorariaUseCase(cursoId)
+        }
+        viewModelScope.launch {
+            _nomeServidor.value = obterNomeServidorUseCase()
         }
     }
 

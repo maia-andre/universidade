@@ -28,9 +28,10 @@ class DesempenhoViewModel @Inject constructor(
 
     val uiState: StateFlow<DesempenhoUiState> = combine(
         getCursosUseCase(),
-        userPreferencesRepository.cursoAtivoId
-    ) { cursos, cursoAtivoId ->
-        val ativo = resolverCursoAtivo(cursos, cursoAtivoId)
+        userPreferencesRepository.cursoAtivoId,
+        userPreferencesRepository.cursosAcessiveis
+    ) { cursos, cursoAtivoId, acessiveis ->
+        val ativo = resolverCursoAtivo(cursos, cursoAtivoId, acessiveis)
             ?: return@combine DesempenhoUiState(estatisticas = null, isLoading = false)
         DesempenhoUiState(
             estatisticas = calcularEstatisticasCursoUseCase(ativo),
@@ -42,8 +43,9 @@ class DesempenhoViewModel @Inject constructor(
         initialValue = DesempenhoUiState()
     )
 
-    private fun resolverCursoAtivo(cursos: List<Curso>, cursoAtivoId: Int?): Curso? {
-        val escolhido = cursoAtivoId?.let { id -> cursos.firstOrNull { it.id == id && it.isAvailable } }
-        return escolhido ?: cursos.firstOrNull { it.isAvailable }
+    private fun resolverCursoAtivo(cursos: List<Curso>, cursoAtivoId: Int?, acessiveis: Set<Int>): Curso? {
+        fun acessivel(c: Curso) = c.isAvailable && c.id in acessiveis
+        val escolhido = cursoAtivoId?.let { id -> cursos.firstOrNull { it.id == id && acessivel(it) } }
+        return escolhido ?: cursos.firstOrNull { acessivel(it) }
     }
 }

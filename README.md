@@ -1,8 +1,6 @@
 # 🎓 Universidade do Servidor
 
 <div align="center">
-  <img src="docs/ic_launcher-playstore.png" width="150" alt="Logo Universidade do Servidor">
-  <br><br>
   <img src="docs/feature_graphic_sjc.png" alt="Feature Graphic Universidade do Servidor">
 </div>
 

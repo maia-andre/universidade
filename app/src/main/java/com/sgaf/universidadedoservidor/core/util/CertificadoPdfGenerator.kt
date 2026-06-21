@@ -56,19 +56,25 @@ object CertificadoPdfGenerator {
         return arquivo
     }
 
-    /** Faixas angulares: triângulo ouro + faixa azul no topo; faixa cinza sutil na base. */
+    /** Banner azul superior simétrico com acentos ouro nos cantos; faixa cinza sutil na base. */
     private fun desenharOrnamentos(canvas: Canvas) {
         val ouro = Paint().apply { color = OURO; style = Paint.Style.FILL; isAntiAlias = true }
         val azul = Paint().apply { color = AZUL; style = Paint.Style.FILL; isAntiAlias = true }
         val cinza = Paint().apply { color = CINZA_FORMA; style = Paint.Style.FILL; isAntiAlias = true }
 
+        // Faixa azul no topo, simétrica, com leve dip ao centro (banner do Modelo.pdf).
         canvas.drawPath(Path().apply {
-            moveTo(0f, 0f); lineTo(330f, 0f); lineTo(0f, 140f); close()
+            moveTo(0f, 0f); lineTo(LARGURA.toFloat(), 0f)
+            lineTo(LARGURA.toFloat(), 50f); lineTo(LARGURA / 2f, 92f); lineTo(0f, 50f); close()
+        }, azul)
+        // Acentos ouro nos dois cantos superiores (sobre a faixa azul).
+        canvas.drawPath(Path().apply {
+            moveTo(0f, 0f); lineTo(220f, 0f); lineTo(0f, 74f); close()
         }, ouro)
         canvas.drawPath(Path().apply {
-            moveTo(150f, 0f); lineTo(LARGURA.toFloat(), 0f)
-            lineTo(LARGURA.toFloat(), 92f); lineTo(330f, 92f); close()
-        }, azul)
+            moveTo(LARGURA.toFloat(), 0f); lineTo(LARGURA - 220f, 0f); lineTo(LARGURA.toFloat(), 74f); close()
+        }, ouro)
+        // Faixa cinza sutil na base.
         canvas.drawPath(Path().apply {
             moveTo(0f, ALTURA.toFloat()); lineTo(LARGURA.toFloat(), ALTURA.toFloat())
             lineTo(LARGURA.toFloat(), ALTURA - 16f); lineTo(0f, ALTURA - 28f); close()
@@ -131,36 +137,56 @@ object CertificadoPdfGenerator {
         canvas.drawText("São José dos Campos, $dataTexto.", centroX, 432f, data)
     }
 
+    /** Rodapé centralizado em linha: logo Universidade do Servidor · URL · brasão (padrão do Modelo.pdf). */
     private fun desenharRodape(context: Context, canvas: Canvas) {
-        val baseY = 506f
+        val logo = decodeDrawable(context, R.drawable.logo_uniservidor)
+        val brasao = decodeDrawable(context, R.drawable.brasao_sjc)
 
-        val logo = try {
-            BitmapFactory.decodeResource(context.resources, R.drawable.logo_uniservidor)
-        } catch (e: Exception) {
-            null
+        val urlPaint = Paint().apply {
+            color = AZUL; textAlign = Paint.Align.LEFT; textSize = 12f
+            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD); isAntiAlias = true
         }
+        val url = "www.SJC.sp.gov.br"
+        val urlW = urlPaint.measureText(url)
+
+        val logoH = 34f
+        val logoW = logo?.let { logoH * it.width / it.height } ?: 0f
+        val brasaoH = 50f
+        val brasaoW = brasao?.let { brasaoH * it.width / it.height } ?: 0f
+
+        val gap = 22f
+        val divisorW = 1f
+        val totalW = (if (logo != null) logoW + gap else 0f) +
+            urlW +
+            (if (brasao != null) gap + divisorW + gap + brasaoW else 0f)
+        var x = (LARGURA - totalW) / 2f
+        val cy = 514f // centro vertical do rodapé
+        val imgPaint = Paint().apply { isFilterBitmap = true; isAntiAlias = true }
+
         if (logo != null) {
-            val altura = 36f
-            val largura = altura * logo.width / logo.height
-            val x = 64f
-            canvas.drawBitmap(
-                logo, null,
-                RectF(x, baseY, x + largura, baseY + altura),
-                Paint().apply { isFilterBitmap = true; isAntiAlias = true }
-            )
+            canvas.drawBitmap(logo, null, RectF(x, cy - logoH / 2, x + logoW, cy + logoH / 2), imgPaint)
+            x += logoW + gap
             logo.recycle()
         }
 
-        val prefeitura = Paint().apply {
-            color = AZUL; textAlign = Paint.Align.RIGHT; textSize = 12f
-            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD); isAntiAlias = true
+        val fm = urlPaint.fontMetrics
+        canvas.drawText(url, x, cy - (fm.ascent + fm.descent) / 2, urlPaint)
+        x += urlW
+
+        if (brasao != null) {
+            x += gap
+            val divisor = Paint().apply { color = CINZA_FORMA; strokeWidth = divisorW; isAntiAlias = true }
+            canvas.drawLine(x, cy - 18f, x, cy + 18f, divisor)
+            x += divisorW + gap
+            canvas.drawBitmap(brasao, null, RectF(x, cy - brasaoH / 2, x + brasaoW, cy + brasaoH / 2), imgPaint)
+            brasao.recycle()
         }
-        canvas.drawText("Prefeitura de São José dos Campos", LARGURA - 64f, baseY + 16f, prefeitura)
-        val url = Paint().apply {
-            color = CINZA_TEXTO; textAlign = Paint.Align.RIGHT; textSize = 11f
-            typeface = Typeface.SANS_SERIF; isAntiAlias = true
-        }
-        canvas.drawText("www.SJC.sp.gov.br", LARGURA - 64f, baseY + 33f, url)
+    }
+
+    private fun decodeDrawable(context: Context, resId: Int) = try {
+        BitmapFactory.decodeResource(context.resources, resId)
+    } catch (e: Exception) {
+        null
     }
 
     /** Quebra [texto] em linhas que cabem em [maxWidth] e desenha centralizado a partir de [startY]. */

@@ -1,7 +1,9 @@
-# Chave de service account (Admin SDK) — NUNCA versionar (privilégio total no projeto)
+# Chave de service account (Admin SDK) — NUNCA versionar (privilégio total no projeto).
+# Cobrimos vários nomes: a pasta secrets/, o nome convencional e o nome padrão do console.
 secrets/
 service-account*.json
 *serviceAccount*.json
+*firebase-adminsdk*.json
 .streamlit/secrets.toml
 
 # Dados de importação (planilhas com dados pessoais — LGPD)

@@ -3,8 +3,9 @@ package com.sgaf.universidadedoservidor.domain.usecase
 import com.sgaf.universidadedoservidor.domain.model.Aula
 import com.sgaf.universidadedoservidor.domain.model.Curso
 import com.sgaf.universidadedoservidor.domain.model.Modulo
-import com.sgaf.universidadedoservidor.domain.model.QuizPergunta
+import com.sgaf.universidadedoservidor.domain.model.ResultadoProvaFinal
 import com.sgaf.universidadedoservidor.domain.repository.CursoRepository
+import com.sgaf.universidadedoservidor.domain.repository.ProvaFinalRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
@@ -19,25 +20,14 @@ import org.junit.Test
 class VerificarAprovacaoCursoUseCaseTest {
 
     private val repository = mockk<CursoRepository>()
-    private val useCase = VerificarAprovacaoCursoUseCase(repository)
+    private val provaFinalRepository = mockk<ProvaFinalRepository>()
+    private val useCase = VerificarAprovacaoCursoUseCase(repository, provaFinalRepository)
 
-    private fun quiz(correta: Int) = QuizPergunta(
-        pergunta = "P",
-        opcoes = listOf("a", "b"),
-        respostaCorretaIndex = correta
-    )
-
-    private fun aula(
-        id: Int,
-        completa: Boolean,
-        respostas: Map<Int, Int>
-    ) = Aula(
+    private fun aula(id: Int, completa: Boolean) = Aula(
         id = id,
         titulo = "Aula $id",
         conteudo = "",
-        isCompleted = completa,
-        quiz = listOf(quiz(0), quiz(1)),
-        quizRespostas = respostas
+        isCompleted = completa
     )
 
     private fun curso(aulas: List<Aula>) = Curso(
@@ -47,55 +37,63 @@ class VerificarAprovacaoCursoUseCaseTest {
         modulos = listOf(Modulo(id = 1, titulo = "M", descricao = "", aulas = aulas))
     )
 
+    private fun prova(aprovado: Boolean, acertos: Int = 0, total: Int = 0) =
+        ResultadoProvaFinal(cursoId = 1, acertos = acertos, totalQuestoes = total, aprovado = aprovado)
+
     @Test
     fun `curso inexistente emite null`() = runTest {
         every { repository.getCursoById(1) } returns flowOf(null)
+        every { provaFinalRepository.getResultado(1) } returns flowOf(null)
 
-        val resultado = useCase(1).first()
-
-        assertNull(resultado)
+        assertNull(useCase(1).first())
     }
 
     @Test
-    fun `100 por cento concluido e gabarito perfeito aprova`() = runTest {
-        val aulas = listOf(
-            aula(1, completa = true, respostas = mapOf(0 to 0, 1 to 1)),
-            aula(2, completa = true, respostas = mapOf(0 to 0, 1 to 1))
-        )
+    fun `100 por cento concluido e prova final aprovada aprova`() = runTest {
+        val aulas = listOf(aula(1, completa = true), aula(2, completa = true))
         every { repository.getCursoById(1) } returns flowOf(curso(aulas))
+        every { provaFinalRepository.getResultado(1) } returns
+            flowOf(prova(aprovado = true, acertos = 6, total = 6))
 
         val d = useCase(1).first()!!
 
         assertTrue(d.aprovado)
-        assertEquals(4, d.totalQuestoes)
-        assertEquals(4, d.acertos)
-        assertEquals(1.0f, d.percentualAcerto, 0.001f)
         assertEquals(2, d.aulasConcluidas)
+        assertEquals(6, d.acertos)
+        assertEquals(1.0f, d.percentualAcerto, 0.001f)
     }
 
     @Test
-    fun `concluido mas aproveitamento abaixo de 70 nao aprova`() = runTest {
-        // Todas concluídas, mas só 1 de 4 respostas corretas (25%).
-        val aulas = listOf(
-            aula(1, completa = true, respostas = mapOf(0 to 0, 1 to 0)), // 1 acerto
-            aula(2, completa = true, respostas = mapOf(0 to 1, 1 to 0))  // 0 acertos
-        )
+    fun `concluido mas prova final reprovada nao aprova`() = runTest {
+        val aulas = listOf(aula(1, completa = true), aula(2, completa = true))
         every { repository.getCursoById(1) } returns flowOf(curso(aulas))
+        every { provaFinalRepository.getResultado(1) } returns
+            flowOf(prova(aprovado = false, acertos = 2, total = 6))
 
         val d = useCase(1).first()!!
 
         assertFalse(d.aprovado)
-        assertEquals(1, d.acertos)
-        assertEquals(0.25f, d.percentualAcerto, 0.001f)
+        assertEquals(2, d.acertos)
     }
 
     @Test
-    fun `aulas pendentes nao aprovam mesmo com gabarito perfeito`() = runTest {
-        val aulas = listOf(
-            aula(1, completa = true, respostas = mapOf(0 to 0, 1 to 1)),
-            aula(2, completa = false, respostas = mapOf(0 to 0, 1 to 1))
-        )
+    fun `prova final nao realizada nao aprova`() = runTest {
+        val aulas = listOf(aula(1, completa = true), aula(2, completa = true))
         every { repository.getCursoById(1) } returns flowOf(curso(aulas))
+        every { provaFinalRepository.getResultado(1) } returns flowOf(null)
+
+        val d = useCase(1).first()!!
+
+        assertFalse(d.aprovado)
+        assertEquals(0, d.totalQuestoes)
+    }
+
+    @Test
+    fun `aulas pendentes nao aprovam mesmo com prova final aprovada`() = runTest {
+        val aulas = listOf(aula(1, completa = true), aula(2, completa = false))
+        every { repository.getCursoById(1) } returns flowOf(curso(aulas))
+        every { provaFinalRepository.getResultado(1) } returns
+            flowOf(prova(aprovado = true, acertos = 6, total = 6))
 
         val d = useCase(1).first()!!
 

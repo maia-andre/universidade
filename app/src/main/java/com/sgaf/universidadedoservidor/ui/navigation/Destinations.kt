@@ -40,3 +40,6 @@ data class Avaliacao(val cursoId: Int)
 
 @Serializable
 data class Aula(val aulaId: Int)
+
+@Serializable
+data class ProvaFinal(val cursoId: Int)

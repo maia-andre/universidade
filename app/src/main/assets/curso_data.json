@@ -3,6 +3,14 @@
     "id": 1,
     "titulo": "Curso de Supervisores",
     "descricao": "Curso essencial de capacitação para supervisores da Prefeitura Municipal de São José dos Campos.",
+    "provaFinal": [
+      { "pergunta": "Qual é um dever fundamental do servidor público no trato com o cidadão?", "opcoes": ["Tratar com urbanidade e presteza os cidadãos", "Priorizar interesses pessoais", "Recusar fé a documentos públicos", "Delegar suas funções a terceiros sem autorização"], "respostaCorretaIndex": 0 },
+      { "pergunta": "Diante de uma ordem manifestamente ilegal de um superior, o servidor deve:", "opcoes": ["Cumprir e silenciar", "Não cumprir e comunicar formalmente o fato", "Repassar a ordem a um colega", "Alterar a ordem por conta própria"], "respostaCorretaIndex": 1 },
+      { "pergunta": "Quais são os princípios expressos da Administração Pública (art. 37 da CF)?", "opcoes": ["Legalidade, Impessoalidade, Moralidade, Publicidade e Eficiência", "Lucro, Concorrência e Mercado", "Hierarquia, Sigilo e Autonomia", "Flexibilidade, Informalidade e Rapidez"], "respostaCorretaIndex": 0 },
+      { "pergunta": "O período de efetivo exercício exigido para a aquisição da estabilidade é de:", "opcoes": ["1 ano", "2 anos", "3 anos", "5 anos"], "respostaCorretaIndex": 2 },
+      { "pergunta": "A principal missão social do servidor público é:", "opcoes": ["Garantir a lucratividade dos serviços públicos", "Prestar serviços essenciais à sociedade com qualidade e humanidade", "Substituir a iniciativa privada no mercado", "Fiscalizar apenas as finanças da administração"], "respostaCorretaIndex": 1 },
+      { "pergunta": "No papel de supervisor, uma conduta ética esperada é:", "opcoes": ["Orientar a equipe pelo exemplo e com impessoalidade", "Favorecer parentes e amigos nas decisões", "Ocultar informações de interesse público", "Decidir sempre em benefício próprio"], "respostaCorretaIndex": 0 }
+    ],
     "modulos": [
       {
         "id": 100,
@@ -552,6 +560,11 @@
     "id": 2,
     "titulo": "Gestão de Patrimônio",
     "descricao": "Controle e inventário de bens públicos do município.",
+    "provaFinal": [
+      { "pergunta": "O que caracteriza um bem móvel?", "opcoes": ["Pode ser transportado sem alteração de sua substância", "É sempre um imóvel", "Não pode ser inventariado", "Pertence somente a particulares"], "respostaCorretaIndex": 0 },
+      { "pergunta": "Para que serve o inventário patrimonial?", "opcoes": ["Para eliminar o controle de bens", "Para conferir e registrar a existência e o estado dos bens", "Para vender bens sem autorização", "Para substituir a nota fiscal"], "respostaCorretaIndex": 1 },
+      { "pergunta": "Ao identificar um bem público permanente, deve-se:", "opcoes": ["Mantê-lo sem identificação", "Registrá-lo com número de tombamento", "Descartá-lo imediatamente", "Usá-lo para fins particulares"], "respostaCorretaIndex": 1 }
+    ],
     "modulos": [
       {
         "id": 200,
@@ -583,6 +596,11 @@
     "id": 3,
     "titulo": "Noções de Licitação",
     "descricao": "Processos de compras governamentais sob a nova lei.",
+    "provaFinal": [
+      { "pergunta": "A principal característica do pregão é a busca pelo:", "opcoes": ["Maior preço", "Menor preço", "Sorteio entre fornecedores", "Indicação direta"], "respostaCorretaIndex": 1 },
+      { "pergunta": "A licitação visa principalmente:", "opcoes": ["Beneficiar um fornecedor específico", "Selecionar a proposta mais vantajosa com isonomia", "Dispensar a publicidade dos atos", "Evitar a concorrência"], "respostaCorretaIndex": 1 },
+      { "pergunta": "Um princípio que rege as licitações públicas é:", "opcoes": ["Pessoalidade na escolha", "Isonomia entre os participantes", "Sigilo das propostas após a abertura", "Informalidade total do processo"], "respostaCorretaIndex": 1 }
+    ],
     "modulos": [
       {
         "id": 300,
@@ -614,6 +632,11 @@
     "id": 4,
     "titulo": "Almoxarifado e Suprimentos",
     "descricao": "Gestão de estoque e fluxo de materiais na prefeitura.",
+    "provaFinal": [
+      { "pergunta": "Ao receber um material no almoxarifado, deve-se primeiro:", "opcoes": ["Guardar sem conferir", "Conferir a nota fiscal e a quantidade", "Descartar a embalagem", "Usar o material imediatamente"], "respostaCorretaIndex": 1 },
+      { "pergunta": "O controle de estoque tem como objetivo:", "opcoes": ["Imobilizar recursos desnecessariamente", "Garantir a disponibilidade evitando desperdício", "Ocultar materiais do inventário", "Impedir requisições dos setores"], "respostaCorretaIndex": 1 },
+      { "pergunta": "A saída de material do almoxarifado deve ser:", "opcoes": ["Registrada mediante requisição", "Feita sem qualquer registro", "Decidida pelo solicitante sem controle", "Proibida em qualquer caso"], "respostaCorretaIndex": 0 }
+    ],
     "modulos": [
       {
         "id": 400,

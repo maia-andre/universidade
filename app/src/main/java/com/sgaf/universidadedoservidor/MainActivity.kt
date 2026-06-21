@@ -40,6 +40,7 @@ import com.sgaf.universidadedoservidor.ui.navigation.CursoDetail
 import com.sgaf.universidadedoservidor.ui.navigation.Certificado
 import com.sgaf.universidadedoservidor.ui.navigation.Avaliacao
 import com.sgaf.universidadedoservidor.ui.navigation.Aula
+import com.sgaf.universidadedoservidor.ui.navigation.ProvaFinal
 import com.sgaf.universidadedoservidor.ui.screens.certificado.CertificadoScreen
 import com.sgaf.universidadedoservidor.ui.screens.certificado.CertificadoViewModel
 import com.sgaf.universidadedoservidor.ui.screens.avaliacao.AvaliacaoScreen
@@ -65,6 +66,8 @@ import com.sgaf.universidadedoservidor.ui.screens.curso_detail.CursoDetailScreen
 import com.sgaf.universidadedoservidor.ui.screens.curso_detail.CursoDetailViewModel
 import com.sgaf.universidadedoservidor.ui.screens.aula.AulaScreen
 import com.sgaf.universidadedoservidor.ui.screens.aula.AulaViewModel
+import com.sgaf.universidadedoservidor.ui.screens.provafinal.ProvaFinalScreen
+import com.sgaf.universidadedoservidor.ui.screens.provafinal.ProvaFinalViewModel
 import com.sgaf.universidadedoservidor.ui.theme.UniversidadeDoServidorTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -257,6 +260,9 @@ fun AppNavigation(
                 },
                 onNavigateToAvaliacao = { cursoId ->
                     navController.navigate(Avaliacao(cursoId))
+                },
+                onNavigateToProvaFinal = { cursoId ->
+                    navController.navigate(ProvaFinal(cursoId))
                 }
             )
         }
@@ -274,6 +280,19 @@ fun AppNavigation(
             AvaliacaoScreen(
                 viewModel = viewModel,
                 onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<ProvaFinal> {
+            val viewModel: ProvaFinalViewModel = hiltViewModel()
+            ProvaFinalScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToCertificado = { cursoId ->
+                    navController.navigate(Certificado(cursoId)) {
+                        popUpTo(ProvaFinal(cursoId)) { inclusive = true }
+                    }
+                }
             )
         }
         

@@ -48,8 +48,27 @@ val MIGRATION_5_6 = Migration(5, 6) { db ->
     )
 }
 
+/**
+ * v6 -> v7 (v5 prova final): cria a tabela de resultado da prova final por curso.
+ * Apenas adiciona uma tabela nova — não afeta dados existentes.
+ */
+val MIGRATION_6_7 = Migration(6, 7) { db ->
+    db.execSQL(
+        "CREATE TABLE IF NOT EXISTS `prova_final_resultado` (" +
+            "`cursoId` INTEGER NOT NULL, " +
+            "`respostasJson` TEXT NOT NULL, " +
+            "`acertos` INTEGER NOT NULL, " +
+            "`totalQuestoes` INTEGER NOT NULL, " +
+            "`aprovado` INTEGER NOT NULL, " +
+            "`tentativas` INTEGER NOT NULL, " +
+            "`atualizadoEm` INTEGER NOT NULL, " +
+            "PRIMARY KEY(`cursoId`))"
+    )
+}
+
 val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_3_4,
     MIGRATION_4_5,
     MIGRATION_5_6,
+    MIGRATION_6_7,
 )

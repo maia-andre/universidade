@@ -170,7 +170,7 @@ private fun PerguntaLikert(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .height(44.dp)
+                        .height(48.dp)
                         .clip(CircleShape)
                         .clickable { onNota(valor) },
                     contentAlignment = Alignment.Center
@@ -179,7 +179,7 @@ private fun PerguntaLikert(
                         shape = CircleShape,
                         color = if (selecionado) BlueSjc else Color.Transparent,
                         border = BorderStroke(1.dp, if (selecionado) BlueSjc else TextGray.copy(alpha = 0.5f)),
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier.size(44.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Text(

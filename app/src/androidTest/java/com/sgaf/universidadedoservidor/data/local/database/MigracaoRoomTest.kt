@@ -10,8 +10,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Testes de migração do Room (v4 Item 4.3). Garantem que as migrações v3→v4→v5
- * preservam o progresso do usuário — requisito crítico com beta ativo na Play Store.
+ * Testes de migração do Room. Garantem que as migrações v3→v4→v5→v6→v7
+ * preservam o progresso do usuário — requisito crítico com beta na Play Store.
  *
  * Instrumentado: executar com `./gradlew connectedAndroidTest` (precisa de device/emulador).
  * Usa os schemas exportados em app/schemas/ (expostos como assets de androidTest no build.gradle).
@@ -28,7 +28,7 @@ class MigracaoRoomTest {
     )
 
     @Test
-    fun migra_v3_para_v6_preservando_progresso() {
+    fun migra_v3_para_v7_preservando_progresso() {
         // Cria o banco na v3 e insere um progresso (esquema antigo: sem colunas de quiz/acesso).
         helper.createDatabase(dbName, 3).apply {
             execSQL(
@@ -37,9 +37,9 @@ class MigracaoRoomTest {
             close()
         }
 
-        // Aplica v3→v4→v5→v6 e valida o esquema final contra o schema exportado.
+        // Aplica v3→v4→v5→v6→v7 e valida o esquema final contra o schema exportado.
         val db = helper.runMigrationsAndValidate(
-            dbName, 6, true, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6
+            dbName, 7, true, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7
         )
 
         db.query(
@@ -58,6 +58,12 @@ class MigracaoRoomTest {
 
         // A tabela de ferramentas (v6) deve existir e estar vazia.
         db.query("SELECT COUNT(*) FROM ferramentas").use { cursor ->
+            assertTrue(cursor.moveToFirst())
+            assertEquals(0, cursor.getInt(0))
+        }
+
+        // A tabela de resultado da prova final (v7) deve existir e estar vazia.
+        db.query("SELECT COUNT(*) FROM prova_final_resultado").use { cursor ->
             assertTrue(cursor.moveToFirst())
             assertEquals(0, cursor.getInt(0))
         }

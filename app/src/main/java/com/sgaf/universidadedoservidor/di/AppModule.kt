@@ -8,11 +8,14 @@ import com.sgaf.universidadedoservidor.data.local.dao.ProgressoDao
 import com.sgaf.universidadedoservidor.data.local.dao.SearchDao
 import com.sgaf.universidadedoservidor.data.local.dao.AvaliacaoDao
 import com.sgaf.universidadedoservidor.data.local.dao.FerramentaDao
+import com.sgaf.universidadedoservidor.data.local.dao.ProvaFinalDao
 import com.sgaf.universidadedoservidor.data.local.database.AppDatabase
 import com.sgaf.universidadedoservidor.data.repository.CursoRepositoryImpl
 import com.sgaf.universidadedoservidor.data.repository.FerramentaRepositoryImpl
+import com.sgaf.universidadedoservidor.data.repository.ProvaFinalRepositoryImpl
 import com.sgaf.universidadedoservidor.domain.repository.CursoRepository
 import com.sgaf.universidadedoservidor.domain.repository.FerramentaRepository
+import com.sgaf.universidadedoservidor.domain.repository.ProvaFinalRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -38,6 +41,12 @@ abstract class AppModule {
     abstract fun bindFerramentaRepository(
         impl: FerramentaRepositoryImpl
     ): FerramentaRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindProvaFinalRepository(
+        impl: ProvaFinalRepositoryImpl
+    ): ProvaFinalRepository
 
     companion object {
 
@@ -96,6 +105,12 @@ abstract class AppModule {
         @Singleton
         fun provideFerramentaDao(database: AppDatabase): FerramentaDao {
             return database.ferramentaDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideProvaFinalDao(database: AppDatabase): ProvaFinalDao {
+            return database.provaFinalDao()
         }
     }
 }

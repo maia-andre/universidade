@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.sgaf.universidadedoservidor.core.data.preferences.UserPreferencesRepository
 import com.sgaf.universidadedoservidor.domain.model.Curso
 import com.sgaf.universidadedoservidor.domain.usecase.GetCursosUseCase
+import com.sgaf.universidadedoservidor.domain.usecase.SincronizarConteudoUseCase
 import com.sgaf.universidadedoservidor.domain.usecase.SincronizarCursoAtivoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,13 +30,17 @@ data class HomeState(
 class HomeViewModel @Inject constructor(
     getCursosUseCase: GetCursosUseCase,
     userPreferencesRepository: UserPreferencesRepository,
-    private val sincronizarCursoAtivoUseCase: SincronizarCursoAtivoUseCase
+    private val sincronizarCursoAtivoUseCase: SincronizarCursoAtivoUseCase,
+    private val sincronizarConteudoUseCase: SincronizarConteudoUseCase
 ) : ViewModel() {
 
     init {
         // D3: ao abrir a Home (após login ou no arranque já-logado), puxa a matrícula liberada
         // pelo RH e define o curso ativo. O state reage via cursoAtivoId. Best-effort/offline-safe.
         viewModelScope.launch { runCatching { sincronizarCursoAtivoUseCase() } }
+        // V8 Item 1: sincroniza o conteúdo dos cursos publicado pelo RH (sem novo APK).
+        // No-op quando offline ou sem versão nova. O grafo reage via getCursosUseCase.
+        viewModelScope.launch { runCatching { sincronizarConteudoUseCase() } }
     }
 
     val state: StateFlow<HomeState> = combine(

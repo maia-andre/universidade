@@ -1,12 +1,17 @@
 package com.sgaf.universidadedoservidor.data.repository
 
+import androidx.room.withTransaction
+import com.sgaf.universidadedoservidor.data.local.ConteudoLocalSource
 import com.sgaf.universidadedoservidor.data.local.dao.AulaDao
 import com.sgaf.universidadedoservidor.data.local.dao.CursoDao
 import com.sgaf.universidadedoservidor.data.local.dao.ModuloDao
 import com.sgaf.universidadedoservidor.data.local.dao.ProgressoDao
 import com.sgaf.universidadedoservidor.data.local.dao.SearchDao
 import com.sgaf.universidadedoservidor.data.local.dao.AvaliacaoDao
+import com.sgaf.universidadedoservidor.data.local.database.AppDatabase
 import com.sgaf.universidadedoservidor.data.local.entities.AulaEntity
+import com.sgaf.universidadedoservidor.data.local.entities.CursoEntity
+import com.sgaf.universidadedoservidor.data.local.entities.ModuloEntity
 import com.sgaf.universidadedoservidor.data.local.entities.ProgressoEntity
 import com.sgaf.universidadedoservidor.data.local.entities.AvaliacaoEntity
 import com.sgaf.universidadedoservidor.domain.model.AvaliacaoCurso
@@ -17,16 +22,9 @@ import com.sgaf.universidadedoservidor.domain.model.Modulo
 import com.sgaf.universidadedoservidor.domain.model.QuizPergunta
 import com.sgaf.universidadedoservidor.domain.model.ResultadoBusca
 import com.sgaf.universidadedoservidor.domain.repository.CursoRepository
-import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
@@ -36,7 +34,8 @@ import javax.inject.Singleton
 
 @Singleton
 class CursoRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+    private val appDatabase: AppDatabase,
+    private val conteudoLocalSource: ConteudoLocalSource,
     private val cursoDao: CursoDao,
     private val moduloDao: ModuloDao,
     private val aulaDao: AulaDao,
@@ -248,26 +247,50 @@ class CursoRepositoryImpl @Inject constructor(
         )
     }
 
-    // Carga horária vive nos assets (curso_data.json) e é lida em runtime — assim chega às
-    // instalações já publicadas sem re-seed, como a prova final. Imutável após a 1ª leitura.
-    @Volatile
-    private var cargaHorariaCache: Map<Int, Int>? = null
-    private val cargaHorariaMutex = Mutex()
+    // Carga horária vem do conteúdo em runtime (arquivo remoto sincronizado ou baseline do APK),
+    // via ConteudoLocalSource — chega às instalações já publicadas sem re-seed, como a prova final.
+    override suspend fun getCargaHoraria(cursoId: Int): Int? =
+        conteudoLocalSource.catalogo().firstOrNull { it.id == cursoId }?.cargaHoraria
 
-    override suspend fun getCargaHoraria(cursoId: Int): Int? = carregarCargaHoraria()[cursoId]
+    // V8 Item 1: aplica um catálogo publicado pelo RH. Valida antes de persistir (um payload
+    // inválido NÃO deve apagar o conteúdo atual) e reconstrói o Room em transação, preservando
+    // o progresso (ProgressoEntity é keyed por aulaId, em tabela à parte; não é tocada aqui).
+    override suspend fun aplicarConteudoRemoto(jsonCatalogo: String) {
+        val catalogo = conteudoLocalSource.parse(jsonCatalogo)
+        if (catalogo.isEmpty()) return
 
-    private suspend fun carregarCargaHoraria(): Map<Int, Int> {
-        cargaHorariaCache?.let { return it }
-        return cargaHorariaMutex.withLock {
-            cargaHorariaCache ?: run {
-                val texto = withContext(Dispatchers.IO) {
-                    context.assets.open("curso_data.json").bufferedReader().use { it.readText() }
-                }
-                json.decodeFromString(ListSerializer(CargaHorariaCursoJson.serializer()), texto)
-                    .mapNotNull { c -> c.cargaHoraria?.let { c.id to it } }
-                    .toMap()
-                    .also { cargaHorariaCache = it }
+        val cursos = catalogo.map {
+            CursoEntity(id = it.id, titulo = it.titulo, descricao = it.descricao)
+        }
+        val modulos = catalogo.flatMap { curso ->
+            curso.modulos.map {
+                ModuloEntity(id = it.id, cursoId = curso.id, titulo = it.titulo, descricao = it.descricao)
             }
+        }
+        val aulas = catalogo.flatMap { curso ->
+            curso.modulos.flatMap { modulo ->
+                modulo.aulas.map { aula ->
+                    AulaEntity(
+                        id = aula.id,
+                        moduloId = modulo.id,
+                        titulo = aula.titulo,
+                        conteudo = conteudoLocalSource.resolverConteudo(aula),
+                        quizJson = json.encodeToString(
+                            ListSerializer(QuizPerguntaJson.serializer()), aula.quiz
+                        )
+                    )
+                }
+            }
+        }
+
+        conteudoLocalSource.salvarRemoto(jsonCatalogo)
+        appDatabase.withTransaction {
+            aulaDao.deleteAll()
+            moduloDao.deleteAll()
+            cursoDao.deleteAll()
+            cursoDao.insertCursos(cursos)
+            moduloDao.insertModulos(modulos)
+            aulaDao.insertAulas(aulas)
         }
     }
 
@@ -320,10 +343,3 @@ class CursoRepositoryImpl @Inject constructor(
     }
 
 }
-
-/** DTO para ler apenas a carga horária de cada curso do curso_data.json (ignora o resto). */
-@Serializable
-private data class CargaHorariaCursoJson(
-    val id: Int,
-    val cargaHoraria: Int? = null
-)

@@ -20,4 +20,8 @@ interface AulaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAulas(aulas: List<AulaEntity>)
+
+    /** Limpa a tabela de aulas (sync de conteúdo: full-replace; o progresso fica em outra tabela). */
+    @Query("DELETE FROM aulas")
+    suspend fun deleteAll()
 }

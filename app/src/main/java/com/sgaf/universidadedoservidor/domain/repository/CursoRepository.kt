@@ -40,8 +40,14 @@ interface CursoRepository {
     suspend fun getAvaliacao(cursoId: Int): AvaliacaoCurso?
 
     /**
-     * Carga horária do curso (em horas), lida dos assets (`curso_data.json`) em runtime — assim
-     * chega a instalações já publicadas sem re-seed, como a prova final (v6, certificado).
+     * Carga horária do curso (em horas), lida do conteúdo em runtime (arquivo remoto sincronizado
+     * ou baseline do APK) — assim chega a instalações já publicadas sem re-seed (v6, certificado).
      */
     suspend fun getCargaHoraria(cursoId: Int): Int?
+
+    /**
+     * Aplica um catálogo publicado pelo RH (V8 Item 1): persiste o JSON localmente e reconstrói o
+     * Room (full-replace) preservando o progresso. No-op se o JSON for inválido/vazio.
+     */
+    suspend fun aplicarConteudoRemoto(jsonCatalogo: String)
 }

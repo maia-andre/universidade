@@ -24,6 +24,7 @@ local.properties
 *.pkcs12
 *.p12
 *.pem
+keystore.properties
 
 # Local API Keys & Secret configurations
 secrets.properties

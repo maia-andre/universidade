@@ -133,6 +133,18 @@ class UserPreferencesRepository @Inject constructor(
         dataStore.edit { prefs -> prefs[KEY_REDUCED_MOTION] = ativo }
     }
 
+    /**
+     * Versão do catálogo de conteúdo já aplicada localmente (V8 Item 1). O baseline embarcado no
+     * APK é a versão 0; o sync só reconstrói o Room quando a versão publicada no Firestore é maior.
+     */
+    val versaoConteudo: Flow<Int> = dataStore.data.map { prefs ->
+        prefs[KEY_VERSAO_CONTEUDO] ?: 0
+    }
+
+    suspend fun setVersaoConteudo(versao: Int) {
+        dataStore.edit { prefs -> prefs[KEY_VERSAO_CONTEUDO] = versao }
+    }
+
     companion object {
         const val DATASTORE_NAME = "user_preferences"
         const val FONT_SCALE_MIN = 0.85f
@@ -145,5 +157,6 @@ class UserPreferencesRepository @Inject constructor(
         private val KEY_FONT_SCALE = floatPreferencesKey("font_scale")
         private val KEY_HIGH_CONTRAST = booleanPreferencesKey("high_contrast")
         private val KEY_REDUCED_MOTION = booleanPreferencesKey("reduced_motion")
+        private val KEY_VERSAO_CONTEUDO = intPreferencesKey("versao_conteudo")
     }
 }

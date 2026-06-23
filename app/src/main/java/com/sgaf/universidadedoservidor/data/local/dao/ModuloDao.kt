@@ -14,4 +14,8 @@ interface ModuloDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertModulos(modulos: List<ModuloEntity>)
+
+    /** Limpa a tabela de módulos (sync de conteúdo: full-replace; não toca no progresso). */
+    @Query("DELETE FROM modulos")
+    suspend fun deleteAll()
 }

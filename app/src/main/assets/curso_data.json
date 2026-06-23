@@ -569,12 +569,12 @@
     ],
     "modulos": [
       {
-        "id": 200,
+        "id": 2000,
         "titulo": "Introdução ao Patrimônio",
         "descricao": "Conceitos básicos de bens patrimoniais",
         "aulas": [
           {
-            "id": 201,
+            "id": 2001,
             "titulo": "Classificação de Bens",
             "contentPath": "cursos/patrimonio/modulo_1/aula_1.md",
             "quiz": [
@@ -606,12 +606,12 @@
     ],
     "modulos": [
       {
-        "id": 300,
+        "id": 3000,
         "titulo": "Modalidades de Licitação",
         "descricao": "Entendendo as formas de contratação",
         "aulas": [
           {
-            "id": 301,
+            "id": 3001,
             "titulo": "Pregão Eletrônico",
             "contentPath": "cursos/licitacao/modulo_1/aula_1.md",
             "quiz": [
@@ -643,12 +643,12 @@
     ],
     "modulos": [
       {
-        "id": 400,
+        "id": 4000,
         "titulo": "Controle de Estoque",
         "descricao": "Técnicas de armazenamento",
         "aulas": [
           {
-            "id": 401,
+            "id": 4001,
             "titulo": "Entrada e Saída",
             "contentPath": "cursos/almoxarifado/modulo_1/aula_1.md",
             "quiz": [

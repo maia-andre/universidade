@@ -17,4 +17,8 @@ interface CursoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCursos(cursos: List<CursoEntity>)
+
+    /** Limpa a tabela de cursos (sync de conteúdo: full-replace; não toca no progresso). */
+    @Query("DELETE FROM cursos")
+    suspend fun deleteAll()
 }

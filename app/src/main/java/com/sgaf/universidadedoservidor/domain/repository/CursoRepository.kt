@@ -47,7 +47,9 @@ interface CursoRepository {
 
     /**
      * Aplica um catálogo publicado pelo RH (V8 Item 1): persiste o JSON localmente e reconstrói o
-     * Room (full-replace) preservando o progresso. No-op se o JSON for inválido/vazio.
+     * Room (full-replace) preservando o progresso. Retorna `true` se o catálogo foi validado e
+     * aplicado; `false` se o JSON era inválido/vazio (nada é alterado — e a versão remota NÃO deve
+     * ser marcada como aplicada, senão o conteúdo daquela versão nunca chega).
      */
-    suspend fun aplicarConteudoRemoto(jsonCatalogo: String)
+    suspend fun aplicarConteudoRemoto(jsonCatalogo: String): Boolean
 }

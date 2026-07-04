@@ -8,8 +8,18 @@ from __future__ import annotations
 
 import streamlit as st
 
+import erros
 from services import operadores
 from services.operadores import MIN_SENHA
+
+
+def require_admin(usuario: str) -> None:
+    """Re-checa admin NO FIRESTORE a cada visita (não confia no session_state) —
+    revogar o admin de alguém vale imediatamente, não só no próximo login."""
+    with erros.protegido("verificação de administrador", parar=True):
+        if not operadores.eh_admin(usuario):
+            st.error("Acesso restrito a administradores.")
+            st.stop()
 
 
 def _form_nova_senha(form_id: str, titulo: str) -> tuple[bool, str]:
@@ -40,13 +50,11 @@ def require_login() -> str:
         st.caption("Por segurança, escolha uma nova senha para continuar.")
         valido, nova = _form_nova_senha("trocar_forcado", "")
         if valido:
-            try:
+            with erros.protegido("troca de senha do 1º acesso"):
                 operadores.trocar_senha(pendente, nova)
                 st.session_state["operador"] = pendente
                 st.session_state.pop("operador_pendente", None)
                 st.rerun()
-            except Exception as e:  # noqa: BLE001
-                st.error(f"Falha ao trocar a senha: {e}")
         st.stop()
 
     # Já autenticado: barra lateral com troca voluntária de senha e sair.
@@ -57,11 +65,9 @@ def require_login() -> str:
             with st.expander("🔑 Trocar minha senha"):
                 valido, nova = _form_nova_senha("trocar_voluntario", "")
                 if valido:
-                    try:
+                    with erros.protegido("troca de senha"):
                         operadores.trocar_senha(usuario, nova)
                         st.success("Senha atualizada.")
-                    except Exception as e:  # noqa: BLE001
-                        st.error(str(e))
             if st.button("Sair", width="stretch"):
                 st.session_state.clear()
                 st.rerun()
@@ -75,11 +81,8 @@ def require_login() -> str:
         senha = st.text_input("Senha", type="password")
         entrar = st.form_submit_button("Entrar")
     if entrar:
-        try:
+        with erros.protegido("autenticação", parar=True):
             res = operadores.autenticar(usuario.strip(), senha)
-        except Exception as e:  # noqa: BLE001
-            st.error(f"Erro ao autenticar: {e}")
-            st.stop()
         if res is None:
             st.error("Usuário ou senha inválidos.")
         else:

@@ -16,6 +16,7 @@ import base64
 import hashlib
 import hmac
 import os
+import time
 
 from firebase_admin import firestore
 
@@ -25,6 +26,11 @@ from firebase_client import get_db
 COL_OPERADORES = "operadores"
 _ITERACOES = 200_000
 MIN_SENHA = 6
+
+# Rate-limit de login em memória do processo (some no restart — aceitável em rede interna).
+_FALHAS: dict[str, list[float]] = {}
+MAX_TENTATIVAS = 5
+JANELA_SEG = 300
 
 
 def _col():
@@ -76,17 +82,33 @@ def garantir_seed() -> None:
 
 # --------------------------------------------------------------------------- operações
 
+def _registrar_falha(usuario: str, agora: float) -> None:
+    _FALHAS.setdefault(usuario, []).append(agora)
+
+
 def autenticar(usuario: str, senha: str) -> dict | None:
-    """Valida usuário/senha. Retorna {usuario, precisaTrocar, admin} ou None se inválido/inativo."""
+    """Valida usuário/senha. Retorna {usuario, precisaTrocar, admin} ou None se inválido/inativo.
+
+    Levanta ValueError se o usuário estourou o limite de tentativas na janela.
+    """
     garantir_seed()
+    agora = time.time()
+    _FALHAS[usuario] = [t for t in _FALHAS.get(usuario, []) if agora - t < JANELA_SEG]
+    if len(_FALHAS[usuario]) >= MAX_TENTATIVAS:
+        raise ValueError("Muitas tentativas de login. Aguarde alguns minutos e tente novamente.")
+
     snap = _col().document(usuario).get()
     if not snap.exists:
+        _registrar_falha(usuario, agora)
         return None
     dados = snap.to_dict() or {}
     if not dados.get("ativo", True):
+        _registrar_falha(usuario, agora)
         return None
     if not verificar_senha(senha, dados.get("senhaHash", "")):
+        _registrar_falha(usuario, agora)
         return None
+    _FALHAS.pop(usuario, None)
     return {
         "usuario": usuario,
         "precisaTrocar": bool(dados.get("precisaTrocar")),
@@ -136,7 +158,17 @@ def redefinir_senha(usuario: str, nova_temporaria: str, operador: str) -> None:
     })
 
 
-def definir_ativo(usuario: str, ativo: bool) -> None:
+def definir_ativo(usuario: str, ativo: bool, operador: str) -> None:
+    """Ativa/desativa um operador, com proteções contra perder o acesso ao painel:
+    ninguém se desativa a si próprio nem desativa o último administrador ativo."""
+    if not ativo:
+        if usuario == operador:
+            raise ValueError("Você não pode desativar o próprio usuário.")
+        ops = listar()
+        alvo = next((o for o in ops if o["usuario"] == usuario), None)
+        admins_ativos = [o for o in ops if o["admin"] and o["ativo"]]
+        if alvo and alvo["admin"] and len(admins_ativos) <= 1:
+            raise ValueError("Não é possível desativar o último administrador ativo.")
     _col().document(usuario).update({"ativo": ativo})
 
 

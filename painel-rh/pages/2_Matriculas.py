@@ -3,6 +3,7 @@ import pandas as pd
 import streamlit as st
 
 import erros
+import ui
 from auth_operador import require_login
 from services import cache, matriculas
 
@@ -52,13 +53,18 @@ if ativas:
         f"{nomes.get(m['uid'], m['uid'])} — {m.get('cursoTitulo', m.get('cursoId'))}": m
         for m in ativas
     }
-    with st.form("encerrar"):
-        alvo = st.selectbox("Matrícula ativa", list(rotulos.keys()))
-        enc = st.form_submit_button("Encerrar matrícula")
-    if enc:
+    alvo = st.selectbox("Matrícula ativa", list(rotulos.keys()))
+    if st.button("Encerrar matrícula"):
         m = rotulos[alvo]
-        with erros.protegido("encerrar matrícula"):
+
+        def _encerrar(m=m):
             matriculas.encerrar_matricula(m["uid"], m["cursoId"], operador)
             cache.invalidar_matriculas()
-            st.toast("Matrícula encerrada.", icon="✅")  # sobrevive ao rerun (st.success não)
-            st.rerun()
+
+        ui.confirmar_acao(
+            "Encerrar matrícula",
+            f"Encerrar o acesso de **{nomes.get(m['uid'], m['uid'])}** ao curso "
+            f"**{m.get('cursoTitulo', m.get('cursoId'))}**? "
+            "Cursos já concluídos permanecem acessíveis.",
+            _encerrar,
+        )

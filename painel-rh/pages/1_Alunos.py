@@ -7,6 +7,7 @@ import pandas as pd
 import streamlit as st
 
 import erros
+import ui
 from auth_operador import require_login
 from services import alunos, cache, validacao
 
@@ -110,16 +111,21 @@ with tab_lista:
         opcoes = {f"{a.get('nome', '?')} — {a.get('email', '')}": a["uid"] for a in lista}
         alvo = st.selectbox("Aluno", list(opcoes.keys()))
         if st.button("Redefinir senha"):
-            with erros.protegido("redefinir senha do aluno"):
+            uid = opcoes[alvo]
+
+            def _redefinir(uid=uid):
                 senha = validacao.gerar_senha_temporaria()
-                alunos.redefinir_senha(opcoes[alvo], senha, operador)
+                alunos.redefinir_senha(uid, senha, operador)
                 cache.invalidar_alunos()
-                st.session_state["reset_senha_resultado"] = {"alvo": alvo, "senha": senha}
-        if r := st.session_state.get("reset_senha_resultado"):
-            with st.container(border=True):
-                st.markdown(f"**Nova senha temporária de {r['alvo']}** — anote agora:")
-                st.code(r["senha"])
-                st.caption("Entregue ao servidor; oriente a troca no primeiro acesso.")
-                if st.button("Limpar", key="limpar_reset"):
-                    st.session_state.pop("reset_senha_resultado", None)
-                    st.rerun()
+                return senha
+
+            ui.confirmar_acao(
+                "Redefinir senha do aluno",
+                f"Gerar nova senha temporária para **{alvo}**? A senha atual deixará de valer.",
+                _redefinir,
+                render_resultado=lambda s: (
+                    st.markdown("Nova senha temporária — **anote agora**:"),
+                    st.code(s),
+                    st.caption("Entregue ao servidor; oriente a troca no primeiro acesso."),
+                ),
+            )

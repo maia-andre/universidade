@@ -46,11 +46,11 @@ Substitui o dict de credencial em texto puro.
 
 1. **Conteúdo dinâmico:** publicar uma edição no painel → app logado atualiza **sem reinstalar**; progresso preservado; offline mantém a última versão.
 2. **Auth de operador:** 1º acesso força troca; admin cria/reseta/desativa operador.
-3. **Release:** instalar o `.aab` assinado via Play (teste interno), sem alerta do Play Protect, update limpo sobre a V1.
+3. ~~**Release:** instalar o `.aab` assinado via Play (teste interno), sem alerta do Play Protect, update limpo sobre a V1.~~ ✅ **validado (04/07/2026):** update limpo via Play — a nova versão foi instalada nos aparelhos dos usuários sem alerta.
 
 ## 4. Pendências → próximos passos
 
-1. **Smoke test da V2 instalada via Play** (teste interno): login, conteúdo do curso liberado, certificado; **sync de conteúdo dinâmico** (publicar uma edição no painel e ver o app atualizar sem reinstalar); update limpo sobre a versão anterior, sem alerta do Play Protect.
+1. **Smoke test da V2 instalada via Play** (teste interno): login, conteúdo do curso liberado, certificado; **sync de conteúdo dinâmico** (publicar uma edição no painel e ver o app atualizar sem reinstalar). *Update limpo sobre a versão anterior já validado em 04/07/2026 (instalado nos aparelhos dos usuários, sem alerta).*
 2. **Item 2.1 — LGPD:** revisar a política de privacidade (rascunho do dev) para publicar no Notion — **jurídico-sensível**, revisar com RH/jurídico. Inventário de dados real fornecido nesta sessão.
 3. **Item 1.3:** completar os cursos esqueleto pelo painel já pronto.
 4. **Backup seguro** da upload key (`.jks` + 3 credenciais) — ainda pendente.

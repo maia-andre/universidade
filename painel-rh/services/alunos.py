@@ -3,13 +3,26 @@
 Esta é a operação privilegiada central — só o Admin SDK cria contas de autenticação.
 """
 from firebase_admin import firestore
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 from config import COL_SERVIDORES
 from firebase_client import get_auth, get_db
+from services import validacao
+
+
+def matricula_existente(matricula: str) -> bool:
+    """Consulta por igualdade em campo único — índice automático do Firestore."""
+    docs = (get_db().collection(COL_SERVIDORES)
+            .where(filter=FieldFilter("matricula", "==", matricula)).limit(1).stream())
+    return next(docs, None) is not None
 
 
 def criar_aluno(nome, email, matricula, lotacao, senha_temporaria, operador):
     """Cria a conta de autenticação e o doc do servidor. Retorna o uid."""
+    if not validacao.email_valido(email):
+        raise ValueError(f"E-mail em formato inválido: '{email}'.")
+    if matricula and matricula_existente(matricula):
+        raise ValueError(f"A matrícula '{matricula}' já está cadastrada.")
     user = get_auth().create_user(
         email=email,
         password=senha_temporaria,
@@ -43,28 +56,32 @@ def redefinir_senha(uid, nova_senha, operador):
 
 
 def listar_alunos(limite=500):
-    docs = get_db().collection(COL_SERVIDORES).limit(limite).stream()
+    docs = get_db().collection(COL_SERVIDORES).order_by("nome").limit(limite).stream()
     return [{"uid": d.id, **d.to_dict()} for d in docs]
 
 
-def importar_planilha(df, senha_padrao, operador):
-    """Importa servidores de um DataFrame (colunas: nome, email, matricula, lotacao).
+def importar_planilha(linhas, operador):
+    """Importa alunos já validados por `validacao.validar_planilha` (dry-run na página).
 
-    Retorna (criados, erros) — processa linha a linha para não abortar tudo num erro.
+    Gera uma senha temporária aleatória POR aluno. Retorna uma linha de resultado por
+    entrada: `{nome, email, senha_temporaria, uid}` em sucesso, ou com `erro` em falha —
+    processa linha a linha para não abortar tudo num erro.
     """
-    criados, erros = [], []
-    for i, row in df.iterrows():
-        email = str(row.get("email", "")).strip()
+    resultado = []
+    for linha in linhas:
+        senha = validacao.gerar_senha_temporaria()
         try:
             uid = criar_aluno(
-                nome=str(row.get("nome", "")).strip(),
-                email=email,
-                matricula=str(row.get("matricula", "")).strip(),
-                lotacao=str(row.get("lotacao", "")).strip(),
-                senha_temporaria=senha_padrao,
+                nome=linha["nome"],
+                email=linha["email"],
+                matricula=linha.get("matricula", ""),
+                lotacao=linha.get("lotacao", ""),
+                senha_temporaria=senha,
                 operador=operador,
             )
-            criados.append((email, uid))
+            resultado.append({"nome": linha["nome"], "email": linha["email"],
+                              "senha_temporaria": senha, "uid": uid})
         except Exception as e:  # noqa: BLE001 — reporta erro por linha
-            erros.append((email or f"linha {i + 2}", str(e)))
-    return criados, erros
+            resultado.append({"nome": linha["nome"], "email": linha["email"],
+                              "senha_temporaria": "", "erro": str(e)})
+    return resultado

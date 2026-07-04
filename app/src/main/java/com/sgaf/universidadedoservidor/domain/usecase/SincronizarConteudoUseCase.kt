@@ -23,7 +23,11 @@ class SincronizarConteudoUseCase @Inject constructor(
         val versaoLocal = userPreferencesRepository.versaoConteudo.first()
         if (remoto.versao <= versaoLocal) return
 
-        cursoRepository.aplicarConteudoRemoto(remoto.json)
-        userPreferencesRepository.setVersaoConteudo(remoto.versao)
+        // Só marca a versão como aplicada se o catálogo passou na validação — senão a versão
+        // seria "queimada": o payload inválido é descartado e o app nunca mais tentaria aplicá-la.
+        val aplicado = cursoRepository.aplicarConteudoRemoto(remoto.json)
+        if (aplicado) {
+            userPreferencesRepository.setVersaoConteudo(remoto.versao)
+        }
     }
 }

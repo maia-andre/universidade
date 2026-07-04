@@ -1,5 +1,6 @@
 package com.sgaf.universidadedoservidor.data.repository
 
+import com.sgaf.universidadedoservidor.data.local.ConteudoLocalSource
 import com.sgaf.universidadedoservidor.data.local.dao.AulaDao
 import com.sgaf.universidadedoservidor.data.local.dao.CursoDao
 import com.sgaf.universidadedoservidor.data.local.dao.ModuloDao
@@ -7,6 +8,7 @@ import com.sgaf.universidadedoservidor.data.local.dao.ProgressoDao
 import com.sgaf.universidadedoservidor.data.local.dao.SearchDao
 import com.sgaf.universidadedoservidor.data.local.dao.SearchResultRow
 import com.sgaf.universidadedoservidor.data.local.dao.AvaliacaoDao
+import com.sgaf.universidadedoservidor.data.local.database.AppDatabase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -19,6 +21,8 @@ import org.junit.Test
 
 class CursoRepositoryImplBuscaTest {
 
+    private val appDatabase = mockk<AppDatabase>(relaxed = true)
+    private val conteudoLocalSource = mockk<ConteudoLocalSource>(relaxed = true)
     private val cursoDao = mockk<CursoDao>(relaxed = true)
     private val moduloDao = mockk<ModuloDao>(relaxed = true)
     private val aulaDao = mockk<AulaDao>(relaxed = true)
@@ -27,7 +31,8 @@ class CursoRepositoryImplBuscaTest {
     private val avaliacaoDao = mockk<AvaliacaoDao>(relaxed = true)
 
     private val repository = CursoRepositoryImpl(
-        cursoDao, moduloDao, aulaDao, progressoDao, searchDao, avaliacaoDao
+        appDatabase, conteudoLocalSource, cursoDao, moduloDao, aulaDao,
+        progressoDao, searchDao, avaliacaoDao
     )
 
     @Test

@@ -255,9 +255,11 @@ class CursoRepositoryImpl @Inject constructor(
     // V8 Item 1: aplica um catálogo publicado pelo RH. Valida antes de persistir (um payload
     // inválido NÃO deve apagar o conteúdo atual) e reconstrói o Room em transação, preservando
     // o progresso (ProgressoEntity é keyed por aulaId, em tabela à parte; não é tocada aqui).
-    override suspend fun aplicarConteudoRemoto(jsonCatalogo: String) {
+    override suspend fun aplicarConteudoRemoto(jsonCatalogo: String): Boolean {
+        // parse() devolve lista vazia tanto para JSON inválido quanto para catálogo [] legítimo;
+        // tratar ambos como "não aplicado" é seguro porque o painel proíbe publicar catálogo vazio.
         val catalogo = conteudoLocalSource.parse(jsonCatalogo)
-        if (catalogo.isEmpty()) return
+        if (catalogo.isEmpty()) return false
 
         val cursos = catalogo.map {
             CursoEntity(id = it.id, titulo = it.titulo, descricao = it.descricao)
@@ -292,6 +294,7 @@ class CursoRepositoryImpl @Inject constructor(
             moduloDao.insertModulos(modulos)
             aulaDao.insertAulas(aulas)
         }
+        return true
     }
 
     /** Extrai um trecho do conteúdo ao redor da primeira ocorrência do termo (sem Markdown). */

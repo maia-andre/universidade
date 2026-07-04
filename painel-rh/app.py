@@ -1,39 +1,16 @@
-"""Painel RH — Universidade do Servidor (home / dashboard).
+"""Painel RH — Universidade do Servidor (entry point).
 
-Entry point do Streamlit. Rode com: `streamlit run app.py` (ou o atalho run.bat).
+Roteia as páginas com `st.navigation` para controlar rótulo e ícone na sidebar
+(sem isso o Streamlit usa o nome do arquivo — a home aparecia como "app").
+Rode com: `streamlit run app.py` (ou o atalho run.bat).
 """
 import streamlit as st
 
-from auth_operador import require_login
-from firebase_client import ChaveAusenteError
-from services import relatorios
-
-st.set_page_config(
-    page_title="Painel RH — Universidade do Servidor",
-    page_icon="🎓",
-    layout="wide",
-)
-
-require_login()
-
-st.title("🎓 Painel RH — Universidade do Servidor")
-st.caption("Gestão de acesso aos cursos e acompanhamento de conclusões.")
-
-try:
-    r = relatorios.resumo()
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Matrículas", r["matriculas"])
-    c2.metric("Conclusões", r["conclusoes"])
-    c3.metric("Taxa de conclusão", f"{r['taxa']:.0f}%")
-except ChaveAusenteError as e:
-    st.warning(str(e))
-except Exception as e:  # noqa: BLE001
-    st.error(f"Erro ao acessar o Firestore: {e}")
-
-st.divider()
-st.markdown(
-    "Use o menu lateral:\n"
-    "- **Alunos** — cadastrar servidores (manual ou por planilha)\n"
-    "- **Matrículas** — liberar um curso (define o curso ativo do aluno no app)\n"
-    "- **Relatórios** — conclusões enviadas pelos alunos"
-)
+st.navigation([
+    st.Page("pages/0_Inicio.py", title="Início", icon="🏠", default=True),
+    st.Page("pages/1_Alunos.py", title="Alunos", icon="👥"),
+    st.Page("pages/2_Matriculas.py", title="Matrículas", icon="🎓"),
+    st.Page("pages/3_Relatorios.py", title="Relatórios", icon="📊"),
+    st.Page("pages/4_Conteudo.py", title="Conteúdo", icon="📚"),
+    st.Page("pages/5_Operadores.py", title="Operadores", icon="🛠"),
+]).run()

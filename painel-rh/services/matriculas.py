@@ -1,17 +1,21 @@
 """Matrículas: liberar um curso a um aluno (define o curso ativo no app) e acompanhar status."""
 from firebase_admin import firestore
 
-from config import COL_MATRICULAS, CURSOS
+from config import COL_MATRICULAS
 from firebase_client import get_db
 
 
-def liberar_curso(uid, curso_id, operador):
-    """Cria/atualiza a matrícula. O app lê isto no login/sync e define o curso ativo."""
+def liberar_curso(uid, curso_id, curso_titulo, operador):
+    """Cria/atualiza a matrícula. O app lê isto no login/sync e define o curso ativo.
+
+    ⚠️ Contrato com o app Android: doc id `{uid}_{cursoId}`, campos `uid`, `cursoId` (int)
+    e `status == "ativa"` — não renomear. O título vem do catálogo publicado (dinâmico).
+    """
     doc_id = f"{uid}_{curso_id}"
     get_db().collection(COL_MATRICULAS).document(doc_id).set({
         "uid": uid,
         "cursoId": curso_id,
-        "cursoTitulo": CURSOS.get(curso_id, str(curso_id)),
+        "cursoTitulo": curso_titulo,
         "status": "ativa",
         "liberadoPor": operador,
         "liberadoEm": firestore.SERVER_TIMESTAMP,

@@ -33,10 +33,10 @@ COL_CONCLUSOES = "conclusoes"
 COL_CONFIG = "config"
 DOC_CONTEUDO = "conteudo"
 
-# Catálogo de cursos — espelha app/src/main/assets/curso_data.json.
-# Enquanto o conteúdo vive nos assets do APK, este catálogo é estático.
-# Quando o conteúdo virar dinâmico (fase futura), virá do Firestore.
-CURSOS = {
+# Catálogo de cursos — FALLBACK de último recurso, usado só quando o Firestore e o
+# bootstrap dos assets estão indisponíveis. O catálogo real vem do conteúdo publicado
+# (`services/cache.catalogo_cursos()`), que reflete cursos criados/renomeados pelo painel.
+CURSOS_FALLBACK = {
     1: "Curso de Supervisores",
     2: "Gestão de Patrimônio",
     3: "Noções de Licitação",

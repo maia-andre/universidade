@@ -2,42 +2,43 @@
 import pandas as pd
 import streamlit as st
 
+import erros
 from auth_operador import require_login
-from config import CURSOS
-from services import alunos, matriculas
+from services import cache, matriculas
 
 operador = require_login()
 st.title("🎓 Matrículas")
 st.caption("Liberar um curso define o **curso ativo** do aluno no app (lido no login/sync).")
 
-try:
-    lista = alunos.listar_alunos()
-except Exception as e:  # noqa: BLE001
-    st.error(str(e))
-    lista = []
+with erros.protegido("lista de alunos", parar=True):
+    lista = cache.alunos_lista()
+
+# Catálogo dinâmico: vem do conteúdo publicado (config/conteudo) — cursos novos
+# criados na página Conteúdo aparecem aqui sem mexer em código.
+with erros.protegido("catálogo de cursos", parar=True):
+    catalogo = cache.catalogo_cursos()
 
 if lista:
     opcoes = {f"{a.get('nome', '?')} — {a.get('email', '')}": a["uid"] for a in lista}
     with st.form("liberar"):
         aluno_label = st.selectbox("Aluno", list(opcoes.keys()))
-        curso_id = st.selectbox("Curso", list(CURSOS.keys()), format_func=lambda i: CURSOS[i])
+        curso_id = st.selectbox("Curso", sorted(catalogo), format_func=lambda i: catalogo[i])
         ok = st.form_submit_button("Liberar curso")
+    if st.button("↻ Recarregar cursos", help="Busca cursos publicados há pouco na página Conteúdo."):
+        cache.invalidar_catalogo()
+        st.rerun()
     if ok:
-        try:
-            matriculas.liberar_curso(opcoes[aluno_label], curso_id, operador)
+        with erros.protegido("liberar curso"):
+            matriculas.liberar_curso(opcoes[aluno_label], curso_id, catalogo[curso_id], operador)
+            cache.invalidar_matriculas()
             st.success("Curso liberado. O app o definirá como curso ativo no próximo login/sync.")
-        except Exception as e:  # noqa: BLE001
-            st.error(str(e))
 else:
     st.info("Cadastre alunos primeiro (página **Alunos**).")
 
 st.divider()
 st.subheader("Matrículas existentes")
-try:
-    lista_matriculas = matriculas.listar_matriculas()
-except Exception as e:  # noqa: BLE001
-    st.error(str(e))
-    lista_matriculas = []
+with erros.protegido("lista de matrículas"):
+    lista_matriculas = cache.matriculas_lista()
 st.dataframe(pd.DataFrame(lista_matriculas), width="stretch")
 
 # Encerrar matrícula (desmatricular) — v7, Item 5.
@@ -56,9 +57,8 @@ if ativas:
         enc = st.form_submit_button("Encerrar matrícula")
     if enc:
         m = rotulos[alvo]
-        try:
+        with erros.protegido("encerrar matrícula"):
             matriculas.encerrar_matricula(m["uid"], m["cursoId"], operador)
-            st.success("Matrícula encerrada.")
+            cache.invalidar_matriculas()
+            st.toast("Matrícula encerrada.", icon="✅")  # sobrevive ao rerun (st.success não)
             st.rerun()
-        except Exception as e:  # noqa: BLE001
-            st.error(str(e))

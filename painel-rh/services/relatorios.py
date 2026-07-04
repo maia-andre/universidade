@@ -1,5 +1,5 @@
 """Relatórios: lê as conclusões gravadas pelo app (pull) e consolida KPIs."""
-from config import COL_CONCLUSOES, COL_MATRICULAS, COL_SERVIDORES, CURSOS
+from config import COL_CONCLUSOES, COL_MATRICULAS, COL_SERVIDORES
 from firebase_client import get_db
 
 
@@ -25,7 +25,7 @@ def situacao_por_aluno(limite=1000):
         linhas.append({
             "aluno": serv.get("nome", uid),
             "email": serv.get("email", ""),
-            "curso": CURSOS.get(curso_id, str(curso_id)),
+            "curso": m.get("cursoTitulo") or str(curso_id),
             "matrícula": m.get("status", "?"),
             "concluído": "✅" if (uid, curso_id) in concluidos else "—",
         })

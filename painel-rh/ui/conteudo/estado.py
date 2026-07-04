@@ -190,7 +190,9 @@ def _anexar_uids(cursos: list) -> list:
 
 
 def nova_pergunta() -> dict:
-    return {"pergunta": "", "opcoes": ["", ""], "respostaCorretaIndex": 0,
+    # Opções pré-preenchidas (não em branco): a sincronização ignora linhas vazias e a
+    # pergunta nasceria sem opção nenhuma no rascunho.
+    return {"pergunta": "", "opcoes": ["Opção 1", "Opção 2"], "respostaCorretaIndex": 0,
             "_uid": uuid.uuid4().hex[:8]}
 
 

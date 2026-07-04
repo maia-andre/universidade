@@ -24,7 +24,10 @@ def _pergunta(texto="Qual?"):
 CATALOGO = [
     {
         "id": 1, "titulo": "Curso Um", "descricao": "d", "cargaHoraria": 8,
-        "provaFinal": [_pergunta()],
+        # A 2ª pergunta reproduz o rascunho real que quebrava a página: opcoes []
+        # (lista vazia vira coluna float64 no pandas → TextColumn estourava).
+        "provaFinal": [_pergunta(),
+                       {"pergunta": "Sem opções", "opcoes": [], "respostaCorretaIndex": 0}],
         "modulos": [
             {"id": 100, "titulo": "Módulo 100", "descricao": "", "aulas": [
                 {"id": 101, "titulo": "Aula 101", "conteudo": "c", "quiz": []},
@@ -85,6 +88,26 @@ def _botao(at, key):
 
 
 # ------------------------------------------------------------------ regressão bug 1
+
+def test_pergunta_sem_opcoes_nao_quebra_a_pagina(at):
+    """Regressão: StreamlitAPIException (TextColumn × coluna FLOAT) com opcoes == []."""
+    assert not at.exception  # a fixture já renderizou o curso 1, que contém o caso
+
+
+def test_linha_nao_preenchida_do_data_editor_nao_vira_opcao_nan():
+    """NaN é truthy em Python — linha adicionada e não digitada virava a opção 'nan'."""
+    import numpy as np
+    import pandas as pd
+
+    from ui.conteudo import quiz
+
+    p = {"pergunta": "Q?", "opcoes": ["a"], "respostaCorretaIndex": 0, "_uid": "t1"}
+    df = pd.DataFrame({"opcao": ["a", np.nan], "correta": [True, np.nan]})
+    opcoes, marcadas = quiz._sincronizar_opcoes(p, df, "tester")
+    assert opcoes == ["a"], f"linha NaN virou opção: {opcoes}"
+    assert marcadas == [0]
+    assert p["opcoes"] == ["a"]
+
 
 def test_adicionar_pergunta_na_prova_mantem_o_curso_selecionado(at):
     # vai para o curso 2 e adiciona pergunta na prova final

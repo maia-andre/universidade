@@ -40,12 +40,23 @@ def _assinatura(p: dict) -> str:
     return hashlib.md5(payload.encode("utf-8")).hexdigest()[:8]
 
 
+def _celula_texto(valor) -> str:
+    """Célula do data_editor → str. Linha recém-adicionada vem como NaN, que é TRUTHY
+    em Python (`str(nan or "")` viraria a opção literal "nan")."""
+    return "" if pd.isna(valor) else str(valor).strip()
+
+
+def _celula_bool(valor) -> bool:
+    return (not pd.isna(valor)) and bool(valor)  # bool(NaN) é True — nunca usar direto
+
+
 def _sincronizar_opcoes(p: dict, df: pd.DataFrame, operador: str) -> tuple[list, list]:
     """Escreve o retorno do data_editor no rascunho (roda todo rerun; converge porque a
     key muda junto com o conteúdo). Linhas vazias são ignoradas; o índice da correta só
     é gravado quando exatamente UMA linha está marcada (senão mantém e mostra erro)."""
-    linhas = [(str(r["opcao"]).strip(), bool(r["correta"]))
-              for _, r in df.iterrows() if str(r.get("opcao") or "").strip()]
+    linhas = [(_celula_texto(r.get("opcao")), _celula_bool(r.get("correta")))
+              for _, r in df.iterrows()]
+    linhas = [(t, c) for t, c in linhas if t]
     opcoes = [t for t, _ in linhas]
     marcadas = [i for i, (_, c) in enumerate(linhas) if c]
     mudou = False
@@ -90,10 +101,16 @@ def render_lista(titulo: str, caminho_container: tuple, campo_lista: str,
                 args=(caminho_container, campo_lista, uid, key_txt, operador),
                 disabled=ro,
             )
+            # dtypes explícitos: uma lista de opções VAZIA viraria float64 no pandas,
+            # e o TextColumn recusa a coluna (StreamlitAPIException em runtime).
+            opcoes_atuais = [str(o) for o in p.get("opcoes", [])]
             df = pd.DataFrame({
-                "opcao": p.get("opcoes", []),
-                "correta": [i == p.get("respostaCorretaIndex")
-                            for i in range(len(p.get("opcoes", [])))],
+                "opcao": pd.Series(opcoes_atuais, dtype="object"),
+                "correta": pd.Series(
+                    [i == p.get("respostaCorretaIndex")
+                     for i in range(len(opcoes_atuais))],
+                    dtype="bool",
+                ),
             })
             editado = st.data_editor(
                 df,

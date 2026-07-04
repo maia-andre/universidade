@@ -74,6 +74,11 @@ def require_login() -> str:
         return usuario
 
     # Não autenticado: tela de login.
+    import os
+
+    import ui
+    if os.path.exists(ui.LOGO):
+        st.image(ui.LOGO, width=340)
     st.title("🔐 Painel RH — Universidade do Servidor")
     st.caption("Acesso restrito à equipe de treinamento.")
     with st.form("login"):

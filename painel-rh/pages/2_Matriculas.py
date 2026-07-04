@@ -7,9 +7,12 @@ import ui
 from auth_operador import require_login
 from services import cache, matriculas
 
+ui.configurar_pagina("Matrículas — Painel RH", "🎓")
 operador = require_login()
-st.title("🎓 Matrículas")
-st.caption("Liberar um curso define o **curso ativo** do aluno no app (lido no login/sync).")
+ui.pagina_header(
+    "Matrículas", "🎓",
+    "Liberar um curso define o **curso ativo** do aluno no app (lido no login/sync).",
+)
 
 with erros.protegido("lista de alunos", parar=True):
     lista = cache.alunos_lista()
@@ -40,7 +43,26 @@ st.divider()
 st.subheader("Matrículas existentes")
 with erros.protegido("lista de matrículas"):
     lista_matriculas = cache.matriculas_lista()
-st.dataframe(pd.DataFrame(lista_matriculas), width="stretch")
+nomes = {a["uid"]: a.get("nome", a["uid"]) for a in lista}
+df_m = pd.DataFrame(lista_matriculas)
+if not df_m.empty:
+    df_m["aluno"] = df_m["uid"].map(nomes)
+    df_m["status"] = df_m["status"].map(
+        {"ativa": "Ativa", "encerrada": "Encerrada"}).fillna(df_m["status"])
+st.dataframe(
+    df_m,
+    width="stretch",
+    column_order=("aluno", "cursoTitulo", "status", "liberadoEm", "liberadoPor", "encerradoEm"),
+    column_config={
+        "aluno": st.column_config.TextColumn("Aluno"),
+        "cursoTitulo": st.column_config.TextColumn("Curso"),
+        "status": st.column_config.TextColumn("Status"),
+        "liberadoEm": st.column_config.DatetimeColumn("Liberado em", format="DD/MM/YYYY HH:mm"),
+        "liberadoPor": st.column_config.TextColumn("Liberado por"),
+        "encerradoEm": st.column_config.DatetimeColumn("Encerrado em", format="DD/MM/YYYY HH:mm"),
+    },
+)
+ui.aviso_truncamento(len(lista_matriculas), 500)
 
 # Encerrar matrícula (desmatricular) — v7, Item 5.
 ativas = [m for m in lista_matriculas if m.get("status") == "ativa"]
@@ -48,7 +70,6 @@ if ativas:
     st.divider()
     st.subheader("Encerrar matrícula")
     st.caption("Encerra o acesso ao curso no app (cursos já concluídos seguem acessíveis).")
-    nomes = {a["uid"]: a.get("nome", a["uid"]) for a in lista}
     rotulos = {
         f"{nomes.get(m['uid'], m['uid'])} — {m.get('cursoTitulo', m.get('cursoId'))}": m
         for m in ativas

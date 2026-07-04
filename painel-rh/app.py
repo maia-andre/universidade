@@ -5,31 +5,40 @@ Entry point do Streamlit. Rode com: `streamlit run app.py` (ou o atalho run.bat)
 import streamlit as st
 
 import erros
+import ui
 from auth_operador import require_login
 from services import cache
 
-st.set_page_config(
-    page_title="Painel RH — Universidade do Servidor",
-    page_icon="🎓",
-    layout="wide",
-)
-
+ui.configurar_pagina("Painel RH — Universidade do Servidor")
 require_login()
-
-st.title("🎓 Painel RH — Universidade do Servidor")
-st.caption("Gestão de acesso aos cursos e acompanhamento de conclusões.")
+ui.pagina_header(
+    "Painel RH — Universidade do Servidor", "🎓",
+    "Gestão de acesso aos cursos e acompanhamento de conclusões.",
+)
 
 with erros.protegido("resumo de indicadores"):
     r = cache.resumo_kpis()
     c1, c2, c3 = st.columns(3)
-    c1.metric("Matrículas", r["matriculas"])
-    c2.metric("Conclusões", r["conclusoes"])
-    c3.metric("Taxa de conclusão", f"{r['taxa']:.0f}%")
+    c1.container(border=True).metric("📋 Matrículas", r["matriculas"])
+    c2.container(border=True).metric("🏆 Conclusões", r["conclusoes"])
+    c3.container(border=True).metric("📈 Taxa de conclusão", f"{r['taxa']:.0f}%")
 
 st.divider()
-st.markdown(
-    "Use o menu lateral:\n"
-    "- **Alunos** — cadastrar servidores (manual ou por planilha)\n"
-    "- **Matrículas** — liberar um curso (define o curso ativo do aluno no app)\n"
-    "- **Relatórios** — conclusões enviadas pelos alunos"
-)
+st.subheader("Acesso rápido")
+cols = st.columns(5)
+cols[0].page_link("pages/1_Alunos.py", label="Alunos", icon="👥")
+cols[1].page_link("pages/2_Matriculas.py", label="Matrículas", icon="🎓")
+cols[2].page_link("pages/3_Relatorios.py", label="Relatórios", icon="📊")
+cols[3].page_link("pages/4_Conteudo.py", label="Conteúdo", icon="📚")
+if st.session_state.get("operador_admin"):
+    cols[4].page_link("pages/5_Operadores.py", label="Operadores", icon="🛠")
+
+with st.expander("Como usar o painel"):
+    st.markdown(
+        "- **Alunos** — cadastrar servidores (manual ou por planilha); cada aluno recebe "
+        "uma senha temporária própria\n"
+        "- **Matrículas** — liberar um curso (define o curso ativo do aluno no app)\n"
+        "- **Relatórios** — situação por aluno e conclusões enviadas pelo app\n"
+        "- **Conteúdo** — editar e publicar os cursos (o app atualiza sem novo APK)\n"
+        "- **Operadores** — gestão de acesso ao painel (só administradores)"
+    )

@@ -11,8 +11,9 @@ import ui
 from auth_operador import require_login
 from services import alunos, cache, validacao
 
+ui.configurar_pagina("Alunos — Painel RH", "👥")
 operador = require_login()
-st.title("👥 Alunos")
+ui.pagina_header("Alunos", "👥", "Cadastro de servidores — individual ou por planilha.")
 
 tab_novo, tab_planilha, tab_lista = st.tabs(["Novo aluno", "Importar planilha", "Cadastrados"])
 
@@ -100,9 +101,20 @@ with tab_planilha:
 with tab_lista:
     with erros.protegido("lista de alunos", parar=True):
         lista = cache.alunos_lista()
-    st.dataframe(pd.DataFrame(lista), width="stretch")
-    if len(lista) == 500:
-        st.caption("⚠️ Exibindo os primeiros 500 registros.")
+    st.dataframe(
+        pd.DataFrame(lista),
+        width="stretch",
+        column_order=("nome", "email", "matricula", "lotacao", "criadoEm", "criadoPor"),
+        column_config={
+            "nome": st.column_config.TextColumn("Nome"),
+            "email": st.column_config.TextColumn("E-mail"),
+            "matricula": st.column_config.TextColumn("Matrícula"),
+            "lotacao": st.column_config.TextColumn("Lotação"),
+            "criadoEm": st.column_config.DatetimeColumn("Criado em", format="DD/MM/YYYY HH:mm"),
+            "criadoPor": st.column_config.TextColumn("Criado por"),
+        },
+    )
+    ui.aviso_truncamento(len(lista), 500)
 
     if lista:
         st.divider()

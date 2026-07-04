@@ -27,7 +27,7 @@ def situacao_por_aluno(limite=1000):
             "email": serv.get("email", ""),
             "curso": m.get("cursoTitulo") or str(curso_id),
             "matrícula": m.get("status", "?"),
-            "concluído": "✅" if (uid, curso_id) in concluidos else "—",
+            "concluído": (uid, curso_id) in concluidos,
         })
     return linhas
 

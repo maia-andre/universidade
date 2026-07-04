@@ -7,20 +7,30 @@ import ui
 from auth_operador import require_admin, require_login
 from services import operadores, validacao
 
+ui.configurar_pagina("Operadores — Painel RH", "🛠")
 operador = require_login()
 require_admin(operador)  # re-checa no Firestore — revogação de admin vale imediatamente
 
-st.title("🛠 Operadores do painel")
-st.caption(
-    "Gerencie quem acessa o painel. As senhas são guardadas com **hash PBKDF2** (nunca em texto); "
-    "operadores novos e os que tiveram a senha redefinida **trocam no próximo acesso**."
+ui.pagina_header(
+    "Operadores do painel", "🛠",
+    "As senhas são guardadas com **hash PBKDF2** (nunca em texto); operadores novos e os "
+    "que tiveram a senha redefinida **trocam no próximo acesso**.",
 )
 
 with erros.protegido("lista de operadores", parar=True):
     lista = operadores.listar()
 
 if lista:
-    st.dataframe(pd.DataFrame(lista), width="stretch")
+    st.dataframe(
+        pd.DataFrame(lista),
+        width="stretch",
+        column_config={
+            "usuario": st.column_config.TextColumn("Usuário"),
+            "admin": st.column_config.CheckboxColumn("Administrador"),
+            "ativo": st.column_config.CheckboxColumn("Ativo"),
+            "precisaTrocar": st.column_config.CheckboxColumn("Troca pendente"),
+        },
+    )
 
 # --------------------------------------------------------------------------- novo operador
 st.divider()

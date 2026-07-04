@@ -3,14 +3,50 @@
 Regra do diálogo de confirmação: o gatilho deve ser um `st.button` comum, FORA de
 `st.form` (um `form_submit_button` dispara rerun do form e o diálogo fecharia sozinho).
 """
+import os
 from collections.abc import Callable
 
 import streamlit as st
 
 import erros
+from services import cache
 
 AZUL = "#003882"
 DOURADO = "#FFD700"
+
+_ASSETS = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "assets"))
+BRASAO = os.path.join(_ASSETS, "brasao.png")             # RGBA — serve em fundo escuro (sidebar)
+LOGO = os.path.join(_ASSETS, "logo_uniservidor.jpeg")    # fundo branco — usar só sobre fundo claro
+
+# CSS mínimo e contido: só o filete dourado sob os títulos (o resto vem do tema no config.toml).
+_CSS = f"""
+<style>
+h1 {{ border-bottom: 3px solid {DOURADO}; padding-bottom: 0.25em; }}
+</style>
+"""
+
+
+def configurar_pagina(titulo: str, icone: str = "🎓") -> None:
+    """PRIMEIRA chamada de toda página: set_page_config + brasão na sidebar + CSS."""
+    st.set_page_config(page_title=titulo, page_icon=icone, layout="wide")
+    if os.path.exists(BRASAO):
+        st.logo(BRASAO)
+    st.markdown(_CSS, unsafe_allow_html=True)
+
+
+def pagina_header(titulo: str, icone: str = "", subtitulo: str | None = None,
+                  botao_atualizar: bool = True) -> None:
+    """Cabeçalho padrão com botão "Atualizar dados" (limpa todo o cache)."""
+    col_t, col_b = st.columns([5, 1], vertical_alignment="center")
+    with col_t:
+        st.title(f"{icone} {titulo}".strip())
+        if subtitulo:
+            st.caption(subtitulo)
+    if botao_atualizar and col_b.button(
+        "↻ Atualizar dados", help="Recarrega as informações do Firebase.", width="stretch"
+    ):
+        cache.invalidar_tudo()
+        st.rerun()
 
 
 def toast_ok(msg: str) -> None:

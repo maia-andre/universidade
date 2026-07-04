@@ -1,10 +1,25 @@
-# Tema com a identidade de São José dos Campos (azul oficial #003882).
+# Identidade Prefeitura de São José dos Campos — azul oficial #003882 / dourado #FFD700.
 [theme]
+base = "light"
 primaryColor = "#003882"
 backgroundColor = "#FFFFFF"
 secondaryBackgroundColor = "#F0F4F8"
 textColor = "#1A1A1A"
-font = "sans serif"
+linkColor = "#00509E"
+borderColor = "#D5DFEA"
+dataframeHeaderBackgroundColor = "#E8EEF6"
+baseRadius = "8px"
+buttonRadius = "8px"
+font = "sans-serif"
+chartCategoricalColors = ["#003882", "#C9A227", "#00509E", "#6B7B8C"]
+
+[theme.sidebar]
+backgroundColor = "#003882"
+secondaryBackgroundColor = "#0A4A9E"
+textColor = "#FFFFFF"
+primaryColor = "#FFD700"
+linkColor = "#FFD700"
+borderColor = "#0A4A9E"
 
 [server]
 headless = true

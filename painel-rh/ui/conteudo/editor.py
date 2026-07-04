@@ -4,7 +4,7 @@ import streamlit as st
 
 import ui
 from services import conteudo
-from ui.conteudo import estado
+from ui.conteudo import estado, quiz
 
 
 def _selecionar(rotulo: str, itens: list, key: str, container=st):
@@ -61,6 +61,8 @@ def render(operador: str) -> None:
                            operador, widget=st.text_area, height=80)
         estado.campo_inteiro("Carga horária (h)", f"c_{cid}_ch", ("curso", cid),
                              "cargaHoraria", operador)
+        st.divider()
+        quiz.render_lista("🏁 Prova final do curso", ("curso", cid), "provaFinal", operador)
 
     # ------------------------------------------------------------------- módulos
     st.divider()
@@ -144,3 +146,5 @@ def render(operador: str) -> None:
         if (aula.get("conteudo") or "").strip():
             with st.expander("👁 Pré-visualizar conteúdo (Markdown)"):
                 st.markdown(aula["conteudo"])
+        st.divider()
+        quiz.render_lista("🧩 Quiz da aula", ("aula", cid, mid, aid), "quiz", operador)

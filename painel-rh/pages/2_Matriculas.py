@@ -24,18 +24,42 @@ with erros.protegido("catálogo de cursos", parar=True):
 
 if lista:
     opcoes = {f"{a.get('nome', '?')} — {a.get('email', '')}": a["uid"] for a in lista}
-    with st.form("liberar"):
-        aluno_label = st.selectbox("Aluno", list(opcoes.keys()))
-        curso_id = st.selectbox("Curso", sorted(catalogo), format_func=lambda i: catalogo[i])
-        ok = st.form_submit_button("Liberar curso")
-    if st.button("↻ Recarregar cursos", help="Busca cursos publicados há pouco na página Conteúdo."):
+    aluno_label = st.selectbox("Aluno", list(opcoes.keys()))
+    col_curso, col_rec = st.columns([4, 1], vertical_alignment="bottom")
+    curso_id = col_curso.selectbox("Curso", sorted(catalogo), format_func=lambda i: catalogo[i])
+    if col_rec.button("↻ Recarregar cursos", width="stretch",
+                      help="Busca cursos publicados há pouco na página Conteúdo."):
         cache.invalidar_catalogo()
         st.rerun()
-    if ok:
+    if st.button("Liberar curso", type="primary"):
+        uid = opcoes[aluno_label]
         with erros.protegido("liberar curso"):
-            matriculas.liberar_curso(opcoes[aluno_label], curso_id, catalogo[curso_id], operador)
-            cache.invalidar_matriculas()
-            st.success("Curso liberado. O app o definirá como curso ativo no próximo login/sync.")
+            # Regra: um curso ativo por aluno. Se há outra matrícula ativa, o operador
+            # confirma a TROCA (encerra as demais e libera a nova).
+            outras = [m for m in matriculas.matriculas_ativas(uid)
+                      if m.get("cursoId") != curso_id]
+            if outras:
+                titulos = ", ".join(str(m.get("cursoTitulo") or m.get("cursoId"))
+                                    for m in outras)
+
+                def _trocar(uid=uid, curso_id=curso_id):
+                    matriculas.liberar_curso(uid, curso_id, catalogo[curso_id], operador,
+                                             encerrar_outras=True)
+                    cache.invalidar_matriculas()
+
+                ui.confirmar_acao(
+                    "Trocar curso ativo",
+                    f"**{aluno_label}** já tem matrícula ativa em: **{titulos}**. "
+                    f"A regra é **um curso ativo por aluno** — encerrar e liberar "
+                    f"**{catalogo[curso_id]}**? Cursos já concluídos permanecem acessíveis.",
+                    _trocar,
+                    rotulo="Trocar curso",
+                )
+            else:
+                matriculas.liberar_curso(uid, curso_id, catalogo[curso_id], operador)
+                cache.invalidar_matriculas()
+                st.success("Curso liberado. O app o definirá como curso ativo "
+                           "no próximo login/sync.")
 else:
     st.info("Cadastre alunos primeiro (página **Alunos**).")
 

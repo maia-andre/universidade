@@ -47,8 +47,9 @@ _LIMITE_AVISO_BYTES = 700_000
 _LIMITE_ERRO_BYTES = 950_000
 
 
-class ConflitoVersaoError(RuntimeError):
-    """Outro operador publicou entre a revisão do diff e a confirmação."""
+class ConflitoVersaoError(ValueError):
+    """Outro operador publicou entre a revisão do diff e a confirmação.
+    Subclasse de ValueError: é erro de negócio — a mensagem vai direto ao operador."""
 
 
 def _doc_ref():

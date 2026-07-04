@@ -30,11 +30,12 @@ def render(operador: str) -> None:
         cat.append({"id": novo_id, "titulo": f"Novo curso {novo_id}", "descricao": "",
                     "cargaHoraria": 0, "provaFinal": [], "modulos": []})
         estado.registrar_mutacao(operador)
+        st.session_state["sel_curso"] = novo_id  # navega direto para o curso criado
         st.rerun()
     if not cat:
         st.warning("Nenhum curso no rascunho. Adicione o primeiro.")
         return
-    curso = _selecionar("Curso", cat, "sel_curso_id", topo[0])
+    curso = _selecionar("Curso", cat, "sel_curso", topo[0])
     cid = curso["id"]
 
     with st.container(border=True):
@@ -73,11 +74,13 @@ def render(operador: str) -> None:
         modulos.append({"id": novo_id, "titulo": f"Novo módulo {novo_id}",
                         "descricao": "", "aulas": []})
         estado.registrar_mutacao(operador)
+        st.session_state[f"sel_modulo_{cid}"] = novo_id
         st.rerun()
     if not modulos:
         st.info("Curso sem módulos. Adicione um módulo.")
         return
-    modulo = _selecionar("Módulo", modulos, "sel_modulo_id", mtopo[0])
+    # Key com escopo do curso: trocar de curso não arrasta a seleção de módulo anterior.
+    modulo = _selecionar("Módulo", modulos, f"sel_modulo_{cid}", mtopo[0])
     mid = modulo["id"]
 
     with st.container(border=True):
@@ -114,11 +117,14 @@ def render(operador: str) -> None:
         aulas.append({"id": novo_id, "titulo": f"Nova aula {novo_id}",
                       "conteudo": "", "quiz": []})
         estado.registrar_mutacao(operador)
+        st.session_state[f"sel_aula_{cid}_{mid}"] = novo_id
         st.rerun()
     if not aulas:
         st.info("Módulo sem aulas. Adicione uma aula.")
         return
-    aula = _selecionar("Aula", aulas, "sel_aula_id", atopo[0])
+    # Key com escopo curso+módulo: o dropdown de aulas SEMPRE reflete o módulo atual
+    # (key compartilhada fazia a seleção antiga vazar entre módulos).
+    aula = _selecionar("Aula", aulas, f"sel_aula_{cid}_{mid}", atopo[0])
     aid = aula["id"]
 
     with st.container(border=True):

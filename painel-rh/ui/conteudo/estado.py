@@ -19,7 +19,11 @@ import streamlit as st
 
 from services import conteudo
 
-_PREFIXOS = ("c_", "m_", "a_", "p_", "sel_")
+# Keys de CAMPO (reseedam do rascunho sem perda) vs keys de NAVEGAÇÃO (sel_*).
+# Mutação estrutural purga só os campos — purgar sel_* jogava o operador de volta
+# ao primeiro curso a cada "➕ Pergunta"/"➕ Aula" (bug do curso 5 → curso 1).
+_PREFIXOS_CAMPOS = ("c_", "m_", "a_", "p_")
+_PREFIXOS = _PREFIXOS_CAMPOS + ("sel_",)
 _THROTTLE_SEG = 2.0
 
 _CHAVES_SESSAO = (
@@ -103,10 +107,12 @@ def persistir_rascunho(operador: str, forcar: bool = False) -> None:
 
 
 def registrar_mutacao(operador: str) -> None:
-    """Após mutação estrutural: persiste (forçado) + purga keys de widget.
+    """Após mutação estrutural: persiste (forçado) + purga as keys de CAMPO (os ids podem
+    ser reutilizados — ex.: remover a aula de maior id e criar outra — e a key antiga
+    ressuscitaria o valor velho). A navegação (sel_*) é preservada.
     NÃO faz rerun — o chamador decide (botão → st.rerun; diálogo → confirmar_acao)."""
     persistir_rascunho(operador, forcar=True)
-    purgar_keys()
+    purgar_keys(_PREFIXOS_CAMPOS)
 
 
 def purgar_keys(prefixos: tuple = _PREFIXOS) -> None:

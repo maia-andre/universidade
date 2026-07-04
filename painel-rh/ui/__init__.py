@@ -15,7 +15,9 @@ AZUL = "#003882"
 DOURADO = "#FFD700"
 
 _ASSETS = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "assets"))
-BRASAO = os.path.join(_ASSETS, "brasao.png")             # RGBA — serve em fundo escuro (sidebar)
+BRASAO = os.path.join(_ASSETS, "brasao.png")             # brasão puro (RGBA)
+BRASAO_BADGE = os.path.join(_ASSETS, "brasao_badge.png")  # brasão sobre badge branco
+                                                          # arredondado — p/ a sidebar azul
 LOGO = os.path.join(_ASSETS, "logo_uniservidor.jpeg")    # fundo branco — usar só sobre fundo claro
 
 # CSS mínimo e contido: só o filete dourado sob os títulos (o resto vem do tema no config.toml).
@@ -29,8 +31,8 @@ h1 {{ border-bottom: 3px solid {DOURADO}; padding-bottom: 0.25em; }}
 def configurar_pagina(titulo: str, icone: str = "🎓") -> None:
     """PRIMEIRA chamada de toda página: set_page_config + brasão na sidebar + CSS."""
     st.set_page_config(page_title=titulo, page_icon=icone, layout="wide")
-    if os.path.exists(BRASAO):
-        st.logo(BRASAO)
+    if os.path.exists(BRASAO_BADGE):
+        st.logo(BRASAO_BADGE, size="large")
     st.markdown(_CSS, unsafe_allow_html=True)
 
 

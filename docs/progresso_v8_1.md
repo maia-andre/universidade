@@ -13,6 +13,23 @@ antes da execução; contrato painel↔app verificado nos fontes e preservado.
 > da sidebar sobre badge branco arredondado. **Teste fim-a-fim real executado:** curso 6
 > completo publicado (v2), backfill da v1 no histórico, rollback pelo histórico (v3 = v1)
 > e rascunho do operador (curso 5) preservado/devolvido com base v3.
+>
+> **Adendo 2 (fim da sessão):**
+> - **Fix do editor de opções:** pergunta com `opcoes: []` estourava o `st.data_editor`
+>   (coluna vazia vira float64 no pandas × TextColumn); célula NaN virava opção "nan" e
+>   `bool(NaN)` marcava como correta. Corrigido com dtypes explícitos + tratamento de
+>   NaN; pergunta nova nasce com opções pré-preenchidas. Regressão coberta na suíte.
+> - **Regra de negócio nova — no máximo UMA matrícula ativa por aluno** (a regra existia
+>   só como intenção; nunca fora aplicada): `liberar_curso` bloqueia se há outra ativa e
+>   a página Matrículas abre o diálogo "Trocar curso ativo" (encerra a anterior com
+>   auditoria; concluídos permanecem acessíveis via `conclusoes`). Verificada contra o
+>   Firestore real com uid descartável.
+> - **Relatórios:** conclusões com nome do aluno/e-mail/título do curso (fim do uid cru),
+>   ordenadas por data; campo "Buscar aluno" filtrando as duas tabelas.
+> - **Validação em produção pelo dev:** curso 5 ("Integração de novos servidores")
+>   cadastrado e publicado pelo painel chegou ao app sem novo APK — smoke test dos
+>   Itens 1.1/1.2 da V8 fechado. Suíte final do painel: **25 testes**.
+> - **PR #8 (`features_v8` → `main`) mergeado** — todo o trabalho da V8 + V8.1 na main.
 
 Motivação: o operador perdeu edições de conteúdo duas vezes (o rascunho antigo descartava
 texto digitado ao navegar/publicar) e a V8 Item 1.3 (completar cursos) dependia de um

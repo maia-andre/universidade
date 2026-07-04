@@ -4,6 +4,16 @@ Data: 4 de julho de 2026
 Status: **concluída** (11 fases, commits F1–F11 na `features_v8`). Plano aprovado pelo dev
 antes da execução; contrato painel↔app verificado nos fontes e preservado.
 
+> **Adendo (mesma data, pós-teste do dev):** dois bugs do editor corrigidos —
+> (1) adicionar pergunta/aula purgava as keys de navegação e jogava a tela de volta ao
+> curso 1 (o rascunho do curso novo ficou intacto); (2) seleção de aula com key
+> compartilhada entre módulos. Agora a navegação usa keys por contexto e criar item
+> navega para ele. Cobertos por **testes de UI (streamlit.testing.AppTest)** com
+> services mockados. Sidebar: home renomeada para "Início" via `st.navigation`; brasão
+> da sidebar sobre badge branco arredondado. **Teste fim-a-fim real executado:** curso 6
+> completo publicado (v2), backfill da v1 no histórico, rollback pelo histórico (v3 = v1)
+> e rascunho do operador (curso 5) preservado/devolvido com base v3.
+
 Motivação: o operador perdeu edições de conteúdo duas vezes (o rascunho antigo descartava
 texto digitado ao navegar/publicar) e a V8 Item 1.3 (completar cursos) dependia de um
 painel confiável. A reforma cobre o painel inteiro + 1 correção no app.

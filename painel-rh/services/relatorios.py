@@ -32,10 +32,15 @@ def situacao_por_aluno(limite=1000):
     return linhas
 
 
+def _contar(colecao):
+    """Conta os docs via aggregation query — o servidor conta, sem baixar a coleção."""
+    resultado = get_db().collection(colecao).count(alias="total").get()
+    return int(resultado[0][0].value)
+
+
 def resumo():
     """KPIs simples: total de matrículas, de conclusões e a taxa de conclusão."""
-    db = get_db()
-    total_m = sum(1 for _ in db.collection(COL_MATRICULAS).stream())
-    total_c = sum(1 for _ in db.collection(COL_CONCLUSOES).stream())
+    total_m = _contar(COL_MATRICULAS)
+    total_c = _contar(COL_CONCLUSOES)
     taxa = (total_c / total_m * 100) if total_m else 0.0
     return {"matriculas": total_m, "conclusoes": total_c, "taxa": taxa}
